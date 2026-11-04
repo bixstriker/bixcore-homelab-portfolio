@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#07101b">
+<meta name="description" content="How I built BiX Barox Config Tool to study industrial switch CLI, convert configuration exports and compare network settings, with careful hardware validation.">
+<title>BiX Barox Config Tool · BiXCore</title>
+<link rel="stylesheet" href="../styles.css">
+<style>
+.barox-figure{margin:28px auto 34px;max-width:740px}
+.barox-figure img{display:block;width:100%;height:auto;border:1px solid #345069;border-radius:11px}
+.barox-figure figcaption{font-size:.9rem;color:var(--muted);line-height:1.6;margin-top:11px}
+.status-table th:first-child{min-width:100px}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header"><div class="wrap header-inner">
+<a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+<nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+</div></header>
+<main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Barox Config Tool</p>
+<p class="kicker">PERSONAL SOFTWARE PROJECT / INDUSTRIAL SWITCHING</p>
+<h1>BiX Barox Config Tool</h1>
+<p class="lede">Working with managed switches made me want something more useful than a collection of copied CLI commands. I started building a tool that can read configuration exports, help me understand what is configured, and prepare documented recovery steps. It gradually grew into a parser, an analysis engine, a Windows GUI and a separate line of CLI research.</p>
+<div class="article">
+<h2>Where the idea came from</h2>
+<p>In electronic security and video-surveillance projects, a switch can be a critical part of the installation. VLANs, uplinks, multicast, management access and other settings can affect the whole system. Rebuilding a configuration manually from a saved export is not something I want to do by guesswork.</p>
+<p>My initial goal was practical: take a Barox running or startup configuration and produce an ordered CLI procedure with explanations that an engineer can review and apply manually. Later, I added tools for comparing configurations and highlighting findings across switches that belong to the same network.</p>
+
+<h2>What the tool does today</h2>
+<div class="two-col">
+<article class="mini-card"><h3>Configuration to CLI</h3><p>Reads exported configurations and creates an ordered list of CLI steps, a human-readable restoration guide and a structured plan. It keeps source references and flags commands it cannot validate instead of pretending to know their meaning.</p></article>
+<article class="mini-card"><h3>Configuration analysis</h3><p>Checks a single switch for local findings and compliance rules. With multiple exports from the same system, it also performs cross-switch analysis. Reports can be presented in English, German or Russian.</p></article>
+<article class="mini-card"><h3>Windows application</h3><p>A small desktop GUI lets me select or drag in exported files, choose a report language and generate outputs. It is a front end for the offline conversion and comparison functions, not an automatic switch configuration tool.</p></article>
+<article class="mini-card"><h3>CLI and hardware research</h3><p>I built a separate research workflow for collecting and reconciling command syntax from firmware material and live device help. I also tested selected serial-console state transitions on hardware while working toward a controlled restoration workflow.</p></article>
+</div>
+
+<h2>Windows interface</h2>
+<p>The desktop application provides file selection, report-language options and separate actions for conversion or analysis. The screenshot below was taken with no configuration loaded, and its local output path has been removed for publication.</p>
+<!-- SANITIZED_GUI_SCREENSHOT_SLOT -->
+
+<h2>What has actually been implemented</h2>
+<div class="table-wrap"><table class="status-table">
+<thead><tr><th>Part</th><th>Status</th><th>What I can substantiate</th></tr></thead>
+<tbody>
+<tr><td><strong>Goal 1</strong></td><td>Implemented for documented test data</td><td>Offline export-to-CLI conversion, generated explanation and recovery plan. Results still need human review before being applied.</td></tr>
+<tr><td><strong>Goal 2</strong></td><td>Implemented, frozen analytical baseline</td><td>Single-device checks and multi-device comparisons for configurations from one actual system, plus multilingual human-readable reports.</td></tr>
+<tr><td><strong>Goal 3</strong></td><td>Partially implemented</td><td>Selected serial-console probes and an offline capability preflight have hardware evidence. A general automated restore executor is not finished.</td></tr>
+<tr><td><strong>Goal 4</strong></td><td>Concept only</td><td>A possible future planner to suggest corrections from analysis findings. No implementation or accepted specification yet.</td></tr>
+</tbody></table></div>
+
+<h2>The more interesting engineering problems</h2>
+<p><strong>CLI grammar is not the same as a tested command.</strong> For the main Barox reference model, my research catalog contains 6,644 context-and-syntax records across eight CLI contexts. Some records come from live help, while others have only firmware or combined evidence. That count is <em>not</em> a claim that 6,644 commands were executed successfully on a physical switch.</p>
+<p><strong>Comparing switches requires context.</strong> For example, identical IP addresses do not mean the same thing across different VLANs, and an unknown uplink is not proof that no cable exists. I had to distinguish observed facts, configured state, inferred relationships and policies that belong to a specific installation.</p>
+<p><strong>A safe restore needs more than command generation.</strong> A serial session has prompts, modes, fragmented replies and possible command errors. I tested selected transitions, timeouts and prompt handling on hardware, but automatic application, verification and recovery from failures remain separate unfinished work.</p>
+
+<h2>Testing and limitations</h2>
+<p>The repository documents 515 discovered regression test cases, with an earlier successful full run reported during development. I haven't treated that historical report as a fresh run or as proof of full hardware compatibility. Selected console tests have preserved hardware evidence, but the newer documentation work did not involve another physical-device session.</p>
+<p>The application is still a personal engineering project. I do not treat firmware syntax as automatic authorization to apply a command, assume every Barox model behaves identically, or claim that all generated restoration steps are safe to execute without review. General automated restore and remediation are still future work.</p>
+
+<h2>Why the source code isn't public here</h2>
+<p>The development repository also contains research artifacts, device captures and generated configuration/restore material. Some of those can reflect real installations or contain sensitive settings. Rather than publishing the complete archive, I've kept it private and written this public, sanitized project overview. It includes no customer configurations, device addresses, credentials, or raw management transcripts.</p>
+<p><a class="source-link" href="https://github.com/bixstriker/bixcore-homelab-portfolio/blob/main/projects/barox-config-tool.md" rel="noopener noreferrer">Read the public project notes on GitHub →</a> &nbsp; <a class="source-link" href="work-index.html">Other BiXCore projects →</a></p>
+<p class="muted">Independent personal development work; not an official Barox product or a statement of vendor certification.</p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p>
+</main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer>
+</body></html>

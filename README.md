@@ -10,6 +10,7 @@ I built BiXCore as a personal network and security lab. It lets me explore OPNse
 - **Identity and certificates:** Active Directory, AD CS, NDES/SCEP, FreeRADIUS and EAP-TLS on Windows, Kubuntu and Android.
 - **Infrastructure:** Managed switches and enterprise Wi-Fi, NAS services, Docker networking, monitoring and backups.
 - **Virtualization:** Proxmox, single-disk ZFS recovery, GPU passthrough, and 13 VMs: 11 firewall/router platforms plus Windows and Linux test clients.
+- **Software and switch tooling:** [BiX Barox Config Tool](projects/barox-config-tool.md), an offline CLI conversion and switch-comparison project with a Windows GUI and ongoing serial-console research.
 
 The [Proxmox v1.7 index](inventory/proxmox-v1.7.md) covers all 32 chapters of my working documentation, including the four latest VM installations. The site contains 25 troubleshooting cases, including a recent DD-WRT UEFI boot repair and an SSH management lockout. I have also kept [project articles](projects/), [diagrams](diagrams/) and [working-note indexes](inventory/) for people who prefer reading in GitHub.
 
