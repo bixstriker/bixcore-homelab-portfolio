@@ -6,11 +6,11 @@ My Proxmox lab lets me work with firewall systems without replacing the OPNsense
 
 Proxmox runs on a reused desktop with Debian 13. I have a dedicated upstream for the test firewalls and separate Linux bridges for their LAN interfaces. The same client VMs can be attached to the firewall being tested, so I don't need a large number of machines running at the same time.
 
-In the first round I installed and tried MikroTik CHR, pfSense CE, Sophos Firewall Home, VyOS, FortiGate VM, OpenWrt and IPFire. The tests covered boot and management, DHCP, DNS, outbound NAT and selected port forwards to a Windows or Linux client. I haven't yet put every product through an identical security and performance test suite.
+As of 4 November 2026, I have 13 VMs: 11 firewall/router systems plus two test clients. NethSecurity 8.8, FreeSense 1.1.11, DD-WRT r66445 and a second, virtual OPNsense Community 26.7 joined the earlier MikroTik, pfSense, Sophos, VyOS, FortiGate, OpenWrt and IPFire systems. Each gets a separate virtual LAN and shares the isolated test upstream. I checked basic management, internet/NAT, DHCP and two client RDP forwards on the four newest platforms. More consistent negative-path and performance tests are still needed.
 
 ## Problems I encountered
 
-The VLAN path for the lab WAN caused a DHCP investigation that went all the way from the gateway to the physical switch and the virtual NIC. I also corrected an upstream bridge mistake during the IPFire setup. Both are described in the [troubleshooting notes](../docs/pages/notes.html#lab).
+The VLAN path for the lab WAN caused a DHCP investigation that went all the way from the gateway to the physical switch and the virtual NIC. I also corrected an upstream bridge mistake during the IPFire setup. Those are described in the [troubleshooting notes](../docs/pages/notes.html#lab). DD-WRT later needed a UEFI boot repair involving its GRUB file, embedded binary template and reboot handling; two reboot tests succeeded, but normal shutdown remains unresolved. The [DD-WRT boot repair](../docs/pages/notes.html#ddwrt-uefi) and [SSH management lockout](../docs/pages/notes.html#ddwrt-access) have their own incident notes.
 
 ## Where I want to go next
 
