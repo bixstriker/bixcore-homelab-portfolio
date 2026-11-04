@@ -25,6 +25,10 @@ flowchart TD
 
 The solid arrows represent existing input/output relationships. The dashed arrows mark partial or planned extensions: the Goal 3 general restore executor does **not** exist, and Goal 4 has not been implemented.
 
+![BiX Barox Config Tool GUI with local path redacted](../docs/assets/barox-gui-public.webp)
+
+*Screenshot of the offline Windows GUI, without loaded configurations or a personal filesystem path.*
+
 ## Implemented and planned
 
 | Area | Evidence-backed status | Limit |
