@@ -9,9 +9,9 @@ I built BiXCore as a personal network and security lab. It lets me explore OPNse
 - **Routing and firewalls:** OPNsense, IPv6, WireGuard, VLANs, Suricata and Zenarmor.
 - **Identity and certificates:** Active Directory, AD CS, NDES/SCEP, FreeRADIUS and EAP-TLS on Windows, Kubuntu and Android.
 - **Infrastructure:** Managed switches and enterprise Wi-Fi, NAS services, Docker networking, monitoring and backups.
-- **Virtualization:** Proxmox host and storage work, GPU passthrough, and hands-on experiments with several firewall and router systems.
+- **Virtualization:** Proxmox, single-disk ZFS recovery, GPU passthrough, and 13 VMs: 11 firewall/router platforms plus Windows and Linux test clients.
 
-The site contains 21 troubleshooting cases. I have also kept [project articles](projects/), [diagrams](diagrams/) and [working-note indexes](inventory/) for people who prefer reading in GitHub.
+The site contains 23 troubleshooting cases, including a recent DD-WRT UEFI boot repair and an SSH management lockout. I have also kept [project articles](projects/), [diagrams](diagrams/) and [working-note indexes](inventory/) for people who prefer reading in GitHub.
 
 ## Where my networking experience started
 
@@ -29,4 +29,4 @@ I have plans for more commercial firewall platforms, PacketFence and RADIUS inte
 
 This is a snapshot of my portfolio website and its public project notes. The website is plain HTML and CSS and has no analytics or external JavaScript. I keep device configurations, operational backups and detailed working logs outside the portfolio.
 
-The website files live in `docs/`, ready for a later GitHub Pages deployment. This repository does **not** deploy itself; publication and the Pages setting are separate decisions.
+The public website is hosted through GitHub Pages from `docs/` at **https://lab.bixcore.de/**. Project notes are updated as experiments are verified.
