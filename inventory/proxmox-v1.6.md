@@ -2,6 +2,9 @@
 
 These are the main tasks and experiments from building the Proxmox lab. Earlier installation notes are included alongside the later storage migration, firewall tests and GPU work.
 
+**Source revision v1.7, updated 4 November 2026:** The latest documented inventory is 13 VMs (11 firewall/router platforms and two test clients). NethSecurity, FreeSense, DD-WRT and another OPNsense VM were added. DD-WRT boot and reboot were repaired; normal shutdown is still unresolved. Earlier section rows below remain historical.
+
+
 | Section | Work | Status | Read more |
 | --- | --- | --- | --- |
 | 01 | Host hardware, software state and installed VM status | Observed | [Proxmox host and storage](../docs/pages/proxmox-host-storage.html) |
@@ -31,13 +34,18 @@ These are the main tasks and experiments from building the Proxmox lab. Earlier 
 | 25 | Actual latest October host/lab status | Observed status correction | [Proxmox host and storage](../docs/pages/proxmox-host-storage.html) |
 | 26 | IPFire WAN/LAN, bridge correction, DHCP/DNS/NAT and RDP | Observed selected tests | [Firewall systems tested](../docs/pages/virtual-firewall-platforms.html) |
 | 27 | Actual November status and follow-up plan | Current as of source date | [Firewall test methods](../docs/pages/lab-operational-method.html) |
+| 28 | Four new VMs, lab virtual bridges and network boundaries | Verified setup / selected tests | [Firewall lab overview](../docs/pages/proxmox-firewall-lab.html) |
+| 29 | NethSecurity 8.8 and FreeSense 1.1.11: DHCP, NAT and two client RDP tests | Verified selected IPv4 tests | [Firewall systems tested](../docs/pages/virtual-firewall-platforms.html) |
+| 30 | DD-WRT kernel panic, compiled GRUB template, UEFI reboot and SSH blocklist | Boot and reboot repaired; poweroff open | [DD-WRT incident](../docs/pages/notes.html#ddwrt-uefi) |
+| 31 | Separate OPNsense Community VM; WAN, LAN and NAT/DNAT tests | Verified selected IPv4 tests | [Firewall systems tested](../docs/pages/virtual-firewall-platforms.html) |
+| 32 | Final inventory, limitations and future testing | Current status / incomplete follow-ups | [Firewall test methods](../docs/pages/lab-operational-method.html) |
 | A | Read-only diagnostics for host, router and gateway | Methods retained | [Firewall test methods](../docs/pages/lab-operational-method.html) |
 | B | Network and VM configuration examples | Private source; sanitized design | [Proxmox host and storage](../docs/pages/proxmox-host-storage.html) |
 | C | Windows-to-Proxmox one-time reboot automation | Observed method | [Proxmox host and storage](../docs/pages/proxmox-host-storage.html) |
 
 ### How the setup changed
 
-- The source's **November 1 latest state** overrides earlier ideas about which VM number would be allocated to which firewall distribution.
+- The source's **November 4 latest state** overrides earlier ideas about which VM number would be allocated to which firewall distribution.
 - The VMware-class test inventory is not a list of concurrently running guests.
 - A previous storage arrangement was replaced by a **single-disk** ZFS pool after documented health observations. Storage migration and snapshots are not high availability or a proved external recovery plan.
 - Earlier virtual graphics paths are superseded by a later passthrough/EDID/KRDP solution. The final result does not prove all remote frames are hardware-encoded.
