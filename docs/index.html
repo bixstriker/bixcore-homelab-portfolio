@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="My BiXCore homelab: OPNsense, Windows Server, PKI, Proxmox, troubleshooting and the projects I want to try next.">
+  <title>BiXCore · Felix Bistriker's Network & Security Lab</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="#work">Projects</a><a href="#notes">Troubleshooting</a><a href="pages/hardware.html">Hardware</a><a href="pages/roadmap.html">Plans</a><a href="pages/about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header>
+<main id="main">
+<section class="hero"><div class="wrap hero-grid">
+ <div>
+  <p class="eyebrow">Felix Bistriker · Personal homelab</p>
+  <h1>BiXCore</h1>
+  <p class="hero-lead">BiXCore is the network I built at home, both for the services I use every day and for experimenting with technologies I want to understand better. It has grown into an OPNsense gateway, managed switching and Wi-Fi, Windows Server and PKI, NAS services, and a separate Proxmox firewall lab.</p>
+  <p class="hero-secondary">I document what I set up, the problems I ran into and how I worked through them.</p>
+  <div class="button-row"><a class="button primary" href="#work">See the projects →</a><a class="button secondary" href="pages/work-index.html">Full project list →</a></div>
+ </div>
+ <div class="hero-graphic" aria-label="Simplified diagram of the home network">
+  <div class="graphic-caption"><span>NETWORK OVERVIEW</span><span class="signal">OPNsense gateway</span></div>
+  <svg class="graphic-svg" viewBox="0 0 500 315" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="diagram-title diagram-desc"><title id="diagram-title">Overview of the BiXCore network</title><desc id="diagram-desc">An OPNsense gateway connects the home network to separate client, guest and virtual test environments.</desc>
+ <g stroke="#476d80" stroke-width="2" fill="none"><path d="M250 65V104"/><path d="M250 169V218"/><path d="M96 218H404"/><path d="M96 218V238"/><path d="M250 218V238"/><path d="M404 218V238"/><path stroke="#74d9d8" stroke-dasharray="5 6" d="M250 170C240 191 130 171 105 238"/></g>
+ <rect x="171" y="18" width="158" height="46" rx="9" fill="#12293d" stroke="#4c6b7b"/><text x="250" y="46" fill="#cddfea" font-size="16" font-weight="600" text-anchor="middle">Internet</text>
+ <rect x="139" y="104" width="222" height="65" rx="13" fill="#153a48" stroke="#7bdedb" stroke-width="1.7"/><text x="250" y="128" fill="#7bdedb" font-size="12" font-weight="700" text-anchor="middle">SECURITY GATEWAY</text><text x="250" y="152" fill="#e9f4fc" font-size="18" font-weight="700" text-anchor="middle">OPNsense</text>
+ <g fill="#11283a" stroke="#456477"><rect x="14" y="238" width="162" height="61" rx="11"/><rect x="188" y="238" width="124" height="61" rx="11"/><rect x="324" y="238" width="162" height="61" rx="11"/></g>
+ <g fill="#e2f1f9" font-size="15" font-weight="650" text-anchor="middle"><text x="95" y="264">Trusted network</text><text x="95" y="282" fill="#9cc4d0" font-size="11">PKI · EAP-TLS</text><text x="250" y="264">Guests</text><text x="250" y="282" fill="#9cc4d0" font-size="11">Restricted</text><text x="405" y="264">Virtual lab</text><text x="405" y="282" fill="#9cc4d0" font-size="11">Firewall tests</text></g>
+ 
+ </svg>
+  <p class="annotation">The home network and the virtual test environment have separate access policies.</p>
+ </div>
+</div></section>
+<section class="facts"><div class="wrap facts-grid">
+ <div class="fact"><b>OPNsense</b><span>Intel N305 gateway with 10GbE interfaces</span></div>
+ <div class="fact"><b>Windows Server</b><span>Active Directory, certificates and EAP-TLS</span></div>
+ <div class="fact"><b>Proxmox VE</b><span>On-demand firewall and client testing</span></div>
+</div></section>
+<section class="section wrap" id="work">
+ <div class="section-heading"><p class="kicker">THE PROJECTS</p><h2>What I've built</h2>
+ <p class="section-intro">The projects are connected: the network needs working identity and DNS services, and the virtual lab gives me somewhere to test changes without disturbing the systems I rely on.</p></div>
+ <div class="cards home-projects">
+  <article class="card"><h3>Gateway, routing and IPv6</h3><p>OPNsense handles network separation, WireGuard, Suricata and Zenarmor. I have also worked through IPv6 source-address and prefix-translation problems.</p><div class="card-end"><a href="pages/opnsense-ipv6.html">OPNsense and IPv6 →</a></div></article>
+  <article class="card"><h3>Active Directory and certificates</h3><p>Two Windows Server domain controllers, an enterprise CA, NDES and FreeRADIUS support certificate-based access for Windows, Linux and Android clients.</p><div class="card-end"><a href="pages/windows-ad-pki.html">Windows, PKI and EAP-TLS →</a></div></article>
+  <article class="card"><h3>Switching and Wi-Fi</h3><p>Managed switches, VLANs, UniFi access points and 802.1X. Some of the most interesting work has been investigating LLDP and IPv6 Neighbor Discovery.</p><div class="card-end"><a href="pages/switching-wireless.html">Switching and Wi-Fi →</a></div></article>
+  <article class="card"><h3>DNS, NAS and everyday services</h3><p>Client DNS, Active Directory lookups, certificates, Docker networking and services hosted on the NAS, including the work needed to recover them after changes.</p><div class="card-end"><a href="pages/network-services.html">Network services →</a></div></article>
+  <article class="card"><h3>Windows and Linux administration</h3><p>Group Policy, certificate enrollment, remote management, deployment tools, Kubuntu integration and monitoring across the servers and workstations.</p><div class="card-end"><a href="pages/windows-policy-deployment.html">Windows administration →</a></div></article>
+  <article class="card"><h3>Proxmox firewall lab</h3><p>A separate test environment for RouterOS, pfSense, FortiGate, VyOS, Sophos, OpenWrt and IPFire, with Windows and Linux clients and an evolving test checklist.</p><div class="card-end"><a href="pages/proxmox-firewall-lab.html">The firewall lab →</a></div></article>
+ </div>
+ <p class="home-section-end">There is more detail on storage migration, GPU passthrough, monitoring, client enrollment and the individual firewall platforms in the <a href="pages/work-index.html">complete project list</a>.</p>
+</section>
+<section class="section architecture" id="architecture"><div class="wrap architecture-grid">
+ <div><p class="kicker">HOW IT WORKS</p><h2>A working network and a separate place to experiment</h2>
+ <p class="section-intro">The OPNsense gateway, switches, Wi-Fi, directory services and NAS are part of my day-to-day setup. Proxmox is different: I start it when I want to compare firewall systems or test a configuration with Windows and Linux clients.</p>
+ <p class="muted">The lab uses dedicated virtual networks and a separate upstream. I have checked the main connectivity paths and am continuing the tests for traffic that should be blocked.</p>
+ <p><a class="source-link" href="pages/hardware.html">Equipment used in the lab →</a></p></div>
+ <div class="architecture-display" aria-label="Everyday services and the separate test lab">
+  <div class="home-architecture-group"><h3>Everyday network</h3><p>OPNsense, managed switches and Wi-Fi, Active Directory, PKI, DNS, NAS and remote access.</p><a href="pages/opnsense.html">Network details →</a></div>
+  <div class="home-architecture-group"><h3>Test environment</h3><p>Proxmox, virtual firewall WAN/LAN networks and Windows or Linux clients. I normally run only the machines needed for a particular test.</p><a href="pages/lab.html">Lab setup →</a></div>
+  <div class="home-architecture-group"><h3>Monitoring and recovery</h3><p>Windows and gateway monitoring, certificate renewal, backups, and fixes for problems that showed up after restarts or updates.</p><a href="pages/security-operations.html">Operations and troubleshooting →</a></div>
+ </div>
+</div></section>
+<section class="section wrap" id="notes">
+ <div class="section-heading"><p class="kicker">TROUBLESHOOTING</p><h2>Problems I ran into</h2><p class="section-intro">Some of the most useful work came out of things that stopped working: an IPv6 address that couldn’t reach the internet, a switch blocking a domain controller, a failed storage pool. I’ve written up 21 cases, grouped by the part of the lab they affected. <a href="pages/notes.html">Browse all 21 troubleshooting cases →</a></p></div>
+ <div class="two-col home-topic-grid">
+  <article class="mini-card"><h3>OPNsense and IPv6</h3><p>WAN source selection, dynamic DNS failures, unexpected PF states, WireGuard/NPTv6, the guest portal and LLDP startup settings.</p><p><a href="pages/notes.html#network-incidents">Read network troubleshooting →</a></p></article>
+  <article class="mini-card"><h3>Switching and client identity</h3><p>Omada Neighbor Discovery, domain-controller EAP-TLS, LDAPS failover, Android SCEP enrollment and Windows management issues.</p><p><a href="pages/notes.html#client-incidents">Read switching and identity cases →</a></p></article>
+  <article class="mini-card"><h3>NAS and infrastructure services</h3><p>Recovering a missing IPv6 ULA, correcting Docker routes and getting UPS monitoring to work.</p><p><a href="pages/notes.html#services-incidents">Read service troubleshooting →</a></p></article>
+  <article class="mini-card"><h3>Proxmox and virtual machines</h3><p>VM networking and bridge mistakes, replacing storage, IPv6 Router Advertisements, Intel GPU passthrough and KRDP.</p><p><a href="pages/notes.html#virtualization-incidents">Read virtualization cases →</a></p></article>
+ </div>
+ <p class="home-section-end">Each case has the symptoms, the checks I made and the fix or follow-up. <a href="pages/notes.html">See all 21 cases →</a></p>
+</section>
+<section class="section architecture" id="roadmap"><div class="wrap">
+ <div class="section-heading"><p class="kicker">WHAT'S NEXT</p><h2>What I’d like to try next</h2><p class="section-intro">There are several directions I want to take BiXCore: finishing recovery and IPv6 tests, learning other firewall platforms, and trying new security and networking features with real clients.</p></div>
+ <div class="two-col home-topic-grid">
+  <article class="mini-card"><h3>More firewall platforms</h3><p>Broader FortiGate tests and evaluation of Palo Alto VM-Series, Juniper vSRX, Check Point, SonicWall and Cisco virtual routing.</p></article>
+  <article class="mini-card"><h3>RADIUS, NAC and real Wi-Fi clients</h3><p>A dedicated access point for captive portals, EAP-TLS and PacketFence, plus BGP/FRR experiments in the virtual lab.</p></article>
+  <article class="mini-card"><h3>IPv6 and recovery</h3><p>An IPv6-only lab network, real provider prefix-change tests, stronger isolation checks and proper restores of important services.</p></article>
+  <article class="mini-card"><h3>Zenarmor and encrypted traffic</h3><p>More work with web and application policies, TLS inspection, reporting and performance on the N305 gateway — including multi-core tests if the feature becomes available.</p><p><a href="pages/zenarmor.html">Zenarmor plans →</a></p></article>
+ </div>
+ <p class="home-section-end"><a class="button secondary" href="pages/roadmap.html">See the full list of plans →</a></p>
+</div></section>
+<section class="section wrap" id="about"><div class="home-about">
+ <img class="home-about-photo" src="assets/felix-portrait.webp" width="150" height="225" alt="Portrait of Felix Bistriker" loading="eager">
+ <div><p class="kicker">ABOUT ME</p><h2>The person behind BiXCore</h2>
+ <p class="section-intro">I'm Felix Bistriker. My professional background is in engineering and electronic security systems, including fire detection, access control and video surveillance. Networking gradually became the part I wanted to explore in more depth, and BiXCore grew out of that interest.</p>
+ <p><a class="source-link" href="pages/about.html">Background, education and experience →</a> &nbsp;&nbsp; <a class="source-link" href="https://github.com/bixstriker" rel="noopener noreferrer">GitHub profile →</a></p></div>
+</div></section>
+</main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Felix Bistriker</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

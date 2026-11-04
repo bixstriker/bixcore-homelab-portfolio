@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="How I built certificate-based network access with Active Directory, FreeRADIUS, SCEP and EAP-TLS.">
+  <title>Certificate-Based Network Access · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Identity</p>
+<p class="kicker">PKI / EAP-TLS / CLIENT ENROLLMENT</p>
+<h1>Certificate-Based Network Access</h1>
+<p class="lede">I wanted wired and Wi-Fi clients to use individual certificates instead of a shared network password. Getting that to work meant dealing with enrollment, trusted CAs, revocation and directory-backed authorization.</p>
+<div class="article">
+<h2>How the pieces fit together</h2>
+<p>Windows Server provides Active Directory and an enterprise certification authority. NDES handles SCEP for supported Android devices. FreeRADIUS runs on OPNsense and checks the client certificate before applying the relevant access policy at the switch or wireless access point.</p>
+<h2>What I have tested</h2>
+<ul>
+<li>Certificate enrollment and wired EAP-TLS for selected Windows machines.</li>
+<li>Wired and Wi-Fi certificate authentication on Kubuntu.</li>
+<li>Android MDM profiles issuing SCEP identities and using them for enterprise Wi-Fi.</li>
+<li>Revocation-list publication and selected certificate-validation checks.</li>
+<li>LDAPS directory lookup using the second controller while the first was unavailable.</li>
+<li>A separate wired certificate/authorization design for the domain controllers, avoiding a bootstrap dependency on their own directory service.</li>
+</ul>
+<h2>Problems and the next stage</h2>
+<p>The trickiest parts were <a href="notes.html#dc-eap">getting a domain controller through its own protected switch port</a>, <a href="notes.html#identity">proving LDAPS fallback</a> and <a href="notes.html#android-scep">understanding extra SCEP enrollment requests from Android</a>.</p>
+<p>Now I want to make the certificate lifecycle more predictable: renewals, revocation of old device identities and recovery of the CA itself. The second domain controller helps directory queries, but it doesn't replace that work.</p>
+<p><a class="source-link" href="windows-ad-pki.html">Windows Server and CA details →</a> &nbsp; <a class="source-link" href="linux-mobile-identity.html">Linux and Android clients →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

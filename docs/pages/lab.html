@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="My virtual firewall lab: Proxmox networking, Windows and Linux test clients, and the systems I've tried.">
+  <title>My Virtual Firewall Lab · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Virtualization</p>
+<p class="kicker">PROXMOX / FIREWALLS / CLIENT TESTS</p>
+<h1>My Virtual Firewall Lab</h1>
+<p class="lede">I use Proxmox to try different routers and firewalls without changing the gateway that runs my everyday network. Windows and Linux clients make it possible to check the results from the other end of a connection.</p>
+<div class="article">
+<h2>How I built it</h2>
+<p>The host runs Debian 13 and Proxmox VE 9.2. Each active firewall has a lab-side uplink and its own virtual LAN, with test clients attached as needed. There are nine documented virtual machines, but I normally run only the ones required for a particular experiment.</p>
+<h2>Firewalls in the lab</h2>
+<p>I have worked with MikroTik CHR, pfSense CE, Sophos Firewall Home, VyOS, FortiGate VM, OpenWrt and IPFire. The first tests covered installation, management access, DHCP, DNS, NAT and selected port forwards. Coverage differs between the platforms; they have not all completed the same feature checklist.</p>
+<p>Other Proxmox projects include directory integration, trusted HTTPS, storage recovery and Intel iGPU passthrough for a Linux desktop.</p>
+<h2>What still needs work</h2>
+<ul>
+<li>A consistent throughput and latency comparison.</li>
+<li>Negative-path tests between all relevant zones and the home network.</li>
+<li>A full recovery test for the current single-disk VM storage.</li>
+<li>Experiments with physical Wi-Fi clients and an IPv6-only lab uplink.</li>
+</ul>
+<p><a class="source-link" href="virtual-firewall-platforms.html">Results by firewall platform →</a> &nbsp; <a class="source-link" href="proxmox-host-storage.html">Building the host and migrating storage →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

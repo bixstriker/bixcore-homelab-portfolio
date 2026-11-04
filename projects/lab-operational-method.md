@@ -1,0 +1,37 @@
+# How I Test Firewalls in Proxmox
+
+When I install a new firewall, I don't try every feature at once. I start with a working WAN and LAN connection, test it from a client and build on that. Repeating the same steps makes it easier to spot what is different between products.
+
+## The first round of tests
+
+1. **Boot and management:** check the initial interfaces, how to reach the UI or CLI and whether management access is limited to the lab.
+2. **WAN:** confirm DHCP or static addressing on the intended upstream, then check DNS and outbound connectivity.
+3. **LAN:** connect a Windows or Linux VM, check DHCP/DNS and establish the default route.
+4. **NAT and forwarding:** check outbound connections, then use a selected RDP or service port forward as a simple inbound test.
+5. **Policy:** try traffic that should succeed and traffic that should be blocked. These negative checks are not complete for every platform yet.
+6. **Recovery:** record what changes after restarting the firewall or restoring a snapshot, rather than assuming its runtime state is permanent.
+
+## What caused trouble
+
+An early [DHCP problem in the lab WAN](../docs/pages/notes.html#lab) needed tests at the switch, gateway, Linux bridge and guest NIC. During the [IPFire setup](../docs/pages/notes.html#ipfire), the WAN was initially attached to the wrong virtual bridge. Storage health and [KDE graphics problems](../docs/pages/notes.html#gpu) also turned into their own investigations.
+
+One lesson has been to distinguish basic network separation from full security isolation. Different Linux bridges make a useful lab layout, but I still need to test IPv4 and IPv6 paths toward all protected services.
+
+## The comparison I want to build
+
+| Area | What I want to check |
+| --- | --- |
+| Connectivity | WAN and client address assignment, DNS, IPv4/IPv6, routing and NAT |
+| Firewall behavior | Allowed and denied connections, state handling and logging |
+| Identity | RADIUS/802.1X where supported, certificates and management authentication |
+| Guest access | Captive portal behavior, session handling and IPv6 leakage |
+| Performance | Throughput, CPU use per core, latency and packet loss under comparable traffic |
+| Recovery | Restart behavior, configuration backup and restored functionality |
+
+## Future test environment
+
+I plan to add a dedicated IPv6-only upstream and a separate physical Wi-Fi access point. That would let me try captive portals, PacketFence, EAP-TLS and other NAC scenarios with real clients while keeping the normal home Wi-Fi out of the experiments. Commercial firewall evaluations are also on the [roadmap](../docs/pages/roadmap.html), subject to trial and licensing conditions.
+
+[Firewall platforms tested so far →](../docs/pages/virtual-firewall-platforms.html)   [More troubleshooting notes →](../docs/pages/notes.html)
+
+---

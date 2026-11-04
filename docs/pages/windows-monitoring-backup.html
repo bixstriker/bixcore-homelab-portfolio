@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Monitoring Windows Server with Prometheus and Grafana, and developing AD and PKI recovery procedures.">
+  <title>Monitoring and Backup for Windows Server · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Windows Server</p>
+<p class="kicker">PROMETHEUS / GRAFANA / BACKUP</p>
+<h1>Monitoring and Backing Up Windows Server</h1>
+<p class="lede">Once Active Directory and the certificate services were running, I wanted to see problems before they turned into login or network-access failures. I also wanted a recovery plan that went beyond having a second domain controller.</p>
+<div class="article">
+<h2>Monitoring the services</h2>
+<p>I installed Windows Exporter with collectors for system performance, Active Directory, DNS, certificate services, IIS and scheduled tasks. Prometheus collects those metrics, and I built a Grafana dashboard around the areas I need to check most often.</p>
+<p>That gives me a view of server load, directory services, certificate publication and whether the scheduled jobs are running. I use Sysmon separately for Windows event investigations; I have not tried to turn this setup into a full SIEM.</p>
+<h2>System State backups</h2>
+<p>I configured and checked scheduled System State backups for the domain controllers, using NAS storage as part of the backup arrangement. The recovery notes also cover DNS, certificates, access permissions and the services that need to come back in a sensible order.</p>
+<p>The second domain controller helps when a directory service is unavailable. It does not replace a backup of the CA database or guarantee that a server's storage can be recovered after a disk failure.</p>
+<h2>What I still want to test</h2>
+<p>The scheduled backup jobs have run, but I haven't rebuilt both controllers and the CA from a complete set of backups. That is the exercise I want to finish before treating the recovery plan as tested end to end.</p>
+<p><a class="source-link" href="windows-ad-pki.html">Directory and certificate services →</a> &nbsp; <a class="source-link" href="roadmap.html">Recovery work on the roadmap →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

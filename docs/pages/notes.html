@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Twenty-one troubleshooting cases from OPNsense, IPv6, Windows identity, switching, NAS and Proxmox.">
+  <title>Problems and Fixes · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / Troubleshooting</p>
+<p class="kicker">WHAT I LEARNED WHILE BUILDING BIXCORE</p>
+<h1>Problems I ran into</h1>
+<p class="lede">Quite a few parts of BiXCore took more than one attempt. Some failures were caused by a small configuration detail; others needed packet captures, service logs and tests from both sides of the connection. These are the cases worth keeping notes about.</p>
+<div class="article">
+<section id="network-incidents">
+<h2>OPNsense, WAN and IPv6</h2>
+<div class="two-col">
+<article class="mini-card" id="ipv6"><h3>The wrong IPv6 source address</h3>
+<p>My WAN had more than one global IPv6 address, but outbound connections behaved differently depending on which source I used. Tests with explicitly selected addresses showed that the provider's SLAAC address could not reach the same target that worked from the DHCPv6 IA_NA address.</p>
+<p>I added a recovery mechanism for the observed source-selection problem. Provider reconnects and future prefix changes still need watching.</p><p><a href="opnsense-ipv6.html">OPNsense and IPv6 →</a></p></article>
+<article class="mini-card" id="ddns"><h3>Dynamic DNS stopped updating after a reboot</h3>
+<p>The DNS update service was running, yet it could not reach the provider's API over IPv6. I traced that to the same WAN source-address problem rather than assuming the DNS records or API credentials were wrong.</p>
+<p>The connection was restored in the documented session. I kept a follow-up check for future WAN renewals.</p><p><a href="network-services.html">DNS and dynamic records →</a></p></article>
+<article class="mini-card" id="pf-state"><h3>Firewall states pointing to an invalid gateway</h3>
+<p>After a reboot, repeated ARP errors led me to PF states containing a route-to address of 0.0.0.0. The active firewall rules already pointed to the real gateway, so changing the saved rules was not the answer.</p>
+<p>I removed the affected states individually and confirmed the errors stopped. The underlying startup-order issue still needs a permanent fix.</p><p><a href="security-operations.html">Gateway operations →</a></p></article>
+<article class="mini-card" id="wireguard"><h3>WireGuard: IPv4 worked, but IPv6 needed a different approach</h3>
+<p>I wanted one mobile client to send both IPv4 and IPv6 traffic through home. A static IPv6 translation did not fit a provider prefix that can change, so I moved to NPTv6 using the tracked delegated prefix.</p>
+<p>I checked the effective firewall translation, external client addresses, DNS and permitted local access. A real upstream prefix rotation remains an open test.</p><p><a href="opnsense.html">WireGuard test results →</a></p></article>
+<article class="mini-card" id="portal"><h3>Keeping the guest portal reachable over IPv6</h3>
+<p>The guest portal's IPv6 address depends on the prefix assigned by the provider. I added an update path for its DNS AAAA record and checked the generated record against the active address.</p>
+<p>That established the update mechanism, but it was not a substitute for testing a future real prefix change.</p><p><a href="network-services.html">Guest network services →</a></p></article>
+<article class="mini-card" id="lldp"><h3>An LLDP management address that needed to survive updates</h3>
+<p>LLDP neighbors were visible, but the desired management-address advertisement also needed to survive service restarts and configuration regeneration. I added a startup/persistence hook and checked the advertised value.</p>
+<p>The distinction between a running setting and a persistent setting has been useful in other parts of the gateway too.</p><p><a href="switching-wireless.html">Switching and LLDP →</a></p></article>
+</div></section>
+<section id="client-incidents">
+<h2>Switching, certificates and clients</h2>
+<div class="two-col">
+<article class="mini-card" id="identity"><h3>Testing the second LDAPS server for real</h3>
+<p>FreeRADIUS had two directory endpoints configured. I made the primary controller unavailable and repeated the authentication checks instead of assuming failover would happen simply because a second server appeared in the configuration.</p>
+<p>The directory lookup continued through the second controller. The CA and enrollment service are separate dependencies with their own recovery needs.</p><p><a href="windows-ad-pki.html">AD CS and FreeRADIUS →</a></p></article>
+<article class="mini-card" id="dc-eap"><h3>Wired EAP-TLS on the domain controllers</h3>
+<p>A domain controller can need network access before it can contact the directory and certificate services involved in its usual authorization path. I had to separate the controller's bootstrap identity from ordinary computer authorization.</p>
+<p>After adjusting certificate selection and the relevant policies, I verified the wired authentication behavior against the switch and FreeRADIUS.</p><p><a href="windows-ad-pki.html">Domain controller EAP-TLS →</a></p></article>
+<article class="mini-card" id="omada-nd"><h3>IPv6 addresses that resolved in DNS but could not be reached</h3>
+<p>A domain controller answered through one IPv6 address but not through its manually configured address. Packet and switch-side checks pointed to Omada's IPv6 Neighbor Discovery inspection.</p>
+<p>Specific neighbor bindings restored the tested connections. Automatically learning new addresses after a prefix change remains a separate problem.</p><p><a href="switching-wireless.html">Switch and IPv6 investigation →</a></p></article>
+<article class="mini-card" id="android-scep"><h3>Android requested another certificate</h3>
+<p>Enrollment through the MDM SCEP profile worked, but applying the enterprise Wi-Fi payload could trigger a second request. I investigated the interaction between the certificate and Wi-Fi profiles while checking actual EAP-TLS access on the devices.</p>
+<p>The clients connected successfully. Cleaning up certificates that have been superseded is still on my list.</p><p><a href="linux-mobile-identity.html">Android and Linux clients →</a></p></article>
+<article class="mini-card" id="profile-migration"><h3>Windows signed in with a temporary profile after domain migration</h3>
+<p>While moving an existing Windows installation into Active Directory, the profile migration tool left a stale registry profile entry and an access problem with the user's profile data. Windows started a temporary desktop instead of the original one.</p>
+<p>I checked the profile service events, corrected the registry mapping and permissions, and verified that the usual desktop loaded again. The lesson was to preserve the old profile and diagnose the mapping before creating a new one.</p><p><a href="windows-policy-deployment.html#profile-migration">Windows domain migration →</a></p></article>
+<article class="mini-card" id="dc-logonui"><h3>Keyboard layouts missing at the Windows sign-in screen</h3>
+<p>On the second domain controller, the expected keyboard layouts were configured in parts of Windows but did not all appear at the sign-in screen. I compared the machine's language settings with the first controller and found that the interactive administrator profile differed.</p>
+<p>After updating that profile's language list and signing out, the missing layouts appeared. The scheduled configuration task still returned a nonzero status, so I kept a reboot-persistence check open instead of treating the task result as proof of failure or success.</p><p><a href="windows-policy-deployment.html">Windows policies and administration →</a></p></article>
+<article class="mini-card" id="wac"><h3>Windows Admin Center and HTTPS binding</h3>
+<p>When its HTTPS endpoint did not behave as expected, I checked the certificate and HTTP.sys listener/binding rather than treating the issue as a generic browser error. The corrected binding was part of the Windows administration setup.</p>
+<p>This was also a reminder that installing a trusted certificate and actually serving it are two different steps.</p><p><a href="windows-policy-deployment.html">Windows administration tools →</a></p></article>
+</div></section>
+<section id="services-incidents">
+<h2>NAS and infrastructure services</h2>
+<div class="two-col">
+<article class="mini-card" id="nas-ula"><h3>The NAS lost its IPv6 ULA</h3>
+<p>After network events, the NAS could lose the stable internal IPv6 address used by client DNS. An old interface-up hook was not enough to recover reliably.</p>
+<p>I replaced that approach with an idempotent recovery script, a systemd oneshot service and a periodic timer, then checked that the expected address returned.</p><p><a href="nas-services-operations.html">NAS networking →</a></p></article>
+<article class="mini-card" id="docker-route"><h3>A container chose the wrong network route</h3>
+<p>A reverse-proxy container attached to more than one Docker network picked up an unsuitable route and IPv6 address. I corrected the desired Compose network settings instead of relying on a temporary change inside the running container.</p>
+<p>That mattered for both reachability and predictable behavior after recreation.</p><p><a href="nas-services-operations.html">Docker and reverse proxy →</a></p></article>
+<article class="mini-card" id="ups"><h3>UPS monitoring would not start</h3>
+<p>Network UPS Tools could not find the attached USB UPS at first. The permissions on the USB device prevented access; after correcting the device handling, the service connected to the UPS.</p>
+<p>Another configuration change accidentally bound the service to addresses not present on the gateway. Correcting the listening addresses restored access. Neither test means every device has battery-backed power.</p><p><a href="security-operations.html">Monitoring and power →</a></p></article>
+</div></section>
+<section id="virtualization-incidents">
+<h2>Proxmox and virtual firewalls</h2>
+<div class="two-col">
+<article class="mini-card" id="lab"><h3>The lab WAN and VLAN path</h3>
+<p>An early DHCP problem needed checks at the virtual NIC, Proxmox bridge, tagged switch port and gateway, rather than repeatedly changing the guest firewall. I also had to correct DNS permissions for the lab segment.</p>
+<p>The relevant L2 path and selected gateway services were checked. A separate test matrix covers traffic that should be denied.</p><p><a href="lab-operational-method.html">How I test the lab →</a></p></article>
+<article class="mini-card" id="pve-ipv6"><h3>Proxmox lost IPv6 Router Advertisements</h3>
+<p>After moving the host to Linux bridges, IPv6 addressing needed attention: the normal forwarding/RA defaults did not give the management bridge the behavior I wanted.</p>
+<p>I adjusted the host interface settings and checked the live IPv6 path. Persistence across future network changes was left on the follow-up list.</p><p><a href="proxmox-host-storage.html">Proxmox host networking →</a></p></article>
+<article class="mini-card" id="zfs"><h3>Replacing the VM storage</h3>
+<p>Health checks on the old VM drives showed a storage problem I did not want to ignore. I inspected SMART and ZFS state, migrated the VM data to a replacement disk and brought the guests back up.</p>
+<p>The replacement is a single-disk ZFS pool, so recovering the guests was not the same thing as adding redundancy or testing an off-host restore.</p><p><a href="proxmox-host-storage.html">Storage migration →</a></p></article>
+<article class="mini-card" id="gpu"><h3>Intel passthrough, a missing EDID and a broken-looking desktop</h3>
+<p>Combining the passed-through Intel GPU with an additional virtual display adapter caused KWin hangs and page-flip errors. With the conflicting display removed, the KDE VM still needed a usable EDID to get Full HD.</p>
+<p>Providing the missing EDID solved the resolution problem. A separate KRDP image-quality setting and a KWallet interaction also needed attention.</p><p><a href="gpu-remote-desktop.html">GPU and KRDP tests →</a></p></article>
+<article class="mini-card" id="ipfire"><h3>IPFire was connected to the wrong upstream bridge</h3>
+<p>During the IPFire setup, the WAN-side virtual NIC initially used the wrong Proxmox bridge. Once that was corrected, the firewall obtained its upstream address and the lab client tests could proceed.</p>
+<p>Management, DHCP and a selected RDP port forward were verified afterward.</p><p><a href="virtual-firewall-platforms.html">Firewall platform comparisons →</a></p></article>
+</div></section>
+</div>
+<hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p>
+</main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Joining Kubuntu to Active Directory and using SCEP certificates for Android enterprise Wi-Fi.">
+  <title>Linux and Android on the Same PKI · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Client identity</p>
+<p class="kicker">KUBUNTU / ANDROID / SCEP</p>
+<h1>Linux and Android on the Same PKI</h1>
+<p class="lede">Getting certificate-based network access working on Windows was only part of the project. I also wanted Kubuntu and Android devices to join the same enterprise Wi-Fi without sharing a password, and each platform needed a different enrollment approach.</p>
+<div class="article">
+<h2>Kubuntu and Active Directory</h2>
+<p>I joined a Kubuntu workstation to the domain using realmd, SSSD and Kerberos, then checked domain account and group resolution. Wired and wireless NetworkManager profiles use managed EAP-TLS client certificates. I also set up certificate renewal automation and tested the resulting connection behavior.</p>
+<p>I kept a separate local administrator account so that a directory or network problem wouldn't leave me without a recovery path. The Linux setup also has its own login-session and WireGuard integration notes.</p>
+<h2>Android and managed certificates</h2>
+<p>For Android, I used mobile device management with SCEP enrollment through the internal NDES service. The managed profile installs the relevant trust material and a client identity, which Android can then use for EAP-TLS Wi-Fi. I tested that on multiple devices, including work-profile scenarios.</p>
+<p>One surprise was that applying the Wi-Fi configuration could trigger another SCEP request. I investigated that as part of the profile workflow rather than assuming Wi-Fi authentication was broken. The devices connected successfully.</p>
+<h2>Renewal and cleanup</h2>
+<p>On Kubuntu, I have a documented certificate renewal process. Android enrollment is working too, but I still want a cleaner way to retire older certificates after a replacement has been issued. That matters because a new certificate doesn't automatically revoke the old one.</p>
+<p>The Proxmox host has its own Active Directory and HTTPS integration; I cover that under <a href="proxmox-host-storage.html">the virtualization setup</a> rather than mixing it into the workstation enrollment story.</p>
+<p><a class="source-link" href="notes.html#android-scep">The extra Android SCEP request →</a> &nbsp; <a class="source-link" href="identity.html">How EAP-TLS works in BiXCore →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

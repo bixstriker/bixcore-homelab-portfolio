@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="An overview of certificate-based Wi-Fi and wired access across Windows, Linux and Android in BiXCore.">
+  <title>Network Access with Certificates · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Network identity</p>
+<p class="kicker">ACTIVE DIRECTORY / PKI / EAP-TLS</p>
+<h1>Network Access with Certificates</h1>
+<p class="lede">I wanted devices to identify themselves with certificates instead of sharing a Wi-Fi password. That meant making Active Directory, the certificate authority and FreeRADIUS work together for different client systems.</p>
+<div class="article">
+<h2>The setup</h2>
+<div class="two-col"><div class="mini-card"><h3>Directory services</h3><p>Two Windows Server 2025 domain controllers provide replicated Active Directory and DNS services, including LDAPS for directory lookups.</p></div><div class="mini-card"><h3>Certificates and RADIUS</h3><p>An enterprise CA issues device certificates. FreeRADIUS checks the certificate and applies the network access policy.</p></div></div>
+<h2>What worked in testing</h2>
+<ul>
+<li><strong>Wired and Wi-Fi EAP-TLS:</strong> supported clients authenticated using managed certificates.</li>
+<li><strong>LDAPS failover:</strong> I made the primary directory controller unavailable and checked that lookups continued through the second one.</li>
+<li><strong>Windows:</strong> auto-enrollment and wired authentication profiles were deployed and tested.</li>
+<li><strong>Linux:</strong> directory integration and certificate-based wired or wireless connections worked in the tested setup.</li>
+<li><strong>Android:</strong> managed devices received SCEP identities that they could use for enterprise Wi-Fi.</li>
+<li><strong>Revocation:</strong> I tested CRL updates and the resulting authentication behavior.</li>
+</ul>
+<h2>One important distinction</h2>
+<p>Two domain controllers help with directory availability, but they do not make the certification authority and SCEP enrollment service redundant. Those components still need their own recovery plan.</p>
+<p><a class="source-link" href="windows-ad-pki.html">More on AD CS, NDES and FreeRADIUS →</a> &nbsp; <a class="source-link" href="linux-mobile-identity.html">Linux and Android enrollment →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

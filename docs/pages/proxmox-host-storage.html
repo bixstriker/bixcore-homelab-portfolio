@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Dual-booting Proxmox and Windows, fixing host networking and migrating VM storage.">
+  <title>Building the Proxmox Host · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Proxmox</p>
+<p class="kicker">HYPERVISOR / STORAGE / NETWORKING</p>
+<h1>Building the Proxmox Host</h1>
+<p class="lede">I wanted a proper firewall lab but didn't want to dedicate another powerful computer to it full-time. The solution was to reuse an older desktop, keep Windows available and boot into Proxmox whenever I needed to test something.</p>
+<div class="article">
+<h2>Windows and Proxmox on the same PC</h2>
+<p>I installed Debian 13 and Proxmox VE 9.2 alongside the existing Windows 11 setup. Windows remains the normal boot choice; when I need the lab, a one-time UEFI BootNext request starts Proxmox instead. I tested the switch without attaching a keyboard or monitor.</p>
+<p>I later upgraded the CPU to an Intel Core i7-4790K and confirmed that VT-d/IOMMU was active on the running host. I also changed the Linux network configuration from the desktop-oriented NetworkManager setup to ifupdown2, which works better with Proxmox bridges.</p>
+<h2>Host networking and directory integration</h2>
+<p>The host's management network and the virtual firewalls' upstream traffic have different roles. Each firewall also gets its own virtual LAN for Windows and Linux test clients. That makes it possible to move a client between firewall systems without changing the everyday home gateway.</p>
+<p>I joined the Proxmox host to Active Directory with realmd and SSSD and installed a trusted management HTTPS certificate from the internal CA. IPv6 on the management bridge took extra work: I had to adjust how Linux handled Router Advertisements when forwarding and bridges were enabled.</p>
+<p>An early VLAN/DHCP problem needed checks on the physical switch, the tagged uplink, the Proxmox bridge and the guest NIC, not just changes inside the virtual router. <a href="notes.html#lab">I kept the troubleshooting sequence</a> for later firewall builds.</p>
+<h2>Replacing the VM storage</h2>
+<p>The first VM pool used two older HDDs without disk redundancy. After checking SMART and ZFS health, I decided to move the VM data to a replacement disk rather than keep using the unhealthy arrangement.</p>
+<p>I migrated the ZFS data, updated the Proxmox storage references, started the existing guests again and retired the old pool. The current setup uses a single 2 TB ZFS disk. It is suitable for an on-demand lab, but a disk failure would still require recovery from a separate backup.</p>
+<h2>What I want to improve</h2>
+<p>The remaining work is practical: an off-host restore test, more reboot and IPv6 checks, and a complete test of the network paths that should be blocked. I normally run only two or three VMs at a time, so I'm prioritizing reliability and low operating cost over building a permanent cluster.</p>
+<p><a class="source-link" href="notes.html#zfs">The storage incident →</a> &nbsp; <a class="source-link" href="virtual-firewall-platforms.html">Firewall systems I've tried →</a> &nbsp; <a class="source-link" href="gpu-remote-desktop.html">GPU passthrough →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

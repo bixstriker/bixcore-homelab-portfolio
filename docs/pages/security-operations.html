@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Keeping OPNsense running: updates, custom hooks, firewall-state problems, monitoring and UPS troubleshooting.">
+  <title>Keeping OPNsense Running · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Operations</p>
+<p class="kicker">OPNSENSE / MONITORING / RECOVERY</p>
+<h1>Keeping OPNsense Running</h1>
+<p class="lede">A firewall can look fine after an update and still have a broken background service or a stale routing state. I have spent almost as much time checking what survives a reboot as I have configuring the features themselves.</p>
+<div class="article">
+<h2>Updates and persistent configuration</h2>
+<p>My post-update checks cover internet routing, DHCP and DNS, IPv6 delegation, FreeRADIUS and certificate revocation, the guest portal, LLDP, WireGuard, Suricata and Zenarmor. I compare service status with actual client behavior or gateway state where practical.</p>
+<p>A standard OPNsense configuration backup doesn't contain every custom hook, cron job or NAS-side dependency I use. I keep a separate recovery list for RADIUS and CRL updates, LLDP settings, dynamic portal records and other local automation.</p>
+<h2>Issues I investigated</h2>
+<div class="two-col">
+<article class="mini-card"><h3>Invalid PF states after reboot</h3><p>Old policy-routing states pointed at an invalid gateway even though the active rules were correct. Removing those states stopped the repeated errors; I still need a permanent answer to the startup sequence.</p><p><a href="notes.html#pf-state">What I checked →</a></p></article>
+<article class="mini-card"><h3>WAN IPv6 source selection</h3><p>A provider-specific problem broke outbound traffic from one WAN IPv6 address. I compared explicit source addresses, applied a temporary workaround and later added a persistent recovery path.</p><p><a href="notes.html#ipv6">The IPv6 case →</a></p></article>
+<article class="mini-card"><h3>DNS and guest access after reconnects</h3><p>I investigated dynamic DNS updates that stopped after reboot and checked the generated guest portal IPv6 record separately.</p><p><a href="notes.html#ddns">The DDNS investigation →</a></p></article>
+<article class="mini-card"><h3>UPS monitoring</h3><p>Network UPS Tools initially failed to detect the USB UPS, and a later listener configuration also needed correction. I checked the actual UPS connection and power-test behavior.</p><p><a href="notes.html#ups">The UPS problems →</a></p></article>
+</div>
+<h2>Monitoring and resilience</h2>
+<p>I use service health checks and notification routing on the gateway, and collect metrics for the wider infrastructure. I have also configured a backup internet path, but failover still needs to be tested for individual services rather than assumed from the presence of a second uplink.</p>
+<p>Power protection has similar limits: I tested UPS communication and a controlled loss of mains power, but not every connected device has been confirmed to receive battery-backed power.</p>
+<h2>What remains open</h2>
+<p>The startup cause of the invalid PF states is still unresolved. I also want more complete tests following WAN reconnects, prefix changes, UPS events and gateway restarts, with the resulting observations added to the working notes.</p>
+<p><a class="source-link" href="notes.html">All troubleshooting cases →</a> &nbsp; <a class="source-link" href="roadmap.html">Current test plans →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

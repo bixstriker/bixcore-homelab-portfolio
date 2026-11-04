@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="What's next in BiXCore: firewall platforms, TLS inspection, IPv6-only networking, Wi-Fi, RADIUS and recovery tests.">
+  <title>What's Next · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / Plans</p>
+<p class="kicker">WHAT'S NEXT</p>
+<h1>Projects I'm planning</h1>
+<p class="lede">Some ideas come from things I still want to improve in the running network. Others are technologies I've been curious about for a while. This is the list I come back to when I have time to work on the lab.</p>
+<div class="article">
+<section id="network-followups"><h2>Getting more out of the current setup</h2>
+<div class="two-col">
+<article class="mini-card"><h3>IPv6 after a real prefix change</h3><p>WireGuard and NPTv6 work with the current delegated prefix. I want to see what happens when my provider changes it, including the DNS updates and what the mobile clients experience after reconnecting.</p><p><a href="opnsense-ipv6.html">Current IPv6 setup →</a></p></article>
+<article class="mini-card"><h3>Restoring services from backup</h3><p>I have backups and working recovery procedures for several systems. Next I want to restore individual NAS applications, the Proxmox guest data and the Windows certificate services in a controlled test, not just check that backup jobs have run.</p><p><a href="nas-services-operations.html">NAS work →</a></p></article>
+<article class="mini-card"><h3>Testing the paths that should be blocked</h3><p>The lab networks are separated through bridges and firewall rules. I want to go through the possible IPv4 and IPv6 paths systematically, including management access, VPNs and connections between virtual firewalls.</p><p><a href="lab-operational-method.html">Firewall tests so far →</a></p></article>
+<article class="mini-card"><h3>Certificate renewals and old device identities</h3><p>Windows, Kubuntu and managed Android devices can authenticate with certificates. I want to improve automatic replacement and revocation, especially when Android requests another SCEP identity while receiving a Wi-Fi profile.</p><p><a href="linux-mobile-identity.html">Client certificate work →</a></p></article>
+</div></section>
+<section id="commercial-firewalls"><h2>Other firewall and router systems</h2>
+<p>I've already tried several free or restricted virtual editions in Proxmox. I'd like to learn the full policy and management workflows of some commercial products, using the same Windows and Linux test clients. The available trials and features will determine what I can actually run.</p>
+<div class="two-col">
+<article class="mini-card"><h3>FortiGate-VM</h3><p>I've used the restricted free edition. A broader evaluation would let me spend more time with FortiGuard inspection, SD-WAN, VPN and VDOMs.</p></article>
+<article class="mini-card"><h3>Palo Alto VM-Series</h3><p>I want to learn PAN-OS zones, App-ID, security profiles and how policy decisions appear in the logs.</p></article>
+<article class="mini-card"><h3>Juniper vSRX</h3><p>Junos, security zones, routing, NAT and VPN behavior are the main reasons I want to try it.</p></article>
+<article class="mini-card"><h3>Check Point CloudGuard</h3><p>I'm interested in the separation between management, policy installation and inspection on the virtual gateway.</p></article>
+<article class="mini-card"><h3>SonicWall NSv</h3><p>Another opportunity to compare firewall administration, VPNs and threat-prevention policies.</p></article>
+<article class="mini-card"><h3>Cisco Catalyst 8000V</h3><p>This is a virtual router rather than a traditional NGFW. I'd use it to learn more about IOS XE, dynamic routing and WAN scenarios.</p></article>
+</div>
+<p>Of these, FortiGate-VM is already installed in its free edition. The wider evaluations are still on my list.</p></section>
+<section id="network-experiments"><h2>More ways to test the network</h2>
+<div class="two-col">
+<article class="mini-card"><h3>IPv6-only lab WAN</h3><p>I want a separate IPv6-only upstream for the virtual firewalls so I can test DNS, routing, application behavior and the workarounds different systems need without IPv4.</p></article>
+<article class="mini-card"><h3>A physical Wi-Fi test network</h3><p>A dedicated Cudy Wi-Fi 7 access point and real laptops and phones would be useful for captive portals, VLAN behavior, DHCP and enterprise Wi-Fi, without changing the regular home WLAN.</p></article>
+<article class="mini-card"><h3>RADIUS and PacketFence</h3><p>FreeRADIUS already handles EAP-TLS in the main network. I want to experiment with RADIUS integration in the lab, then explore what PacketFence adds for network access control.</p></article>
+<article class="mini-card"><h3>BGP and FRR</h3><p>I'd like to set up a small routing lab and watch how prefixes and routes change when a link or neighbor disappears.</p></article>
+</div></section>
+<section id="zenarmor-plans"><h2>More Zenarmor experiments</h2>
+<p>I already use Zenarmor on the OPNsense gateway and have tested policy-based blocking. There's more I want to investigate, especially how inspection behaves with encrypted traffic and what information its reports provide.</p>
+<div class="two-col">
+<article class="mini-card"><h3>TLS inspection</h3><p>Compare what the lightweight TLS inspection can see with a controlled full TLS decryption test, if that feature becomes available. I'm interested in client trust, pinned applications, QUIC and websites that should bypass decryption.</p></article>
+<article class="mini-card"><h3>Filtering policies and reporting</h3><p>Try different application and web-category policies on test clients, check exceptions and false positives, and compare live sessions and reports with what I see from the client.</p></article>
+<article class="mini-card"><h3>Interaction with Suricata</h3><p>Look at how Zenarmor's policy decisions and Suricata IPS events relate to the same controlled traffic, without treating the two engines as if they do identical jobs.</p></article>
+<article class="mini-card"><h3>Inspection performance</h3><p>Measure throughput, latency, loss and CPU use on the Intel N305 with and without inspection. If multi-core processing is available, repeat the measurements with the same traffic and policy settings.</p></article>
+</div>
+<p><a class="source-link" href="zenarmor.html">Zenarmor work and test ideas →</a> &nbsp; <a class="source-link" href="zenarmor-multicore.html">The performance test plan →</a></p></section>
+</div><hr class="rule"><p><a class="button secondary" href="../index.html">← Home</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

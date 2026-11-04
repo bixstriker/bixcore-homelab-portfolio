@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Using Group Policy for Windows management, WinRM, WireGuard automation and profile migration.">
+  <title>Windows Client Management with Group Policy · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Windows Server</p>
+<p class="kicker">GROUP POLICY / MANAGEMENT / AUTOMATION</p>
+<h1>Managing Windows with Group Policy</h1>
+<p class="lede">Once I joined more Windows machines to Active Directory, I wanted common settings and administration tools to follow them automatically. I use Group Policy to make that repeatable instead of configuring every PC from scratch.</p>
+<div class="article">
+<h2 id="profile-migration">Moving existing PCs into the domain</h2>
+<p>I didn't want to lose years of local user profiles while joining the Windows PCs to Active Directory. I used ForensiT User Profile Wizard to associate existing profiles with domain accounts, then checked that the desktop, applications and files still belonged to the right user.</p>
+<p>One migration wasn't smooth: Windows loaded a temporary profile because of an old ProfileList entry and permissions on the profile's user data. I corrected the registry mapping and file permissions, then verified that normal sign-in worked. I kept that recovery sequence in the working notes for future PC migrations.</p>
+<h2>Workstation policies</h2>
+<p>The policies cover domain organisation, managed local administrator passwords with Windows LAPS, machine certificate enrollment, wired EAP-TLS settings and selected user preferences. I also adjusted the domain password-aging policy and checked the resulting configuration on both domain controllers.</p>
+<h2 id="winrm-remoting">Remote administration</h2>
+<p>I configured Kerberos-based PowerShell remoting through WinRM and tested several workstation-to-workstation and workstation-to-server connections. That is separate from RDP access: the target still needs the right authorization rules for the task being performed.</p>
+<h2>Tools I deploy centrally</h2>
+<ul>
+<li><strong>PowerShell 7:</strong> a managed MSI installation after moving away from an earlier package approach that caused problems.</li>
+<li><strong>Sysinternals and RSAT:</strong> centrally distributed tools, with RSAT limited to the designated administration machine.</li>
+<li><strong>Windows Admin Center:</strong> HTTPS setup and certificate/HTTP.sys troubleshooting, not just installation of the web console.</li>
+<li><strong>Sysmon:</strong> installed with a managed configuration and scheduled deployment tasks; the events are useful for investigation, although I haven't built a complete SIEM.</li>
+<li><strong>RustDesk:</strong> a self-hosted support setup, with an MSI/GPO process that can install or update the client and refresh its configuration.</li>
+</ul>
+<h2 id="windows-wireguard">WireGuard that connects only when I'm away</h2>
+<p>On a Windows laptop, I set up WireGuard to start automatically when the machine is outside the home network and disconnect when it comes back. A PowerShell script checks the active physical network interfaces and is triggered by Windows startup and network-change events. The tasks run as SYSTEM, so the tunnel can come up before a user signs in.</p>
+<p>I tested home Wi-Fi and Ethernet, switching to a phone hotspot, returning home, a restart while away and manual control through the WireGuard app. The script also remembers the current network state so it doesn't immediately undo a manual disconnect. I did see overlapping connect events in the logs, which is worth checking further.</p>
+<h2>Problems and follow-up work</h2>
+<p>Some of these took a few iterations. The PowerShell installation method had to change, and <a href="notes.html#wac">Windows Admin Center needed its HTTPS listener checked</a>. The RustDesk deployment was exercised on both an existing installation and a fresh install, but the latter still had an outstanding GUI readiness check in the source notes.</p>
+<p>I also want to validate more combinations of source and destination for PowerShell remoting and keep checking that policy-driven installs behave correctly after a rebuild. Those are practical follow-up tests, not missing descriptions of the deployment itself.</p>
+<p><a class="source-link" href="windows-ad-pki.html">Active Directory and certificates →</a> &nbsp; <a class="source-link" href="windows-monitoring-backup.html">Windows monitoring and backups →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

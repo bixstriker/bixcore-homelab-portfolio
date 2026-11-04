@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="What I've tested with MikroTik CHR, pfSense, Sophos, VyOS, FortiGate, OpenWrt and IPFire in Proxmox.">
+  <title>Firewall and Router Systems I've Tried · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Proxmox</p>
+<p class="kicker">ROUTERS / FIREWALLS / PROXMOX</p>
+<h1>Firewall and Router Systems I've Tried</h1>
+<p class="lede">I use the same virtual Windows and Linux clients to get a feel for different firewall systems. My first goal with each product is simple: set up the WAN and LAN correctly, make client traffic work, then find out how its firewall rules and administration behave.</p>
+<div class="article">
+<h2>The common lab setup</h2>
+<p>Each firewall VM has a dedicated test upstream and its own virtual client network. I normally run one firewall with one or two clients, rather than all the products together. None of these experiments replaces my everyday OPNsense gateway.</p>
+<h2>What I have installed and tested</h2>
+<div class="table-wrap"><table><thead><tr><th>Platform</th><th>Work completed</th><th>Next things to try</th></tr></thead><tbody>
+<tr><td><strong>MikroTik CHR / RouterOS</strong></td><td>Set up the virtual interfaces, initial RouterOS configuration, LAN addressing and selected NAT/client access.</td><td>More firewall rules, routing protocols and VPN testing.</td></tr>
+<tr><td><strong>pfSense CE</strong></td><td>Configured WAN/LAN, DHCP, management access and NAT, then checked selected RDP forwards to the client VMs.</td><td>IPv6, IPS and a fuller inter-zone policy test.</td></tr>
+<tr><td><strong>Sophos Firewall Home</strong></td><td>Completed the initial setup and checked management and basic guest connectivity, including a working checkpoint.</td><td>Its security controls, authentication and policies.</td></tr>
+<tr><td><strong>VyOS Stream</strong></td><td>Worked through its CLI, client DHCP with fixed leases, outbound NAT and selected destination NAT rules.</td><td>More advanced routing, IPv6 and firewall policies.</td></tr>
+<tr><td><strong>FortiGate VM</strong></td><td>Used the restricted free edition for basic interfaces, management, time sync, virtual IPs and controlled client access.</td><td>A fuller evaluation, if I can get the appropriate license, including inspection, VPN and VDOMs.</td></tr>
+<tr><td><strong>OpenWrt x86-64</strong></td><td>Installed the VM, expanded the root filesystem and tested DHCP, NAT and selected management/forwarding access.</td><td>Additional routing and guest-network features.</td></tr>
+<tr><td><strong>IPFire</strong></td><td>Configured RED/GREEN interfaces, fixed an initial WAN bridge mistake and checked DHCP, the web interface and a selected RDP forward.</td><td>More policy, VPN and recovery tests.</td></tr>
+</tbody></table></div>
+<h2>What the tests taught me</h2>
+<p>Most of the early problems were about getting packets through the right interface. A virtual NIC connected to the wrong bridge can look like a DHCP or firewall problem, so I now check the host, switch and gateway before changing guest rules.</p>
+<p>Port forwarding is a useful way to verify a path, but it doesn't say much about what a firewall blocks. I want to make the next round more consistent: positive and negative access tests, IPv4 and IPv6, management security, restart behavior and eventually performance.</p>
+<h2>More platforms on the list</h2>
+<p>I'd like to try licensed versions of Palo Alto VM-Series, Juniper vSRX, Check Point CloudGuard, SonicWall NSv and FortiGate VM, plus Cisco Catalyst 8000V for routing. I also want to bring RADIUS, PacketFence and real Wi-Fi clients into the lab. These are plans, and access to commercial features will depend on the available trials.</p>
+<p><a class="source-link" href="roadmap.html">Complete list of planned tests →</a> &nbsp; <a class="source-link" href="lab-operational-method.html">How I test the platforms →</a> &nbsp; <a class="source-link" href="notes.html#ipfire">The IPFire bridge mistake →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

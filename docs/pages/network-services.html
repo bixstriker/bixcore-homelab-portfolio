@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="DNS, DHCP, AD forwarding, dynamic records, ACME certificates and guest services in my network.">
+  <title>DNS, DHCP and Public DNS · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Network</p>
+<p class="kicker">DNS / DHCP / DDNS / ACME</p>
+<h1>DNS, DHCP and Network Services</h1>
+<p class="lede">I wanted clients to get dependable DNS without making the Windows domain controllers responsible for every internet lookup. IPv6, guest access and certificate renewal added a few interesting requirements.</p>
+<div class="article">
+<h2>How DNS is arranged</h2>
+<p>OPNsense provides DHCPv4 and the local network's routing functions. AdGuard is the client-facing resolver where filtering is required, while Unbound handles its own DNS role and selected internal records. Queries for the Active Directory domain are forwarded to the directory DNS service.</p>
+<p>IPv6 clients learn their resolver information through Router Advertisements and RDNSS. I checked that the ordinary client and guest segments get the intended DNS behavior without relying on the same address family everywhere.</p>
+<h2>Public records and HTTPS certificates</h2>
+<p>Dynamic DNS updates external records as WAN addressing changes. ACME DNS-01 is used for certificate renewal where needed, while NAS reverse-proxy certificates have a separate maintenance step. I check certificate renewal and external service connectivity independently; one being successful does not automatically make the other work.</p>
+<h2>Guest access and network boot</h2>
+<p>The guest Captive Portal needs an IPv6 AAAA record that follows the guest network's current prefix. I added an update hook and compared the generated DNS record with the actual address. The mechanism worked in the recorded test, but a real provider prefix rotation still needs another check.</p>
+<p>For network boot, I use a NAS-hosted PXE/ISO service with ProxyDHCP in the appropriate client segment instead of replacing the gateway's normal DHCP service.</p>
+<h2>Problems I ran into</h2>
+<p>After a reboot, dynamic DNS stopped updating even though its service was running. The cause was upstream IPv6 reachability, not a missing DNS configuration. The <a href="notes.html#ddns">DDNS investigation</a> and the <a href="notes.html#ipv6">WAN source-address tests</a> explain how those two symptoms were connected.</p>
+<p>I also documented the <a href="notes.html#portal">guest portal's IPv6 record updates</a> and the <a href="notes.html#nas-ula">NAS DNS address disappearing</a> after a network event. These are separate problems with separate fixes.</p>
+<p><a class="source-link" href="opnsense-ipv6.html">Gateway and IPv6 →</a> &nbsp; <a class="source-link" href="nas-services-operations.html">NAS and Docker →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

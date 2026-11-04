@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Using Zenarmor on OPNsense: filtering tests and ideas for TLS inspection, reporting and performance.">
+  <title>Zenarmor on OPNsense · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Network security</p>
+<p class="kicker">OPNSENSE / TRAFFIC INSPECTION</p>
+<h1>Working with Zenarmor on OPNsense</h1>
+<p class="lede">I use Zenarmor alongside the firewall and Suricata on my OPNsense gateway. It started as another way to understand and control the traffic moving through the network. I want to explore the more advanced inspection features as well, using separate test clients.</p>
+<div class="article">
+<h2>What I've already tested</h2>
+<p>Zenarmor is running on the gateway, and I have checked that a test client was blocked by a restricted web-category policy. I also checked the engine and service state after an OPNsense update. Those tests showed that the configured policy was working in that situation.</p>
+<p>Suricata runs separately as the IPS. I've also triggered a controlled Suricata block, but that is a different test from Zenarmor's category filtering.</p>
+<h2>Encrypted connections</h2>
+<p>One area I'm particularly interested in is the difference between inspecting TLS connection metadata and decrypting HTTPS content. Lightweight inspection can work with information visible during the TLS handshake. Full TLS inspection goes further and needs the test client to trust an inspection CA.</p>
+<p>If I can use full TLS inspection in the lab, I'll try it on my own test devices. I want to see how the browser behaves, where certificate pinning causes problems, what changes with QUIC or encrypted client hello, and how to exclude sites that shouldn't be decrypted. The aim is to understand both the visibility it provides and the complications it introduces.</p>
+<h2>Policies and reports</h2>
+<p>I'd like to compare web-category rules, application filtering and exceptions across a few different test clients. I'd also like to understand how accurately the live-session view and reports explain why a connection was allowed or blocked.</p>
+<p>For controlled tests I can compare the client's result, Zenarmor's logs and, where relevant, Suricata events. That should make it easier to spot the difference between a rule behaving as expected and a client failing for some unrelated reason.</p>
+<h2>How much traffic can the gateway inspect?</h2>
+<p>The Intel N305 appliance has 10GbE interfaces, but the link speed doesn't tell me how much traffic Zenarmor can inspect. I want to establish a routing baseline, then compare throughput, latency and CPU use with inspection enabled. A multi-core comparison is another part of that work if the feature is available.</p>
+<p>There are no benchmark numbers yet. I keep the proposed measurements in a <a href="zenarmor-multicore.html">separate performance test plan</a> rather than mixing them into the results of the filtering tests I've already completed.</p>
+<p><a class="source-link" href="roadmap.html#zenarmor-plans">All Zenarmor plans →</a> &nbsp; <a class="source-link" href="opnsense-ipv6.html">OPNsense and IPv6 →</a> &nbsp; <a class="source-link" href="https://www.zenarmor.com/docs/opnsense/policies/tls-inspection-rules" rel="noopener noreferrer">Zenarmor TLS documentation →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

@@ -1,0 +1,11 @@
+name: Check public portfolio
+on: [push, pull_request]
+jobs:
+  safety-and-links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check content, links and Git history
+        run: python3 security/release_check.py

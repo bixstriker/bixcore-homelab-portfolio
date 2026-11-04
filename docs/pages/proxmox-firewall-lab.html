@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="How I built an isolated Proxmox firewall lab and what I plan to try with commercial systems and NAC.">
+  <title>The Virtual Firewall Lab · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Proxmox</p>
+<p class="kicker">VIRTUAL FIREWALLS / REAL CLIENT TESTS</p>
+<h1>The Virtual Firewall Lab</h1>
+<p class="lede">My Proxmox lab lets me work with firewall systems without replacing the OPNsense gateway I use every day. I can build a configuration, connect a Windows or Linux client, test the traffic and then move on to another platform.</p>
+<div class="article">
+<h2>How the lab works</h2>
+<p>Proxmox runs on a reused desktop with Debian 13. I have a dedicated upstream for the test firewalls and separate Linux bridges for their LAN interfaces. The same client VMs can be attached to the firewall being tested, so I don't need a large number of machines running at the same time.</p>
+<p>In the first round I installed and tried MikroTik CHR, pfSense CE, Sophos Firewall Home, VyOS, FortiGate VM, OpenWrt and IPFire. The tests covered boot and management, DHCP, DNS, outbound NAT and selected port forwards to a Windows or Linux client. I haven't yet put every product through an identical security and performance test suite.</p>
+<h2>Problems I encountered</h2>
+<p>The VLAN path for the lab WAN caused a DHCP investigation that went all the way from the gateway to the physical switch and the virtual NIC. I also corrected an upstream bridge mistake during the IPFire setup. Both are described in the <a href="notes.html#lab">troubleshooting notes</a>.</p>
+<h2>Where I want to go next</h2>
+<div class="two-col">
+<article class="mini-card"><h3>Commercial firewalls</h3><p>I would like to test Palo Alto VM-Series, Juniper vSRX, Check Point CloudGuard and SonicWall NSv, as well as a more fully licensed FortiGate VM. Cisco Catalyst 8000V is also on the list for routing and WAN experiments. These depend on trial images and licenses being available.</p><p><a href="roadmap.html">Commercial platform plans →</a></p></article>
+<article class="mini-card"><h3>RADIUS, 802.1X and NAC</h3><p>The real network already uses FreeRADIUS with certificate-based access. In the lab I want to test how firewall and access-control systems interact with RADIUS, then try PacketFence as a separate NAC project.</p><p><a href="roadmap.html">NAC and Wi-Fi plans →</a></p></article>
+<article class="mini-card"><h3>Real Wi-Fi clients</h3><p>A dedicated Cudy Wi-Fi 7 access point would let me try captive portals, VLANs, EAP-TLS and guest isolation with physical devices, without changing the main Wi-Fi setup.</p><p><a href="roadmap.html">Physical client tests →</a></p></article>
+<article class="mini-card"><h3>IPv6-only and routing protocols</h3><p>I also want a separate IPv6-only lab uplink and more routing experiments with BGP and FRR. The goal is a repeatable test, not just a successful installation.</p><p><a href="lab-operational-method.html">The common test checklist →</a></p></article>
+</div>
+<p>Before comparing products, I want to check unwanted access paths, management exposure, restarts and configuration recovery. A simple successful RDP port forward is a useful first test, not the end of the assessment.</p>
+<p><a class="source-link" href="virtual-firewall-platforms.html">What I tested on each firewall →</a> &nbsp; <a class="source-link" href="roadmap.html">Full list of planned experiments →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

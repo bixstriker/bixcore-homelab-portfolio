@@ -1,0 +1,24 @@
+# Operational material is never part of this portfolio
+.env
+.env.*
+*.docx
+*.pdf
+*.zip
+*.7z
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.der
+*.pcap
+*.pcapng
+*.log
+*.sqlite
+*.db
+config.xml
+__pycache__/
+.venv/
+node_modules/
+private/
+backups/

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="How I test virtual firewalls in Proxmox, from WAN and DHCP to NAT, isolation and recovery.">
+  <title>How I Test Firewalls in Proxmox · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Proxmox</p>
+<p class="kicker">TESTING / TROUBLESHOOTING / RECOVERY</p>
+<h1>How I Test Firewalls in Proxmox</h1>
+<p class="lede">When I install a new firewall, I don't try every feature at once. I start with a working WAN and LAN connection, test it from a client and build on that. Repeating the same steps makes it easier to spot what is different between products.</p>
+<div class="article">
+<h2>The first round of tests</h2>
+<ol>
+<li><strong>Boot and management:</strong> check the initial interfaces, how to reach the UI or CLI and whether management access is limited to the lab.</li>
+<li><strong>WAN:</strong> confirm DHCP or static addressing on the intended upstream, then check DNS and outbound connectivity.</li>
+<li><strong>LAN:</strong> connect a Windows or Linux VM, check DHCP/DNS and establish the default route.</li>
+<li><strong>NAT and forwarding:</strong> check outbound connections, then use a selected RDP or service port forward as a simple inbound test.</li>
+<li><strong>Policy:</strong> try traffic that should succeed and traffic that should be blocked. These negative checks are not complete for every platform yet.</li>
+<li><strong>Recovery:</strong> record what changes after restarting the firewall or restoring a snapshot, rather than assuming its runtime state is permanent.</li>
+</ol>
+<h2>What caused trouble</h2>
+<p>An early <a href="notes.html#lab">DHCP problem in the lab WAN</a> needed tests at the switch, gateway, Linux bridge and guest NIC. During the <a href="notes.html#ipfire">IPFire setup</a>, the WAN was initially attached to the wrong virtual bridge. Storage health and <a href="notes.html#gpu">KDE graphics problems</a> also turned into their own investigations.</p>
+<p>One lesson has been to distinguish basic network separation from full security isolation. Different Linux bridges make a useful lab layout, but I still need to test IPv4 and IPv6 paths toward all protected services.</p>
+<h2>The comparison I want to build</h2>
+<div class="table-wrap"><table><thead><tr><th>Area</th><th>What I want to check</th></tr></thead><tbody>
+<tr><td>Connectivity</td><td>WAN and client address assignment, DNS, IPv4/IPv6, routing and NAT</td></tr>
+<tr><td>Firewall behavior</td><td>Allowed and denied connections, state handling and logging</td></tr>
+<tr><td>Identity</td><td>RADIUS/802.1X where supported, certificates and management authentication</td></tr>
+<tr><td>Guest access</td><td>Captive portal behavior, session handling and IPv6 leakage</td></tr>
+<tr><td>Performance</td><td>Throughput, CPU use per core, latency and packet loss under comparable traffic</td></tr>
+<tr><td>Recovery</td><td>Restart behavior, configuration backup and restored functionality</td></tr>
+</tbody></table></div>
+<h2>Future test environment</h2>
+<p>I plan to add a dedicated IPv6-only upstream and a separate physical Wi-Fi access point. That would let me try captive portals, PacketFence, EAP-TLS and other NAC scenarios with real clients while keeping the normal home Wi-Fi out of the experiments. Commercial firewall evaluations are also on the <a href="roadmap.html">roadmap</a>, subject to trial and licensing conditions.</p>
+<p><a class="source-link" href="virtual-firewall-platforms.html">Firewall platforms tested so far →</a> &nbsp; <a class="source-link" href="notes.html">More troubleshooting notes →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

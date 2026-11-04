@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="My OPNsense gateway: network design, IPv6 routing, firewall tests and WireGuard remote access.">
+  <title>OPNsense and IPv6 · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Network security</p>
+<p class="kicker">FIREWALL / IPV6 / REMOTE ACCESS</p>
+<h1>OPNsense and IPv6</h1>
+<p class="lede">OPNsense is the main gateway for my home network. Alongside everyday routing and firewall rules, it handles WireGuard, Suricata, Zenarmor and the certificate-based network access setup.</p>
+<div class="article">
+<h2>How the network is organized</h2>
+<p>The gateway runs on an Intel N305 appliance with 10GbE interfaces. I use separate network segments for trusted clients, guest access and the firewall lab. FreeRADIUS ties supported wired and wireless connections to the certificate infrastructure.</p>
+<p>The interesting part has been keeping IPv4 and IPv6 behavior consistent. A dual-stack connection can appear healthy while the two protocols take different paths or fail for different reasons.</p>
+<h2>Tests that helped me understand it</h2>
+<ul>
+<li><strong>Suricata:</strong> I triggered a controlled IPS signature and checked that the firewall blocked it. This was a deliberate test, not an actual attack.</li>
+<li><strong>Zenarmor:</strong> I tested a restricted web category and confirmed that the configured policy denied access.</li>
+<li><strong>WireGuard:</strong> a mobile client successfully used a full IPv4/IPv6 tunnel, including DNS resolution and access to permitted local services. Other devices can use different tunnel profiles.</li>
+<li><strong>IPv6 prefix translation:</strong> I checked the active translation rule and the external IPv6 address seen by the client. Both matched the provider prefix in use at the time.</li>
+<li><strong>WAN source selection:</strong> when one global IPv6 source address could not reach the internet, I compared source-specific tests and worked out a recovery procedure.</li>
+</ul>
+<h2>What I am still testing</h2>
+<p>I have not yet seen this WireGuard/NPTv6 setup go through every possible provider prefix change and reboot sequence. I also want to run a complete set of negative tests between network segments, rather than rely only on the successful paths already checked.</p>
+<p>Zenarmor's multi-core performance is a separate experiment. The gateway has 10GbE interfaces, but I do not yet have inspection-throughput measurements to publish.</p>
+<p><a class="source-link" href="zenarmor.html">Read the Zenarmor test plan →</a> &nbsp; <a class="source-link" href="opnsense-ipv6.html">More about the network setup →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

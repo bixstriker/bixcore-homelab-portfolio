@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Managed switches, UniFi Wi-Fi, VLANs, EAP-TLS and the IPv6 Neighbor Discovery issues I investigated.">
+  <title>Switching, Wi-Fi and Network Discovery · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Network</p>
+<p class="kicker">SWITCHING / WI-FI / 802.1X</p>
+<h1>Switching, Wi-Fi and 802.1X</h1>
+<p class="lede">The switching and Wi-Fi side of BiXCore has been a good place to learn how the same network looks from three different directions: the client, the access point or switch, and the RADIUS server.</p>
+<div class="article">
+<h2>Switches and VLANs</h2>
+<p>I use managed Omada and Grandstream switches to separate client, guest, infrastructure and lab traffic. I checked tagged and untagged VLAN membership, port PVIDs and trunk behavior in the actual switch interfaces. Exported configuration data helped with cross-checking, but it did not replace looking at the live settings.</p>
+<p>The switches also gave me a chance to examine vendor-specific configuration formats and compare two devices without assuming their ports had identical roles.</p>
+<h2>Enterprise Wi-Fi and network access</h2>
+<p>The Wi-Fi setup uses managed UniFi access points and a locally hosted controller. For supported clients, access is authenticated using EAP-TLS certificates through FreeRADIUS rather than a shared password. Wired 802.1X adds another layer: devices such as domain controllers need careful handling so that network authentication doesn't depend on services they can't reach yet.</p>
+<p>I also investigated what could be learned from the controller backup format. Those investigations helped me understand the stored WLAN settings, but the running controller and actual client connections remain the more useful checks.</p>
+<h2>Three investigations I keep separate</h2>
+<div class="two-col">
+<article class="mini-card"><h3>IPv6 Neighbor Discovery</h3><p>One Windows domain controller had IPv6 addresses that resolved in DNS but could not be reached. The switch-side ND inspection behavior was part of the problem. Specific neighbor bindings restored the tested connections.</p><p><a href="notes.html#omada-nd">How I diagnosed it →</a></p></article>
+<article class="mini-card"><h3>LLDP after configuration changes</h3><p>Neighbor discovery worked, but I also wanted the correct management address to be advertised after startup and configuration regeneration. That required a persistent startup setting.</p><p><a href="notes.html#lldp">The LLDP fix →</a></p></article>
+<article class="mini-card"><h3>Wired certificate authentication</h3><p>Bringing infrastructure devices and domain controllers onto 802.1X required a different authorization path from ordinary workstations. I tested the final behavior against the switch and FreeRADIUS.</p><p><a href="notes.html#dc-eap">The EAP-TLS bootstrap issue →</a></p></article>
+</div>
+<h2>What I still want to check</h2>
+<p>The physical cabling inventory is not finished, and some IPv6 neighbor bindings still need a complete restart and prefix-change test. I'd also like to use a dedicated Wi-Fi access point with the Proxmox lab for separate captive-portal and NAC experiments.</p>
+<p><a class="source-link" href="identity.html">Certificate-based network access →</a> &nbsp; <a class="source-link" href="roadmap.html">Upcoming Wi-Fi tests →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

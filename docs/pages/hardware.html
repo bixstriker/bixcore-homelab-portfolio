@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="The network equipment, servers, NAS and test clients I use to build and explore my BiXCore homelab.">
+  <title>Hardware and Lab Setup · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Hardware</p>
+<p class="kicker">THE LAB</p>
+<h1>Hardware and lab setup</h1>
+<p class="lede">I built BiXCore gradually, reusing existing computers where I could and adding network equipment when I had a specific problem to solve. These are the systems behind the projects on this site.</p>
+<div class="article">
+<section><h2>Network and security</h2><div class="two-col">
+<article class="mini-card"><h3>OPNsense gateway</h3><p>An Intel N305 appliance with Intel X520/10GbE networking. It handles routing, network separation, WireGuard, Suricata, Zenarmor and FreeRADIUS.</p></article>
+<article class="mini-card"><h3>Managed switching</h3><p>A TP-Link Omada SG3210X-M2 and two Grandstream GWN7721 switches. I use them for VLANs, trunking, 802.1X experiments, LLDP and IPv6 troubleshooting.</p></article>
+<article class="mini-card"><h3>Wi-Fi</h3><p>Two UniFi U7 Pro XG access points, managed by a locally hosted controller. Enterprise Wi-Fi authentication is linked to the PKI and RADIUS setup.</p></article>
+<article class="mini-card"><h3>Power and backup connectivity</h3><p>An Eaton 3S UPS is connected to the firewall for power monitoring. I also have an LTE backup connection. Testing complete service recovery and failover is ongoing.</p></article>
+</div></section>
+<section><h2>Servers and storage</h2><div class="two-col">
+<article class="mini-card"><h3>Windows Server and PKI</h3><p>Two Windows Server 2025 domain controllers provide Active Directory and DNS. The enterprise CA and NDES enrollment service run on one of them; that distinction matters when planning recovery.</p></article>
+<article class="mini-card"><h3>NAS</h3><p>A UGREEN NASync DXP4800 hosts Docker-based infrastructure services, including DNS filtering, reverse proxy, controller applications and monitoring.</p></article>
+<article class="mini-card"><h3>Proxmox test host</h3><p>A reused Intel Core i7-4790K desktop with 32 GB of RAM, Debian 13 and Proxmox VE 9.2. It shares the machine with Windows through UEFI dual boot.</p></article>
+<article class="mini-card"><h3>Virtual machine storage and graphics</h3><p>The Proxmox lab uses a single 2 TB ZFS disk following a storage migration. Intel HD 4600 passthrough is used for KDE graphics experiments. The disk is not redundant.</p></article>
+</div></section>
+<section><h2>Test clients</h2><p>Windows and Linux virtual machines are my main test clients for DHCP, NAT, port forwarding, VPNs and remote desktop. I also use real wired and Android Wi-Fi clients when a feature needs physical hardware to validate it.</p>
+<p>This is the equipment relevant to the projects, rather than a complete list of every device in the house. The pages describe what each part was used for and link to the related tests.</p></section>
+<p><a class="source-link" href="roadmap.html">What I plan to test next →</a> &nbsp; <a class="source-link" href="work-index.html">Browse the projects →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="../index.html">← Home</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

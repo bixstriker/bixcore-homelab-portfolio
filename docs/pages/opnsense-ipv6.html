@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="What I built and tested on OPNsense: network separation, WireGuard, IPv6 translation and traffic inspection.">
+  <title>OPNsense, WireGuard and IPv6 · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Network</p>
+<p class="kicker">FIREWALL / IPV6 / VPN</p>
+<h1>OPNsense, WireGuard and IPv6</h1>
+<p class="lede">OPNsense is the centre of my network. Most days it quietly handles routing, firewall rules, VPN access and DNS. The interesting work starts when something behaves differently after a reboot or when IPv6 takes a different path from IPv4.</p>
+<div class="article">
+<h2>The network behind it</h2>
+<p>The gateway is an Intel N305 appliance with 10GbE interfaces. I use separate network segments for everyday clients, guests, managed devices and the Proxmox test environment. Suricata and Zenarmor inspect selected traffic, while FreeRADIUS works with the certificate infrastructure for supported wired and Wi-Fi devices.</p>
+<p>I have also set up policy routing, a commercial VPN connection for particular traffic, WireGuard for remote access, and dynamic DNS and certificate renewal for services that need them.</p>
+<h2>What I tested</h2>
+<ul>
+<li><strong>Firewall policy:</strong> selected access paths between network segments were checked from clients, not just in the rule editor.</li>
+<li><strong>Suricata and Zenarmor:</strong> a controlled IPS test produced a blocked event; a separate restricted-category request was denied by the configured Zenarmor policy.</li>
+<li><strong>WireGuard:</strong> I tested a mobile client with IPv4 and IPv6 routed through home, including DNS and access to permitted internal services. Other clients can keep split-tunnel profiles.</li>
+<li><strong>IPv6 NPTv6:</strong> I moved away from a static translation that could not follow changes to the upstream prefix. The new rule tracks the delegated prefix, and I checked the effective rule and the IPv6 address reported by the test client.</li>
+<li><strong>WAN source selection:</strong> when the ISP's SLAAC address stopped working as an outbound source, I compared it with the DHCPv6 address and added a recovery path for the observed failure.</li>
+</ul>
+<h2>Problems worth keeping notes about</h2>
+<p>The <a href="notes.html#pf-state">invalid PF route-to states</a> after a reboot were different from the <a href="notes.html#ipv6">WAN IPv6 source-address problem</a>. A <a href="notes.html#ddns">dynamic DNS failure</a> turned out to depend on the same IPv6 connectivity issue, and the <a href="notes.html#wireguard">WireGuard full-tunnel setup</a> needed its own prefix-translation solution. I keep them as separate investigations rather than one generic “IPv6 problem”.</p>
+<h2>Next checks</h2>
+<p>I still want to observe the NPTv6 setup during a real ISP prefix change, repeat the new behavior after a complete reboot and work through the remaining negative-path tests between network segments. The <a href="zenarmor.html">Zenarmor multi-core comparison</a> is planned separately; the 10GbE links are not an inspection-throughput measurement.</p>
+<p><a class="source-link" href="notes.html">Read the troubleshooting notes →</a> &nbsp; <a class="source-link" href="security-operations.html">Updates and gateway operations →</a> &nbsp; <a class="source-link" href="network-services.html">DNS and guest services →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

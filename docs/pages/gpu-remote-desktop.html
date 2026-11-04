@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="How I passed an Intel GPU through to a KDE VM, fixed Full HD and tested H.264 encoding and KRDP.">
+  <title>Intel iGPU Passthrough and Remote Desktop · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Proxmox</p>
+<p class="kicker">INTEL GRAPHICS / KDE / REMOTE DESKTOP</p>
+<h1>Intel GPU Passthrough and KRDP</h1>
+<p class="lede">I wanted a KDE virtual machine that could use the host's Intel graphics hardware and give me a usable Full HD remote desktop. It took several attempts to get the GPU, display mode and desktop session to cooperate.</p>
+<div class="article">
+<h2>Getting the Intel GPU into the VM</h2>
+<p>After the CPU upgrade and VT-d checks, I passed the Intel integrated GPU through to the Linux guest. The early attempts kept an additional virtual graphics adapter alongside the Intel device, which led to KWin hangs and page-flip timeouts.</p>
+<p>The stable arrangement uses the passed-through Intel GPU without a competing virtual display adapter.</p>
+<h2>Why the desktop stayed at low resolution</h2>
+<p>The guest could start, but it did not get a usable Full HD display mode. The kernel logs pointed to a missing EDID firmware file. I provided an EDID for 1920 × 1080 and made sure it was available during early boot. That fixed the resolution problem.</p>
+<p>KRDP then had two separate issues. A KWallet interaction affected login after enabling automatic desktop login, while the remote image quality setting was responsible for a poor-looking picture. Both were adjusted and the remote session worked after a reboot.</p>
+<h2>What I verified about hardware encoding</h2>
+<p>The Intel graphics device worked for the guest, and I independently tested <strong>hardware H.264 encoding through FFmpeg</strong>. KRDP also reported VA-API use, and remote desktop worked at Full HD.</p>
+<p>There is one measurement I couldn't make inside this VM: the virtual environment did not expose the GPU video-engine counters needed to see how much of KRDP's actual encoding workload went through Quick Sync. So hardware encoding capability is confirmed; per-frame KRDP hardware utilization was not measured.</p>
+<h2>What I would do differently</h2>
+<p>Next time I would first test the guest's display mode and EDID, then check the remote desktop settings, instead of changing several graphics devices together. The current lab setup also uses a convenience-oriented desktop login, which I would not copy unchanged to a more exposed machine.</p>
+<p><a class="source-link" href="notes.html#gpu">The graphics troubleshooting case →</a> &nbsp; <a class="source-link" href="proxmox-host-storage.html">The Proxmox host →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="How I record tests, track configuration changes and use longer working notes while developing BiXCore.">
+  <title>Working Notes and Testing · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Working notes</p>
+<p class="kicker">KEEPING TRACK OF THE LAB</p>
+<h1>How I keep my working notes</h1>
+<p class="lede">BiXCore didn't start with a finished design. I changed hardware, moved services, learned from failed configurations and sometimes replaced an earlier approach. My notes help me remember why a change was made and what worked afterward.</p>
+<div class="article">
+<section id="running-tested-planned"><h2>What is running, and what I have actually tested</h2>
+<p>I separate a configuration I know is present from a behavior I've tested. For example, having two LDAPS endpoints configured is useful, but I only described directory failover as working after disconnecting the primary and repeating authentication. Likewise, successful NAT and RDP tests on a firewall VM don't tell me everything about its IPS or isolation rules.</p>
+<p>Some entries in the project indexes describe the running setup, some record a specific test, and some are experiments I still want to try. The distinction matters most where an old plan later became a working feature.</p></section>
+<section id="checking-the-evidence"><h2>How I checked a problem</h2>
+<p>I usually start with what the client experiences, then compare it with the device configuration and whatever the logs or packet captures show. When IPv6 connectivity broke, selecting different WAN source addresses gave me a more useful answer than seeing a global IPv6 address assigned to the interface. When a firewall VM couldn't get an address, I checked the whole path through Proxmox, switching and the gateway.</p>
+<p>Live state matters because an exported configuration may not show a stale PF state, a generated FreeRADIUS bundle or a service that failed during startup. I keep the command output and detailed evidence separately, while the project articles explain the investigation and result.</p>
+<p><a href="notes.html">The troubleshooting cases →</a></p></section>
+<section id="changes-over-time"><h2>When an older note no longer describes the setup</h2>
+<p>Some of the longer documents started as installation notes and became a record of changes. For instance, the Proxmox storage arrangement described in an early chapter was replaced after a drive-health investigation. The newer tested state takes precedence; the old entry stays useful because it shows what led to the migration.</p>
+<p>The same applies to Windows certificate policies, domain controller integration and fixes that survived later updates. I try to keep the current setup at the front of each project article while leaving historical details in the source index.</p></section>
+<section id="keeping-source-files"><h2>Why the detailed files stay separate</h2>
+<p>The original working notes contain configurations, screenshots, backups and device-specific commands. They are useful for operating and restoring my network, but the website doesn't need to reproduce them to explain what I built. I use simplified diagrams and descriptions of the decisions and test results instead.</p>
+<p>I maintain the original documentation and recovery files separately and review anything new before adding it to the portfolio. The public articles link related work together without exposing the management side of the network.</p></section>
+<p><a class="source-link" href="network-v3.8.html">Network working notes →</a> &nbsp; <a class="source-link" href="windows-server-v2.6.html">Windows Server working notes →</a> &nbsp; <a class="source-link" href="proxmox-v1.6.html">Proxmox working notes →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>
