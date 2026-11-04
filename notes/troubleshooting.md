@@ -178,4 +178,20 @@ Management, DHCP and a selected RDP port forward were verified afterward.
 
 [Firewall platform comparisons →](../docs/pages/virtual-firewall-platforms.html)
 
+### DD-WRT: a UEFI kernel panic kept returning
+
+A reset exposed a persistent kernel panic: the bootloader referred to an outdated root device and filesystem format, even though the installed DD-WRT image used an ext4 root partition. The same bad arguments were embedded in a binary configuration template, so simply editing the generated GRUB file was not a durable fix.
+
+With backups and a snapshot available, I updated the boot configuration and made size-preserving replacements in the offline template. Setting the reboot method to UEFI solved the restart hang. Two further reboots succeeded, and the running kernel parameters matched the root filesystem. **Normal ACPI shutdown is still broken**, and a future firmware update could replace the patched executable.
+
+[DD-WRT on the firewall test page →](../docs/pages/virtual-firewall-platforms.html)
+
+### DD-WRT management vanished after failed SSH attempts
+
+SSH and WebGUI access from the administrator's workstation unexpectedly stopped working. Inspection of the blocklist and packet-filter rules showed that two failed SSH attempts had triggered DD-WRT's brute-force protection; this was not a VLAN, bridge or interface failure.
+
+I removed the affected runtime block in the lab and restored access, without globally disabling the protection. Existing blocklist entries may reapply after reboot until they expire.
+
+[DD-WRT platform notes →](../docs/pages/virtual-firewall-platforms.html)
+
 ---
