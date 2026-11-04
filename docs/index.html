@@ -50,7 +50,7 @@
   <article class="card"><h3>Switching and Wi-Fi</h3><p>Managed switches, VLANs, UniFi access points and 802.1X. Some of the most interesting work has been investigating LLDP and IPv6 Neighbor Discovery.</p><div class="card-end"><a href="pages/switching-wireless.html">Switching and Wi-Fi →</a></div></article>
   <article class="card"><h3>DNS, NAS and everyday services</h3><p>Client DNS, Active Directory lookups, certificates, Docker networking and services hosted on the NAS, including the work needed to recover them after changes.</p><div class="card-end"><a href="pages/network-services.html">Network services →</a></div></article>
   <article class="card"><h3>Windows and Linux administration</h3><p>Group Policy, certificate enrollment, remote management, deployment tools, Kubuntu integration and monitoring across the servers and workstations.</p><div class="card-end"><a href="pages/windows-policy-deployment.html">Windows administration →</a></div></article>
-  <article class="card"><h3>Proxmox firewall lab</h3><p>A separate test environment for RouterOS, pfSense, FortiGate, VyOS, Sophos, OpenWrt and IPFire, with Windows and Linux clients and an evolving test checklist.</p><div class="card-end"><a href="pages/proxmox-firewall-lab.html">The firewall lab →</a></div></article>
+  <article class="card"><h3>Proxmox firewall lab</h3><p>A separate Proxmox test environment with 11 router and firewall platforms, including NethSecurity, FreeSense, DD-WRT and OPNsense, plus Windows and Linux test clients.</p><div class="card-end"><a href="pages/proxmox-firewall-lab.html">The firewall lab →</a></div></article>
  </div>
  <p class="home-section-end">There is more detail on storage migration, GPU passthrough, monitoring, client enrollment and the individual firewall platforms in the <a href="pages/work-index.html">complete project list</a>.</p>
 </section>
@@ -66,12 +66,12 @@
  </div>
 </div></section>
 <section class="section wrap" id="notes">
- <div class="section-heading"><p class="kicker">TROUBLESHOOTING</p><h2>Problems I ran into</h2><p class="section-intro">Some of the most useful work came out of things that stopped working: an IPv6 address that couldn’t reach the internet, a switch blocking a domain controller, a failed storage pool. I’ve written up 21 cases, grouped by the part of the lab they affected. <a href="pages/notes.html">Browse all 21 troubleshooting cases →</a></p></div>
+ <div class="section-heading"><p class="kicker">TROUBLESHOOTING</p><h2>Problems I ran into</h2><p class="section-intro">Some of the most useful work came out of things that stopped working: an IPv6 address that couldn’t reach the internet, a switch blocking a domain controller, a failed storage pool. I’ve written up 21 cases, grouped by the part of the lab they affected. <a href="pages/notes.html">Browse all 23 troubleshooting cases →</a></p></div>
  <div class="two-col home-topic-grid">
   <article class="mini-card"><h3>OPNsense and IPv6</h3><p>WAN source selection, dynamic DNS failures, unexpected PF states, WireGuard/NPTv6, the guest portal and LLDP startup settings.</p><p><a href="pages/notes.html#network-incidents">Read network troubleshooting →</a></p></article>
   <article class="mini-card"><h3>Switching and client identity</h3><p>Omada Neighbor Discovery, domain-controller EAP-TLS, LDAPS failover, Android SCEP enrollment and Windows management issues.</p><p><a href="pages/notes.html#client-incidents">Read switching and identity cases →</a></p></article>
   <article class="mini-card"><h3>NAS and infrastructure services</h3><p>Recovering a missing IPv6 ULA, correcting Docker routes and getting UPS monitoring to work.</p><p><a href="pages/notes.html#services-incidents">Read service troubleshooting →</a></p></article>
-  <article class="mini-card"><h3>Proxmox and virtual machines</h3><p>VM networking and bridge mistakes, replacing storage, IPv6 Router Advertisements, Intel GPU passthrough and KRDP.</p><p><a href="pages/notes.html#virtualization-incidents">Read virtualization cases →</a></p></article>
+  <article class="mini-card"><h3>Proxmox and virtual machines</h3><p>VM networking and bridge mistakes, storage recovery, GPU passthrough and an unusual DD-WRT UEFI/GRUB boot repair.</p><p><a href="pages/notes.html#virtualization-incidents">Read virtualization cases →</a></p></article>
  </div>
  <p class="home-section-end">Each case has the symptoms, the checks I made and the fix or follow-up. <a href="pages/notes.html">See all 21 cases →</a></p>
 </section>
