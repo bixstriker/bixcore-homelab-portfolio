@@ -31,6 +31,7 @@
 <h2>What caused trouble</h2>
 <p>An early <a href="notes.html#lab">DHCP problem in the lab WAN</a> needed tests at the switch, gateway, Linux bridge and guest NIC. During the <a href="notes.html#ipfire">IPFire setup</a>, the WAN was initially attached to the wrong virtual bridge. Storage health and <a href="notes.html#gpu">KDE graphics problems</a> also turned into their own investigations.</p>
 <p>One lesson has been to distinguish basic network separation from full security isolation. Different Linux bridges make a useful lab layout, but I still need to test IPv4 and IPv6 paths toward all protected services.</p>
+<p>My November 2026 DD-WRT test added another important check: successful NAT is not enough if the guest cannot reboot cleanly. I traced a kernel panic to stale GRUB parameters regenerated from a binary template; a corrected UEFI reboot path passed two guest restarts. The guest still fails to shut down normally, and future firmware updates may overwrite the repair. <a href="notes.html#ddwrt-uefi">Read the DD-WRT case →</a></p>
 <h2>The comparison I want to build</h2>
 <div class="table-wrap"><table><thead><tr><th>Area</th><th>What I want to check</th></tr></thead><tbody>
 <tr><td>Connectivity</td><td>WAN and client address assignment, DNS, IPv4/IPv6, routing and NAT</td></tr>
