@@ -1,3 +1,7 @@
+# Earlier Proxmox index URL
+
+The maintained [Proxmox Master v1.7 index](proxmox-v1.7.md) is available here. This earlier file is preserved so existing links keep working.
+
 # Proxmox: Project Index
 
 These are the main tasks and experiments from building the Proxmox lab. Earlier installation notes are included alongside the later storage migration, firewall tests and GPU work.
