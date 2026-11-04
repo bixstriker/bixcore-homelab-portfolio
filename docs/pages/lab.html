@@ -20,10 +20,10 @@
 <p class="lede">I use Proxmox to try different routers and firewalls without changing the gateway that runs my everyday network. Windows and Linux clients make it possible to check the results from the other end of a connection.</p>
 <div class="article">
 <h2>How I built it</h2>
-<p>The host runs Debian 13 and Proxmox VE 9.2. Each active firewall has a lab-side uplink and its own virtual LAN, with test clients attached as needed. There are nine documented virtual machines, but I normally run only the ones required for a particular experiment.</p>
+<p>The host runs Debian 13 and Proxmox VE 9.2. Each active firewall has a lab-side uplink and its own virtual LAN, with test clients attached as needed. There are now 13 documented virtual machines (11 firewall/router systems and two client VMs), but I normally run only the ones required for a particular experiment.</p>
 <h2>Firewalls in the lab</h2>
-<p>I have worked with MikroTik CHR, pfSense CE, Sophos Firewall Home, VyOS, FortiGate VM, OpenWrt and IPFire. The first tests covered installation, management access, DHCP, DNS, NAT and selected port forwards. Coverage differs between the platforms; they have not all completed the same feature checklist.</p>
-<p>Other Proxmox projects include directory integration, trusted HTTPS, storage recovery and Intel iGPU passthrough for a Linux desktop.</p>
+<p>I have worked with MikroTik CHR, pfSense CE, Sophos Firewall Home, VyOS, FortiGate VM, OpenWrt, IPFire, NethSecurity, FreeSense, DD-WRT and a separate OPNsense Community guest. The first tests covered installation, management access, DHCP, DNS, NAT and selected port forwards. Coverage differs between the platforms; they have not all completed the same feature checklist.</p>
+<p>Other Proxmox projects include directory integration, trusted HTTPS, storage recovery and Intel iGPU passthrough for a Linux desktop. My latest DD-WRT experiment involved diagnosing a UEFI kernel panic and fixing a persistent GRUB template; reboot now works, but shutdown still needs investigation.</p>
 <h2>What still needs work</h2>
 <ul>
 <li>A consistent throughput and latency comparison.</li>
