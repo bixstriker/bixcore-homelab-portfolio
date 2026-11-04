@@ -18,9 +18,11 @@ Each firewall VM has a dedicated test upstream and its own virtual client networ
 | **OpenWrt x86-64** | Installed the VM, expanded the root filesystem and tested DHCP, NAT and selected management/forwarding access. | Additional routing and guest-network features. |
 | **IPFire** | Configured RED/GREEN interfaces, fixed an initial WAN bridge mistake and checked DHCP, the web interface and a selected RDP forward. | More policy, VPN and recovery tests. |
 | **NethSecurity 8.8** | Configured an isolated virtual LAN, DHCP, internet/NAT, management and two RDP forwards to Windows/Linux clients. | Policies, authentication and recovery. |
-| **FreeSense 1.1.11** | Installed on ZFS, recovered from an installation-media boot error, configured Kea DHCP and verified internet plus two RDP forwards. | IPv6 and management hardening. |
+| **FreeSense 1.1.11** | Installed on ZFS, recovered from an installation-media mountroot panic, configured Kea DHCP and verified internet plus two RDP forwards. | IPv6 and management hardening. |
 | **DD-WRT r66445 (x86-64)** | Tested WAN/LAN, DHCP, NAT, RDP, recovered a UEFI kernel panic, repaired the persistent boot template and validated two reboots. | ACPI shutdown and firmware-update persistence. |
 | **OPNsense Community 26.7 (lab VM)** | Deployed a separate virtual OPNsense and verified internet/NAT and two client RDP forwards. | IPv6, rules and isolation. |
+
+[FreeSense startup incident →](../docs/pages/notes.html#freesense-boot)
 
 ## DD-WRT: boot repair and remaining limitation
 
@@ -28,7 +30,7 @@ A reset exposed a mismatch between the bootloader's disk/filesystem arguments an
 
 A separate management-access incident was caused by SSH brute-force blocking after failed login attempts, not faulty routing. I inspected the guest blocklist and firewall rules before restoring access.
 
-[DD-WRT boot troubleshooting →](../docs/pages/notes.html#ddwrt-uefi) · [SSH access incident →](../docs/pages/notes.html#ddwrt-access)
+[DD-WRT boot troubleshooting →](../docs/pages/notes.html#ddwrt-uefi) · [Reboot hang →](../docs/pages/notes.html#ddwrt-reboot) · [SSH access incident →](../docs/pages/notes.html#ddwrt-access)
 
 ## What the tests taught me
 

@@ -178,11 +178,25 @@ Management, DHCP and a selected RDP port forward were verified afterward.
 
 [Firewall platform comparisons →](../docs/pages/virtual-firewall-platforms.html)
 
+### FreeSense started from the wrong boot medium
+
+After installing FreeSense with ZFS, the VM initially stopped with a mountroot panic. The installation ISO was still attached, so it wasn't starting from the installed system disk. Removing the installer from the boot path solved the problem. Kea DHCP, internet access and both RDP port forwards were checked afterward.
+
+[FreeSense tests →](../docs/pages/virtual-firewall-platforms.html)
+
+### DD-WRT could boot, but not reboot
+
+After fixing the root-device mismatch, DD-WRT still hung at “machine restart.” The image used a BIOS reboot setting, but the VM was running under OVMF/UEFI. I changed that setting in the GRUB configuration and in the template that can regenerate it. Two successive reboots worked.
+
+**Normal poweroff remains unresolved.** Neither the guest poweroff command nor Proxmox Shutdown completed a clean power-off in the documented tests.
+
+[DD-WRT tests →](../docs/pages/virtual-firewall-platforms.html)
+
 ### DD-WRT: a UEFI kernel panic kept returning
 
 A reset exposed a persistent kernel panic: the bootloader referred to an outdated root device and filesystem format, even though the installed DD-WRT image used an ext4 root partition. The same bad arguments were embedded in a binary configuration template, so simply editing the generated GRUB file was not a durable fix.
 
-With backups and a snapshot available, I updated the boot configuration and made size-preserving replacements in the offline template. Setting the reboot method to UEFI solved the restart hang. Two further reboots succeeded, and the running kernel parameters matched the root filesystem. **Normal ACPI shutdown is still broken**, and a future firmware update could replace the patched executable.
+With backups and a snapshot available, I updated the boot configuration and made size-preserving replacements in the offline template. A separate UEFI reboot problem also needed a fix. Two further reboots succeeded, and the running kernel parameters matched the root filesystem. **Normal ACPI shutdown is still broken**, and a future firmware update could replace the patched executable.
 
 [DD-WRT on the firewall test page →](../docs/pages/virtual-firewall-platforms.html)
 

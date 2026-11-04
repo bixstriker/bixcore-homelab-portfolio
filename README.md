@@ -11,7 +11,7 @@ I built BiXCore as a personal network and security lab. It lets me explore OPNse
 - **Infrastructure:** Managed switches and enterprise Wi-Fi, NAS services, Docker networking, monitoring and backups.
 - **Virtualization:** Proxmox, single-disk ZFS recovery, GPU passthrough, and 13 VMs: 11 firewall/router platforms plus Windows and Linux test clients.
 
-The site contains 23 troubleshooting cases, including a recent DD-WRT UEFI boot repair and an SSH management lockout. I have also kept [project articles](projects/), [diagrams](diagrams/) and [working-note indexes](inventory/) for people who prefer reading in GitHub.
+The site contains 25 troubleshooting cases, including a recent DD-WRT UEFI boot repair and an SSH management lockout. I have also kept [project articles](projects/), [diagrams](diagrams/) and [working-note indexes](inventory/) for people who prefer reading in GitHub.
 
 ## Where my networking experience started
 
