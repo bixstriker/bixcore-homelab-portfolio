@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
-  <meta name="description" content="Twenty-one troubleshooting cases from OPNsense, IPv6, Windows identity, switching, NAS and Proxmox.">
+  <meta name="description" content="Twenty-three troubleshooting cases from OPNsense, IPv6, Windows identity, switching, NAS and Proxmox.">
   <title>Problems and Fixes · BiXCore</title>
   <link rel="stylesheet" href="../styles.css">
 </head>
@@ -97,6 +97,12 @@
 <article class="mini-card" id="ipfire"><h3>IPFire was connected to the wrong upstream bridge</h3>
 <p>During the IPFire setup, the WAN-side virtual NIC initially used the wrong Proxmox bridge. Once that was corrected, the firewall obtained its upstream address and the lab client tests could proceed.</p>
 <p>Management, DHCP and a selected RDP port forward were verified afterward.</p><p><a href="virtual-firewall-platforms.html">Firewall platform comparisons →</a></p></article>
+<article class="mini-card" id="ddwrt-uefi"><h3>DD-WRT: a UEFI kernel panic kept returning</h3>
+<p>After a reset, the guest failed with a kernel panic because GRUB referred to the wrong root device and filesystem type. The installed image used an ext4 root partition, but boot arguments were still being generated for an older disk layout. Editing the current GRUB file was not enough: the stale values also lived in a compiled template inside DD-WRT's service executable.</p>
+<p>I corrected the boot configuration and applied equal-length substitutions to the offline binary template, with a backup and snapshot for recovery. Switching the reboot method to UEFI also fixed a restart hang. Two subsequent guest reboots succeeded and the active kernel arguments matched the installed filesystem. Normal ACPI shutdown is <strong>still unresolved</strong>, and an update may overwrite this unofficial patch.</p><p><a href="virtual-firewall-platforms.html">DD-WRT test results →</a></p></article>
+<article class="mini-card" id="ddwrt-access"><h3>DD-WRT management vanished after failed SSH attempts</h3>
+<p>During setup, SSH and the web interface became unreachable from the administrator's workstation. Instead of blaming the virtual bridge, I checked the appliance's blocklist and packet-filter rules. Two failed SSH attempts had triggered its brute-force protection and blocked that management source.</p>
+<p>Removing the corresponding runtime block restored access in the lab. A blocklist entry could be re-applied after reboot until it expires, so this was not a reason to disable brute-force protection globally. I kept access-recovery and management hardening as separate follow-ups.</p><p><a href="virtual-firewall-platforms.html">The DD-WRT guest →</a></p></article>
 </div></section>
 </div>
 <hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p>
