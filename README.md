@@ -13,6 +13,14 @@ I built BiXCore as a personal network and security lab. It lets me explore OPNse
 
 The site contains 21 troubleshooting cases. I have also kept [project articles](projects/), [diagrams](diagrams/) and [working-note indexes](inventory/) for people who prefer reading in GitHub.
 
+## Where my networking experience started
+
+My professional background is in electronic security systems, including video surveillance, access control and fire detection. Networking is part of that work: I integrate surveillance systems with Active Directory, configure switches, routers, firewalls and GSM modems, and troubleshoot IP connectivity between Axis cameras and video servers. BiXCore is where I take those interests further and test them independently.
+
+## Another personal project
+
+I also wrote a science-fiction story, **Seele der KI**, and built an [interactive book website](https://bixcore.de/) for it, with German, Russian and Ukrainian editions. If you read it, I'd be happy to hear your thoughts.
+
 ## What I want to explore next
 
 I have plans for more commercial firewall platforms, PacketFence and RADIUS integration, an IPv6-only test network, physical Wi-Fi clients, more Zenarmor filtering and TLS inspection experiments, and recovery testing. See the [roadmap](docs/pages/roadmap.html) for the full list.
