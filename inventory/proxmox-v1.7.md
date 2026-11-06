@@ -45,8 +45,8 @@ These are the 36 chapters and four appendices from my current Proxmox working no
 | 36 | PacketFence 15.2 inline guest portal, IPSet and DNS recovery | Guest access tested; 802.1X open | [PacketFence](../docs/pages/packetfence-nac.html) |
 | A | Read-only diagnostics for host, router and gateway | Methods retained | [Firewall test methods](../docs/pages/lab-operational-method.html) |
 | B | Network and VM configuration examples | Private source; sanitized design | [Proxmox host and storage](../docs/pages/proxmox-host-storage.html) |
-| D | Physical LAN hookscript (private source only; public design) | Implemented | [PhyLan1](../docs/pages/phylan1.html) |
 | C | Windows-to-Proxmox one-time reboot automation | Observed method | [Proxmox host and storage](../docs/pages/proxmox-host-storage.html) |
+| D | Physical LAN hookscript (private source only; public design) | Implemented | [PhyLan1](../docs/pages/phylan1.html) |
 
 Other cases: [FreeSense boot](../docs/pages/notes.html#freesense-boot), [DD-WRT boot](../docs/pages/notes.html#ddwrt-uefi), [DD-WRT reboot](../docs/pages/notes.html#ddwrt-reboot) and [SSH lockout](../docs/pages/notes.html#ddwrt-access).
 
