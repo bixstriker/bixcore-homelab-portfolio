@@ -1,8 +1,8 @@
-# Network: Project Index
+# Network Master v3.10: Project Index
 
 I keep detailed working notes for the network. This index links each section to the corresponding project write-up, from gateway configuration and DNS to switching, monitoring and the IPv6 problems I have worked through.
 
-The status column distinguishes running configurations, individual tests, earlier approaches and ideas that are not finished yet.
+The current revision covers OPNsense 26.7.8_2 and the tested local IPv6 interface-group alias. Earlier entries are kept as a dated history. The filename is retained for old links.
 
 | Section | Work | Status | Read more |
 | --- | --- | --- | --- |
@@ -34,6 +34,9 @@ The status column distinguishes running configurations, individual tests, earlie
 | G | Postboot review, guest restrictions and monitoring notifications | Observed / some open | [Gateway operations and fixes](../docs/pages/security-operations.html) |
 | H | Persistent workaround for provider IPv6 source-selection failure | Implemented / checked | [WAN IPv6 source problem](../docs/pages/notes.html#ipv6) |
 | I | Selected-client WireGuard full-tunnel IPv4/IPv6 and dynamic NPTv6 | Observed on one client | [WireGuard and NPTv6](../docs/pages/notes.html#wireguard) |
+
+| J | OPNsense 26.7.8_2 post-update audit, surviving hooks, NUT/LLDP/Zenarmor observations | Observed; some follow-ups open | [Gateway operations](../docs/pages/security-operations.html) |
+| K | Interface-derived IPv6 local networks, PF refresh and Guest/Core functional tests | Tested now; real prefix change not yet tested | [IPv6 isolation](../docs/pages/opnsense-ipv6.html) |
 
 ### How to use this index
 

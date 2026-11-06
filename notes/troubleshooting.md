@@ -4,6 +4,17 @@ Quite a few parts of BiXCore took more than one attempt. Some failures were caus
 
 ## OPNsense, WAN and IPv6
 
+### The new IPv6 alias started out empty
+
+I wanted the local IPv6 policy to follow the networks actually assigned to my interfaces, rather than a hard-coded prefix from my ISP. The interface group appeared in OPNsense, but the corresponding PF table initially had no members.
+
+I traced the difference between the interface-group Apply action and the alias refresh. Regenerating the filter templates and refreshing aliases fixed the table without changing firewall source code or flushing PF state. A Guest device could use IPv6 internet but not selected internal ULA or global addresses; a Core device could reach the same services.
+
+This is a test of the **current** prefix, not proof of automatic handling of a future provider renumbering.
+
+[IPv6 isolation →](../docs/pages/opnsense-ipv6.html)
+
+
 ### The wrong IPv6 source address
 
 My WAN had more than one global IPv6 address, but outbound connections behaved differently depending on which source I used. Tests with explicitly selected addresses showed that the provider's SLAAC address could not reach the same target that worked from the DHCPv6 IA\_NA address.
@@ -137,6 +148,19 @@ Another configuration change accidentally bound the service to addresses not pre
 [Monitoring and power →](../docs/pages/security-operations.html)
 
 ## Proxmox and virtual firewalls
+
+### PacketFence registered a guest, but IPSet still failed
+
+The Windows VM reached the captive portal and registered as a guest, yet outside HTTPS did not work. PacketFence generated an IP/MAC pair for a set that accepted IP addresses only, so rule loading failed. Codex and I traced the mismatch and applied a small local fix without bypassing the default filtering policy. The relevant upstream report is issue #9339.
+
+[PacketFence tests →](../docs/pages/packetfence-nac.html)
+
+### PacketFence's DNS proxy forwarded to itself
+
+After IPSet worked, external TCP/443 succeeded, but names resolved back to the portal. PacketFence was using its own DNS listener as an upstream forwarder. I changed the upstream while keeping PacketFence as the client DNS server. Afterward, HTTPS worked, and revoking/restoring guest registration correctly blocked/restored outside access.
+
+[PacketFence tests →](../docs/pages/packetfence-nac.html)
+
 
 ### The lab WAN and VLAN path
 

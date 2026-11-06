@@ -1,8 +1,8 @@
-# Proxmox Master v1.7: Project Index
+# Proxmox Master v1.9: Project Index
 
-These are the 32 chapters and three appendices from my current Proxmox working notes, including earlier setup work, the storage migration and newer firewall experiments.
+These are the 36 chapters and four appendices from my current Proxmox working notes, including earlier setup work, the storage migration and newer firewall experiments.
 
-**Updated 4 November 2026:** The lab contains 11 firewall/router VMs and two reusable clients. I installed and tested NethSecurity, FreeSense, DD-WRT and another OPNsense instance. The DD-WRT startup and restart problems are resolved, but clean shutdown is still open.
+**Updated 6 November 2026:** I now have 11 firewall/router VMs, two reusable clients and PacketFence NAC (14 VMs in total). The real Ethernet laptop works with the eleven firewalls through PhyLan1. PacketFence's virtual guest registration and access revocation work after an IPSet repair and a DNS correction. This legacy filename stays available for existing links.
 
 
 | Section | Work | Status | Read more |
@@ -39,8 +39,13 @@ These are the 32 chapters and three appendices from my current Proxmox working n
 | 30 | DD-WRT kernel panic, compiled GRUB template, UEFI reboot and SSH blocklist | Boot and reboot repaired; poweroff open | [DD-WRT incident](../docs/pages/notes.html#ddwrt-uefi) |
 | 31 | Separate OPNsense Community VM; WAN, LAN and NAT/DNAT tests | Verified selected IPv4 tests | [Firewall systems tested](../docs/pages/virtual-firewall-platforms.html) |
 | 32 | Final inventory, limitations and future testing | Current status / incomplete follow-ups | [Firewall test methods](../docs/pages/lab-operational-method.html) |
+| 33 | Firewall/router version updates and checks | Selected updates verified | [Tested platforms](../docs/pages/virtual-firewall-platforms.html) |
+| 34 | PhyLan1 physical test bridge, hookscript and multiple-VM disconnect | Confirmed with external laptop | [Physical LAN case study](../docs/pages/phylan1.html) |
+| 35 | End-to-end checks for eleven firewall/router VMs | Internet, RDP, laptop tested; complete isolation not proven | [Lab test method](../docs/pages/lab-operational-method.html) |
+| 36 | PacketFence 15.2 inline guest portal, IPSet and DNS recovery | Guest access tested; 802.1X open | [PacketFence](../docs/pages/packetfence-nac.html) |
 | A | Read-only diagnostics for host, router and gateway | Methods retained | [Firewall test methods](../docs/pages/lab-operational-method.html) |
 | B | Network and VM configuration examples | Private source; sanitized design | [Proxmox host and storage](../docs/pages/proxmox-host-storage.html) |
+| D | Physical LAN hookscript (private source only; public design) | Implemented | [PhyLan1](../docs/pages/phylan1.html) |
 | C | Windows-to-Proxmox one-time reboot automation | Observed method | [Proxmox host and storage](../docs/pages/proxmox-host-storage.html) |
 
 Other cases: [FreeSense boot](../docs/pages/notes.html#freesense-boot), [DD-WRT boot](../docs/pages/notes.html#ddwrt-uefi), [DD-WRT reboot](../docs/pages/notes.html#ddwrt-reboot) and [SSH lockout](../docs/pages/notes.html#ddwrt-access).
@@ -48,9 +53,9 @@ Other cases: [FreeSense boot](../docs/pages/notes.html#freesense-boot), [DD-WRT 
 ### How the setup changed
 
 - The installed VM numbers in the 4 November inventory replace the earlier planning numbers.
-- I normally run one firewall with one or two clients, rather than all 13 VMs together.
+- I normally run one firewall with one or two clients, rather than all 14 VMs together.
 - A previous storage arrangement was replaced by a **single-disk** ZFS pool after documented health observations. Storage migration and snapshots are not high availability or a proved external recovery plan.
 - Earlier virtual graphics paths are superseded by a later passthrough/EDID/KRDP solution. The final result does not prove all remote frames are hardware-encoded.
-- IPv6-only WAN tests, the physical test AP, PacketFence/NAC and full isolation checks are still on my list.
+- The first PacketFence captive-portal test and physical laptop port are working. IPv6-only WAN tests, the physical Wi-Fi AP, RADIUS/802.1X with PacketFence and full isolation checks are still open.
 
 ---
