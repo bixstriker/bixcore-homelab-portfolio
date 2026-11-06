@@ -50,7 +50,8 @@
   <article class="card"><h3>Switching and Wi-Fi</h3><p>Managed switches, VLANs, UniFi access points and 802.1X. Some of the most interesting work has been investigating LLDP and IPv6 Neighbor Discovery.</p><div class="card-end"><a href="pages/switching-wireless.html">Switching and Wi-Fi →</a></div></article>
   <article class="card"><h3>DNS, NAS and everyday services</h3><p>Client DNS, Active Directory lookups, certificates, Docker networking and services hosted on the NAS, including the work needed to recover them after changes.</p><div class="card-end"><a href="pages/network-services.html">Network services →</a></div></article>
   <article class="card"><h3>Windows and Linux administration</h3><p>Group Policy, certificate enrollment, remote management, deployment tools, Kubuntu integration and monitoring across the servers and workstations.</p><div class="card-end"><a href="pages/windows-policy-deployment.html">Windows administration →</a></div></article>
-  <article class="card"><h3>Proxmox firewall lab</h3><p>A separate Proxmox test environment with 11 router and firewall platforms, including NethSecurity, FreeSense, DD-WRT and OPNsense, plus Windows and Linux test clients.</p><div class="card-end"><a href="pages/proxmox-firewall-lab.html">The firewall lab →</a></div></article>
+  <article class="card"><h3>PacketFence and access control</h3><p>I built a separate NAC test VM and worked through two problems before I could test captive-portal registration, revocation and access recovery.</p><div class="card-end"><a href="pages/packetfence-nac.html">PacketFence lab →</a></div></article>
+  <article class="card"><h3>Proxmox firewall lab</h3><p>Eleven virtual firewall/router platforms, two reusable client VMs, a separate PacketFence NAC VM and a real laptop connected through my PhyLan1 test port.</p><div class="card-end"><a href="pages/proxmox-firewall-lab.html">The firewall lab →</a></div></article>
  </div>
  <p class="home-section-end">I also built <a href="pages/barox-config-tool.html">BiX Barox Config Tool</a> to study industrial-switch CLI, convert configuration exports and compare switch settings. There is more detail on storage migration, GPU passthrough and the individual firewall platforms in the <a href="pages/work-index.html">complete project list</a>.</p>
 </section>
@@ -66,20 +67,20 @@
  </div>
 </div></section>
 <section class="section wrap" id="notes">
- <div class="section-heading"><p class="kicker">TROUBLESHOOTING</p><h2>Problems I ran into</h2><p class="section-intro">Some of the most useful work came out of things that stopped working: an IPv6 address that couldn’t reach the internet, a switch blocking a domain controller, a failed storage pool. I’ve written up 25 cases, grouped by the part of the lab they affected. <a href="pages/notes.html">Browse all 25 troubleshooting cases →</a></p></div>
+ <div class="section-heading"><p class="kicker">TROUBLESHOOTING</p><h2>Problems I ran into</h2><p class="section-intro">Some of the most useful work came out of things that stopped working: an IPv6 address that couldn’t reach the internet, a switch blocking a domain controller, a failed storage pool. I’ve written up 28 cases, grouped by the part of the lab they affected. <a href="pages/notes.html">Browse all 28 troubleshooting cases →</a></p></div>
  <div class="two-col home-topic-grid">
-  <article class="mini-card"><h3>OPNsense and IPv6</h3><p>WAN source selection, dynamic DNS failures, unexpected PF states, WireGuard/NPTv6, the guest portal and LLDP startup settings.</p><p><a href="pages/notes.html#network-incidents">Read network troubleshooting →</a></p></article>
+  <article class="mini-card"><h3>OPNsense and IPv6</h3><p>WAN source selection, dynamic IPv6 aliases, DNS, PF states, WireGuard/NPTv6 and guest isolation.</p><p><a href="pages/notes.html#network-incidents">Read network troubleshooting →</a></p></article>
   <article class="mini-card"><h3>Switching and client identity</h3><p>Omada Neighbor Discovery, domain-controller EAP-TLS, LDAPS failover, Android SCEP enrollment and Windows management issues.</p><p><a href="pages/notes.html#client-incidents">Read switching and identity cases →</a></p></article>
   <article class="mini-card"><h3>NAS and infrastructure services</h3><p>Recovering a missing IPv6 ULA, correcting Docker routes and getting UPS monitoring to work.</p><p><a href="pages/notes.html#services-incidents">Read service troubleshooting →</a></p></article>
   <article class="mini-card"><h3>Proxmox and virtual machines</h3><p>VM networking and bridge mistakes, storage recovery, GPU passthrough and FreeSense boot recovery and DD-WRT boot, reboot and access problems.</p><p><a href="pages/notes.html#virtualization-incidents">Read virtualization cases →</a></p></article>
  </div>
- <p class="home-section-end">Each case has the symptoms, the checks I made and the fix or follow-up. <a href="pages/notes.html">See all 25 cases →</a></p>
+ <p class="home-section-end">Each case has the symptoms, the checks I made and the fix or follow-up. <a href="pages/notes.html">See all 28 cases →</a></p>
 </section>
 <section class="section architecture" id="roadmap"><div class="wrap">
  <div class="section-heading"><p class="kicker">WHAT'S NEXT</p><h2>What I’d like to try next</h2><p class="section-intro">There are several directions I want to take BiXCore: finishing recovery and IPv6 tests, learning other firewall platforms, and trying new security and networking features with real clients.</p></div>
  <div class="two-col home-topic-grid">
   <article class="mini-card"><h3>More firewall platforms</h3><p>Broader FortiGate tests and evaluation of Palo Alto VM-Series, Juniper vSRX, Check Point, SonicWall and Cisco virtual routing.</p></article>
-  <article class="mini-card"><h3>RADIUS, NAC and real Wi-Fi clients</h3><p>A dedicated access point for captive portals, EAP-TLS and PacketFence, plus BGP/FRR experiments in the virtual lab.</p></article>
+  <article class="mini-card"><h3>RADIUS, NAC and real Wi-Fi clients</h3><p>PacketFence captive-portal access works with a virtual client; next are 802.1X/EAP-TLS, real Wi-Fi clients and BGP/FRR.</p></article>
   <article class="mini-card"><h3>IPv6 and recovery</h3><p>An IPv6-only lab network, real provider prefix-change tests, stronger isolation checks and proper restores of important services.</p></article>
   <article class="mini-card"><h3>Zenarmor and encrypted traffic</h3><p>More work with web and application policies, TLS inspection, reporting and performance on the N305 gateway — including multi-core tests if the feature becomes available.</p><p><a href="pages/zenarmor.html">Zenarmor plans →</a></p></article>
  </div>

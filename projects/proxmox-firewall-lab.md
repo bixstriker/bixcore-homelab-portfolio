@@ -6,7 +6,7 @@ My Proxmox lab lets me work with firewall systems without replacing the OPNsense
 
 Proxmox runs on a reused desktop with Debian 13. I have a dedicated upstream for the test firewalls and separate Linux bridges for their LAN interfaces. The same client VMs can be attached to the firewall being tested, so I don't need a large number of machines running at the same time.
 
-As of 4 November 2026, I have 13 VMs: 11 firewall/router systems plus two test clients. NethSecurity 8.8, FreeSense 1.1.11, DD-WRT r66445 and a second, virtual OPNsense Community 26.7 joined the earlier MikroTik, pfSense, Sophos, VyOS, FortiGate, OpenWrt and IPFire systems. Each gets a separate virtual LAN and shares the isolated test upstream. I checked basic management, internet/NAT, DHCP and two client RDP forwards on the four newest platforms. More consistent negative-path and performance tests are still needed.
+As of 6 November 2026, I have 14 VMs: eleven firewall/router systems, two test clients and a separate PacketFence NAC VM. NethSecurity 8.8, FreeSense 1.1.11, DD-WRT r66445 and a second, virtual OPNsense Community 26.7 joined the earlier MikroTik, pfSense, Sophos, VyOS, FortiGate, OpenWrt and IPFire systems. Each gets a separate virtual LAN and shares the isolated test upstream. I checked basic management, internet/NAT, DHCP and two client RDP forwards on the four newest platforms. I also checked internet, selected RDP forwarding and an external Ethernet laptop with all eleven firewall/router systems. The <a href="../docs/pages/phylan1.html">PhyLan1</a> connection works only when one firewall is running. PacketFence uses a separate isolated virtual LAN and is <a href="../docs/pages/packetfence-nac.html">documented here</a>. More consistent negative-path and performance tests are still needed.
 
 ## Problems I encountered
 
@@ -22,7 +22,7 @@ I would like to test Palo Alto VM-Series, Juniper vSRX, Check Point CloudGuard a
 
 ### RADIUS, 802.1X and NAC
 
-The real network already uses FreeRADIUS with certificate-based access. In the lab I want to test how firewall and access-control systems interact with RADIUS, then try PacketFence as a separate NAC project.
+The real network already uses FreeRADIUS with certificate-based access. In the lab I want to test how firewall and access-control systems interact with RADIUS, and eventually integrate it with the PacketFence VM. Captive-portal guest tests are now working, but RADIUS/802.1X is still planned.
 
 [NAC and Wi-Fi plans →](../docs/pages/roadmap.html)
 
@@ -40,6 +40,6 @@ I also want a separate IPv6-only lab uplink and more routing experiments with BG
 
 Before comparing products, I want to check unwanted access paths, management exposure, restarts and configuration recovery. A simple successful RDP port forward is a useful first test, not the end of the assessment.
 
-[What I tested on each firewall →](../docs/pages/virtual-firewall-platforms.html)   [Full list of planned experiments →](../docs/pages/roadmap.html)
+[What I tested on each firewall →](../docs/pages/virtual-firewall-platforms.html)   [Physical Ethernet tests →](../docs/pages/phylan1.html)   [Full list of planned experiments →](../docs/pages/roadmap.html)
 
 ---

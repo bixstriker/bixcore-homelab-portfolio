@@ -18,11 +18,17 @@ Each firewall VM has a dedicated test upstream and its own virtual client networ
 | **OpenWrt x86-64** | Installed the VM, expanded the root filesystem and tested DHCP, NAT and selected management/forwarding access. | Additional routing and guest-network features. |
 | **IPFire** | Configured RED/GREEN interfaces, fixed an initial WAN bridge mistake and checked DHCP, the web interface and a selected RDP forward. | More policy, VPN and recovery tests. |
 | **NethSecurity 8.8** | Configured an isolated virtual LAN, DHCP, internet/NAT, management and two RDP forwards to Windows/Linux clients. | Policies, authentication and recovery. |
-| **FreeSense 1.1.11** | Installed on ZFS, recovered from an installation-media mountroot panic, configured Kea DHCP and verified internet plus two RDP forwards. | IPv6 and management hardening. |
+| **FreeSense 1.1.12** | Installed on ZFS, recovered from an installation-media mountroot panic, configured Kea DHCP and verified internet plus two RDP forwards. | IPv6 and management hardening. |
 | **DD-WRT r66445 (x86-64)** | Tested WAN/LAN, DHCP, NAT, RDP, recovered a UEFI kernel panic, repaired the persistent boot template and validated two reboots. | ACPI shutdown and firmware-update persistence. |
 | **OPNsense Community 26.7 (lab VM)** | Deployed a separate virtual OPNsense and verified internet/NAT and two client RDP forwards. | IPv6, rules and isolation. |
 
 [FreeSense startup incident →](../docs/pages/notes.html#freesense-boot)
+
+## November 6: update and real-client checks
+
+I updated MikroTik CHR to RouterOS 7.25.1, Sophos Firewall Home to SFOS 23.0 GA and IPFire to Core Update 205. DD-WRT stays on its tested build because of its local boot patch.
+
+I confirmed internet connectivity, RDP forwarding to my Windows/Linux test guests and an external laptop connection across all eleven firewall/router VMs. The laptop uses my [PhyLan1 bridge selector](../docs/pages/phylan1.html). These are practical basic connectivity checks, not full IPS, VPN or policy comparisons.
 
 ## DD-WRT: boot repair and remaining limitation
 
@@ -40,7 +46,7 @@ Port forwarding is a useful way to verify a path, but it doesn't say much about 
 
 ## More platforms on the list
 
-I'd like to try licensed versions of Palo Alto VM-Series, Juniper vSRX, Check Point CloudGuard, SonicWall NSv and FortiGate VM, plus Cisco Catalyst 8000V for routing. I also want to bring RADIUS, PacketFence and real Wi-Fi clients into the lab. These are plans, and access to commercial features will depend on the available trials.
+I'd like to try licensed versions of Palo Alto VM-Series, Juniper vSRX, Check Point CloudGuard, SonicWall NSv and FortiGate VM, plus Cisco Catalyst 8000V for routing. I also want to add RADIUS/802.1X integration to the already installed PacketFence VM, and bring real Wi-Fi clients into the lab. These are plans, and access to commercial features will depend on the available trials.
 
 [Complete list of planned tests →](../docs/pages/roadmap.html)   [How I test the platforms →](../docs/pages/lab-operational-method.html)   [The IPFire bridge mistake →](../docs/pages/notes.html#ipfire)
 

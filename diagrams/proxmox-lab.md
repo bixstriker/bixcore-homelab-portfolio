@@ -1,16 +1,19 @@
-# Proxmox firewall lab
-
-The lab has a dedicated IPv4 test upstream supplied by the main OPNsense gateway. Proxmox management stays on a separate interface, while each test firewall uses its own virtual client bridge.
+# Proxmox lab — firewall VMs and NAC
 
 ```mermaid
 flowchart TD
-    Main[Main OPNsense gateway] -->|Isolated test VLAN| WAN[Test upstream bridge]
-    PVE[Proxmox hypervisor] --- Mgmt[Separate management bridge]
-    WAN --> Routers[One selected firewall / router VM]
-    Routers -->|Its own virtual LAN| Clients[Windows / KDE Linux test clients]
-    Others[Other firewall VMs, powered off] -.-> WAN
+    Main[Main OPNsense gateway] -->|Restricted lab upstream VLAN| WAN[Test WAN bridge]
+    PVE[Proxmox host] --- Mgmt[Separate management bridge]
+    WAN --> FW[One selected firewall / router VM]
+    FW --> LAN[Its existing virtual LAN]
+    LAN --> Guests[Windows or KDE test clients]
+    Laptop[External Ethernet laptop] --- Phy[Dedicated physical bridge]
+    Phy -.->|Only when exactly one firewall VM runs| LAN
+    WAN --> NAC[PacketFence NAC VM]
+    NAC --> Inline[Separate isolated inline LAN]
+    Inline --> Win[Windows VM for NAC guest tests]
 ```
 
-I have 11 firewall/router systems and two client VMs, but normally run only the ones needed for a test. The four most recent firewall additions are NethSecurity, FreeSense, DD-WRT and a separate OPNsense Community instance.
+I have **14 VMs**: 11 firewall/router platforms, two reusable clients and one PacketFence NAC VM. The external laptop was tested across all eleven firewall platforms, using a Proxmox host hookscript to connect it to the active guest LAN. The physical port disconnects if two or more firewall VMs are running.
 
-I checked their management interfaces, outbound IPv4 connectivity and controlled RDP forwarding to the test clients. The complete negative-path isolation matrix, IPv6-only upstream and independent VM backup tests are still open.
+PacketFence is a separate virtual NAC test; it does **not** use that physical port. Captive-portal registration and guest access revocation work in the VM test, while RADIUS/802.1X and physical PacketFence clients remain untested. The full lab-to-core isolation matrix and independent VM backups are also open.

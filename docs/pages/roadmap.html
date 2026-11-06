@@ -21,7 +21,7 @@
 <div class="article">
 <section id="network-followups"><h2>Getting more out of the current setup</h2>
 <div class="two-col">
-<article class="mini-card"><h3>IPv6 after a real prefix change</h3><p>WireGuard and NPTv6 work with the current delegated prefix. I want to see what happens when my provider changes it, including the DNS updates and what the mobile clients experience after reconnecting.</p><p><a href="opnsense-ipv6.html">Current IPv6 setup →</a></p></article>
+<article class="mini-card"><h3>IPv6 after a real prefix change</h3><p>NPTv6 and the interface-derived IPv6 isolation aliases work with the current delegated prefix. I still need a real ISP prefix change to see whether those aliases refresh without intervention, and whether DNS, VPN and clients recover cleanly.</p><p><a href="opnsense-ipv6.html">Current IPv6 setup →</a></p></article>
 <article class="mini-card"><h3>Restoring services from backup</h3><p>I have backups and working recovery procedures for several systems. Next I want to restore individual NAS applications, the Proxmox guest data and the Windows certificate services in a controlled test, not just check that backup jobs have run.</p><p><a href="nas-services-operations.html">NAS work →</a></p></article>
 <article class="mini-card"><h3>Testing the paths that should be blocked</h3><p>The lab networks are separated through bridges and firewall rules. I want to go through the possible IPv4 and IPv6 paths systematically, including management access, VPNs and connections between virtual firewalls.</p><p><a href="lab-operational-method.html">Firewall tests so far →</a></p></article>
 <article class="mini-card"><h3>Certificate renewals and old device identities</h3><p>Windows, Kubuntu and managed Android devices can authenticate with certificates. I want to improve automatic replacement and revocation, especially when Android requests another SCEP identity while receiving a Wi-Fi profile.</p><p><a href="linux-mobile-identity.html">Client certificate work →</a></p></article>
@@ -40,8 +40,8 @@
 <section id="network-experiments"><h2>More ways to test the network</h2>
 <div class="two-col">
 <article class="mini-card"><h3>IPv6-only lab WAN</h3><p>I want a separate IPv6-only upstream for the virtual firewalls so I can test DNS, routing, application behavior and the workarounds different systems need without IPv4.</p></article>
-<article class="mini-card"><h3>A physical Wi-Fi test network</h3><p>A dedicated Cudy Wi-Fi 7 access point and real laptops and phones would be useful for captive portals, VLAN behavior, DHCP and enterprise Wi-Fi, without changing the regular home WLAN.</p></article>
-<article class="mini-card"><h3>RADIUS and PacketFence</h3><p>FreeRADIUS already handles EAP-TLS in the main network. I want to experiment with RADIUS integration in the lab, then explore what PacketFence adds for network access control.</p></article>
+<article class="mini-card"><h3>A physical Wi-Fi test network</h3><p>I already use a direct Ethernet laptop for firewall tests through PhyLan1. A dedicated Cudy Wi-Fi 7 access point would let me extend the isolated lab to phones and Wi-Fi clients for captive portals, VLAN behavior, DHCP and enterprise authentication.</p></article>
+<article class="mini-card"><h3>PacketFence beyond the captive portal</h3><p>I have <a href="packetfence-nac.html">PacketFence 15.2</a> working with one virtual guest client: I tested registration, loss of access and registration again. Next are RADIUS/802.1X, EAP-TLS, VLAN assignment and physical wired/Wi-Fi clients, plus checking the upstream fix after an update.</p></article>
 <article class="mini-card"><h3>BGP and FRR</h3><p>I'd like to set up a small routing lab and watch how prefixes and routes change when a link or neighbor disappears.</p></article>
 </div></section>
 <section id="zenarmor-plans"><h2>More Zenarmor experiments</h2>

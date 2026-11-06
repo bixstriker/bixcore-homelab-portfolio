@@ -41,7 +41,9 @@
 <tr><td>Performance</td><td>Throughput, CPU use per core, latency and packet loss under comparable traffic</td></tr>
 <tr><td>Recovery</td><td>Restart behavior, configuration backup and restored functionality</td></tr>
 </tbody></table></div>
+<h2>Testing with a real Ethernet laptop</h2>
+<p>I now use a <a href="phylan1.html">dedicated physical lab port</a> to connect an external laptop to the selected firewall's virtual LAN. The Proxmox hookscript removes the connection when two or more firewall VMs run; I tested this with both two and three guests. I also checked internet and RDP forwarding for all eleven platforms with the laptop path available. That is not a substitute for negative-path isolation tests.</p>
 <h2>Future test environment</h2>
-<p>I plan to add a dedicated IPv6-only upstream and a separate physical Wi-Fi access point. That would let me try captive portals, PacketFence, EAP-TLS and other NAC scenarios with real clients while keeping the normal home Wi-Fi out of the experiments. Commercial firewall evaluations are also on the <a href="roadmap.html">roadmap</a>, subject to trial and licensing conditions.</p>
+<p>I plan to add a dedicated IPv6-only upstream and a separate physical Wi-Fi access point. PacketFence's first virtual guest-portal tests now work; the future physical access point would let me try EAP-TLS, RADIUS and other NAC scenarios with real clients while keeping the normal home Wi-Fi out of the experiments. Commercial firewall evaluations are also on the <a href="roadmap.html">roadmap</a>, subject to trial and licensing conditions.</p>
 <p><a class="source-link" href="virtual-firewall-platforms.html">Firewall platforms tested so far →</a> &nbsp; <a class="source-link" href="notes.html">More troubleshooting notes →</a></p>
 </div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>
