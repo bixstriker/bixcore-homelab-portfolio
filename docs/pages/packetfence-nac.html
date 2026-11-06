@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="PacketFence 15.2 guest-registration lab: IPSet format failure, DNS forwarding loop and tested automatic network access control.">
+  <title>PacketFence: My First NAC Lab · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / PacketFence: My First NAC Lab</p>
+<p class="kicker">PERSONAL LAB / 6 NOVEMBER 2026</p><h1>PacketFence: My First NAC Lab</h1><p class="lede">I wanted to see what a NAC system actually does when a client registers through a portal, and what happens when I take its access away. Getting a Windows VM registered was easy compared with getting the policy to work.</p>
+<div class="article"><h2>The setup</h2>
+<p>I installed PacketFence 15.2 on Debian 12 in a separate Proxmox VM. It has an isolated IPv4 upstream and its own virtual client network with DHCP, DNS proxy, inline filtering, NAT and a captive portal. I started with a guest registration using a Null source, rather than attempting enterprise 802.1X immediately.</p>
+<p>The test client was another Windows VM. No physical cable or access point has been connected to this PacketFence network yet.</p>
+<h2>A guest was registered, but could not browse</h2>
+<p>Windows found the portal and completed registration, but outside HTTPS still failed. PacketFence's IPSet service was rejecting a generated entry: the registered-client set expected an IP address, but the rule contained an IP-and-MAC pair.</p>
+<p>I investigated the rule generation with Codex and applied a narrowly scoped local hotfix. It kept the original deny-by-default approach rather than adding a bypass rule. The format problem is also discussed in upstream <a href="https://github.com/inverse-inc/packetfence/issues/9339" rel="noopener noreferrer">issue #9339</a>. My installed build was not assumed to contain the upstream fix.</p>
+<h2>Then DNS pointed everything back to the portal</h2>
+<p>Once the IPSet service worked, TCP connections to external addresses succeeded, but normal website names kept resolving to the captive portal. The DNS proxy was forwarding queries back to its own listening address. I changed the upstream to the lab gateway while keeping PacketFence as the resolver for clients.</p>
+<p>With those two problems addressed, the Windows guest resolved public names and completed an HTTPS request with normal certificate validation.</p>
+<h2>What I tested</h2>
+<div class="table-wrap"><table><thead><tr><th>Action</th><th>Result</th></tr></thead><tbody>
+<tr><td>Guest registered</td><td>External TCP/443 and HTTPS browsing worked.</td></tr>
+<tr><td>Registration revoked</td><td>A new external connection was blocked and the portal appeared again.</td></tr>
+<tr><td>Guest registered again</td><td>Access returned automatically, without manually editing IPSet.</td></tr>
+<tr><td>PacketFence VM rebooted</td><td>IPSet, DNS and DHCP services recovered; guest membership, name resolution and HTTPS worked again.</td></tr>
+</tbody></table></div>
+<p>The admin proxy eventually became active after reboot, but I did not record a fresh GUI login. I also haven't rerun the full registration/revocation cycle after that reboot.</p>
+<h2>What comes next</h2>
+<p>My local fix can be overwritten by an update. I need to compare the next maintenance build with the upstream correction and repeat the tests. RADIUS, EAP-TLS/802.1X, VLAN assignment, isolation actions and physical clients are separate planned experiments, not achievements of this session.</p>
+<p><a class="source-link" href="notes.html#packetfence-ipset">The IPSet incident →</a> &nbsp; <a class="source-link" href="notes.html#packetfence-dns">The DNS incident →</a> &nbsp; <a class="source-link" href="roadmap.html">Next tests →</a></p></div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

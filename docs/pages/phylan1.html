@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="A Proxmox hookscript gives one running virtual firewall an external laptop, disconnecting the test port when multiple firewall VMs are active.">
+  <title>PhyLan1: A Physical Client for the Firewall Lab · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / PhyLan1: A Physical Client for the Firewall Lab</p>
+<p class="kicker">PERSONAL LAB / 6 NOVEMBER 2026</p><h1>PhyLan1: A Physical Client for the Firewall Lab</h1><p class="lede">I wanted to test each virtual firewall with a real laptop over Ethernet, without adding a physical NIC to every VM or changing each guest's network setup. I made the Proxmox host switch one dedicated test port between the existing virtual LANs.</p>
+<div class="article"><h2>How it works</h2>
+<p>The host's dedicated test NIC belongs to a Linux bridge with no host IP address or gateway. A temporary virtual Ethernet pair joins that bridge to the LAN bridge of the selected firewall. The firewall's upstream remains on the isolated lab VLAN behind my main OPNsense gateway.</p>
+<p>The laptop receives its network settings from whichever firewall is active. No extra NIC or bridge is installed inside any firewall VM.</p>
+<h2>One firewall at a time</h2>
+<div class="table-wrap"><table><thead><tr><th>Running firewall VMs</th><th>Physical test port</th></tr></thead><tbody>
+<tr><td>Zero</td><td>No connection to a guest LAN</td></tr>
+<tr><td>Exactly one</td><td>Connected to that firewall's existing LAN bridge</td></tr>
+<tr><td>Two or three</td><td>Disconnected from all guest LANs</td></tr>
+</tbody></table></div>
+<p>The Proxmox hookscript reacts to normal VM start and stop events and uses a lock so two events cannot rearrange the bridge at the same time. I didn't need to modify MikroTik, pfSense, Sophos or any of the other guests for this.</p>
+<h2>What I checked on 6 November</h2>
+<p>I tested the external Ethernet laptop with all eleven firewall/router platforms, and confirmed internet access and RDP forwarding to the reusable Windows and Linux clients in the same round of tests. These are user-confirmed end-to-end results, not a new packet capture for every platform.</p>
+<p>I also checked a changeover between two guests, the start of a second guest, and three firewall VMs running together. The port disconnected when more than one firewall was active and reconnected after only one remained.</p>
+<h2>Limits I haven't solved yet</h2>
+<p>This protects the physical port during normal Proxmox events; it isn't a complete network-isolation audit. There is no watchdog yet for a VM process that exits without its normal stop hook. The port should only be connected directly to the test laptop or to a dedicated, isolated access point — never to my regular home switch, where guest DHCP servers would cause trouble.</p>
+<p><a class="source-link" href="proxmox-firewall-lab.html">The virtual firewall lab →</a> &nbsp; <a class="source-link" href="lab-operational-method.html">Test methods →</a> &nbsp; <a class="source-link" href="roadmap.html">Remaining work →</a></p></div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

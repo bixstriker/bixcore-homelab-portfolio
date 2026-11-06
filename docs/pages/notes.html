@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
-  <meta name="description" content="Twenty-five troubleshooting cases from OPNsense, IPv6, Windows identity, switching, NAS and Proxmox.">
+  <meta name="description" content="Twenty-eight troubleshooting cases from OPNsense, IPv6, Windows identity, switching, NAS and Proxmox.">
   <title>Problems and Fixes · BiXCore</title>
   <link rel="stylesheet" href="../styles.css">
 </head>
@@ -22,7 +22,9 @@
 <section id="network-incidents">
 <h2>OPNsense, WAN and IPv6</h2>
 <div class="two-col">
-<article class="mini-card" id="ipv6"><h3>The wrong IPv6 source address</h3>
+<article class="mini-card" id="dynamic-ipv6-alias"><h3>My new IPv6 alias had an empty PF table</h3>
+<p>I replaced a static provider prefix with a set derived from the real local interfaces. The interface group appeared correctly, but its PF alias was empty after the first Apply.</p>
+<p>Regenerating the normal filter templates and refreshing aliases populated the table. Guest clients still reached IPv6 internet but could not reach internal services; a core client could. A real provider-prefix change has not happened since this migration.</p><p><a href="opnsense-ipv6.html">The new IPv6 isolation →</a></p></article><article class="mini-card" id="ipv6"><h3>The wrong IPv6 source address</h3>
 <p>My WAN had more than one global IPv6 address, but outbound connections behaved differently depending on which source I used. Tests with explicitly selected addresses showed that the provider's SLAAC address could not reach the same target that worked from the DHCPv6 IA_NA address.</p>
 <p>I added a recovery mechanism for the observed source-selection problem. Provider reconnects and future prefix changes still need watching.</p><p><a href="opnsense-ipv6.html">OPNsense and IPv6 →</a></p></article>
 <article class="mini-card" id="ddns"><h3>Dynamic DNS stopped updating after a reboot</h3>
@@ -82,7 +84,12 @@
 <section id="virtualization-incidents">
 <h2>Proxmox and virtual firewalls</h2>
 <div class="two-col">
-<article class="mini-card" id="lab"><h3>The lab WAN and VLAN path</h3>
+<article class="mini-card" id="packetfence-ipset"><h3>PacketFence registered the guest, but IPSet failed</h3>
+<p>Windows completed captive-portal registration, yet outside HTTPS remained blocked. The PacketFence rule generator supplied an IP-and-MAC pair to an IP-only set, which caused the IPSet restore step to fail.</p>
+<p>After tracing the mismatch with Codex, I applied a small local fix and tested guest access without adding a bypass rule. The patch still needs to be checked after any future upgrade.</p><p><a href="packetfence-nac.html">The PacketFence investigation →</a></p></article>
+<article class="mini-card" id="packetfence-dns"><h3>PacketFence's DNS proxy forwarded back to itself</h3>
+<p>With IPSet repaired, external TCP/443 worked, but ordinary web names still resolved to the captive portal. The configured DNS forwarder pointed at the proxy's own listening address.</p>
+<p>I changed the upstream resolver while preserving PacketFence as the DNS server for clients. Normal DNS and verified HTTPS worked; revoking and restoring guest registration then blocked and restored outside connections as intended.</p><p><a href="packetfence-nac.html">DNS and access-control tests →</a></p></article><article class="mini-card" id="lab"><h3>The lab WAN and VLAN path</h3>
 <p>An early DHCP problem needed checks at the virtual NIC, Proxmox bridge, tagged switch port and gateway, rather than repeatedly changing the guest firewall. I also had to correct DNS permissions for the lab segment.</p>
 <p>The relevant L2 path and selected gateway services were checked. A separate test matrix covers traffic that should be denied.</p><p><a href="lab-operational-method.html">How I test the lab →</a></p></article>
 <article class="mini-card" id="pve-ipv6"><h3>Proxmox lost IPv6 Router Advertisements</h3>
