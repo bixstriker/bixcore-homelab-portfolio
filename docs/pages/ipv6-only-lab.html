@@ -22,6 +22,28 @@
 <h2>Starting with a separate network</h2>
 <p>The gateway is my regular OPNsense appliance, but VLAN41 is a dedicated laboratory segment. I left the existing home networks alone and carried the new tag across three managed switches to two UniFi Wi-Fi 7 access points and the Proxmox uplink. The test SSID uses the isolated VLAN; it doesn't reuse the main enterprise Wi-Fi configuration.</p>
 <p>There's no IPv4 address, gateway or DHCPv4 service on this VLAN. A Windows client may still generate a link-local IPv4 address for itself, but that doesn't give it an IPv4 route to the internet.</p>
+<h2>The lab at a glance</h2>
+<div class="architecture-display" role="group" aria-label="Simplified IPv6-only lab topology: OPNsense, three managed switches, UniFi Wi-Fi clients and a Proxmox test uplink">
+  <div class="arch-node focus">OPNsense IPv6-only gateway
+    <small style="display:block;margin-top:6px">Router Advertisements · Kea DHCPv6 · DNS64 and Tayga NAT64</small>
+  </div>
+  <div class="arch-line" aria-hidden="true"></div>
+  <div class="arch-node">Managed VLAN41
+    <small style="display:block;margin-top:6px">Tagged across three switches</small>
+  </div>
+  <div class="arch-line" aria-hidden="true"></div>
+  <div class="two-col" style="gap:12px">
+    <div class="mini-card">
+      <h3>UniFi Wi-Fi 7</h3>
+      <p>Two test access points. Windows and Android clients have been tested with native IPv6 and NAT64.</p>
+    </div>
+    <div class="mini-card">
+      <h3>Proxmox uplink</h3>
+      <p>VLAN tag is available to the lab. Prefix delegation and downstream clients behind a virtual router are not tested yet.</p>
+    </div>
+  </div>
+</div>
+<p class="muted">Simplified public view of the tested network, not a physical port map.</p>
 <h2>How the IPv6 side works</h2>
 <div class="table-wrap"><table><thead><tr><th>Part</th><th>What I set up</th><th>What I checked</th></tr></thead><tbody>
 <tr><td>OPNsense interface</td><td>Dynamic global IPv6 addressing from the ISP's delegated space, plus a separate local ULA prefix</td><td>Live addresses and the interface state</td></tr>

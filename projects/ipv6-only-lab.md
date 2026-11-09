@@ -5,6 +5,25 @@
 
 I wanted a real IPv6-only test network rather than a demonstration on a single computer. I put a separate VLAN through three managed switches, both UniFi test access points and the Proxmox uplink. The production enterprise Wi-Fi and everyday Core/Guest networks were left in place.
 
+## Network layout
+
+```mermaid
+flowchart TD
+    Gateway["OPNsense: RA, Kea DHCPv6, DNS64 and NAT64"]
+    Switches["VLAN41 across three managed switches"]
+    WiFi["Two UniFi Wi-Fi 7 test APs"]
+    Clients["Windows and Android clients — tested"]
+    Proxmox["Proxmox VLAN41 uplink"]
+    Router["Virtual router and downstream IPv6 prefix — not tested"]
+    Gateway --> Switches
+    Switches --> WiFi
+    WiFi --> Clients
+    Switches --> Proxmox
+    Proxmox -.-> Router
+```
+
+The dotted connection is planned testing, not a verified delegated prefix. This is a functional overview, not a cabling or management-address map.
+
 ## What I implemented
 
 - A dedicated OPNsense VLAN interface with no routable IPv4 configuration, dynamic global IPv6 addressing and a local ULA prefix.
