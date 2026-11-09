@@ -15,6 +15,14 @@ This is a test of the **current** prefix, not proof of automatic handling of a f
 [IPv6 isolation →](../docs/pages/opnsense-ipv6.html)
 
 
+### LTE stayed down after an OPNsense reboot
+
+During the IPv6 lab work, the backup LTE modem did not bring its PPP link back after a gateway restart. A first device reset and interface reconfiguration did not restore usable connectivity. A later device reset brought LTE back in the observed session.
+
+I haven't established a root cause or enabled automated recovery. I also haven't repeated the full primary/LTE failover since this incident.
+
+[Gateway operations →](../docs/pages/security-operations.html)
+
 ### The wrong IPv6 source address
 
 My WAN had more than one global IPv6 address, but outbound connections behaved differently depending on which source I used. Tests with explicitly selected addresses showed that the provider's SLAAC address could not reach the same target that worked from the DHCPv6 IA\_NA address.
@@ -64,6 +72,14 @@ The distinction between a running setting and a persistent setting has been usef
 [Switching and LLDP →](../docs/pages/switching-wireless.html)
 
 ## Switching, certificates and clients
+
+### A stale Wi-Fi session ID caused a UniFi Disconnect-NAK
+
+After adding RADIUS Accounting for UniFi, I tried terminating one phone's Wi-Fi session. The first request failed because I used a session identifier from before roaming. I located the current accounting record and sent another targeted Disconnect. The access point returned an ACK; the phone disconnected and completed EAP-TLS again.
+
+This was a tested disconnect and reauthentication, not a live VLAN reassignment.
+
+[Certificate access →](../docs/pages/identity-pki.html)
 
 ### Testing the second LDAPS server for real
 
@@ -122,6 +138,14 @@ This was also a reminder that installing a trusted certificate and actually serv
 [Windows administration tools →](../docs/pages/windows-policy-deployment.html)
 
 ## NAS and infrastructure services
+
+### A network adapter reset interrupted a domain controller backup
+
+One scheduled System State backup failed when the domain controller's Realtek adapter reset and SMB access to NAS storage dropped. The driver was updated on both controllers. The following week's backups were reported successful, but restoration and the validity of every backup catalog have not been tested.
+
+The backup rotation is still based on dated folders instead of verified successful backup results.
+
+[Windows backups →](../docs/pages/windows-monitoring-backup.html)
 
 ### The NAS lost its IPv6 ULA
 

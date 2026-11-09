@@ -15,6 +15,14 @@ Windows Server provides Active Directory and an enterprise certification authori
 - LDAPS directory lookup using the second controller while the first was unavailable.
 - A separate wired certificate/authorization design for the domain controllers, avoiding a bootstrap dependency on their own directory service.
 
+## RADIUS Accounting and one targeted Disconnect
+
+On 7 November I added RADIUS Accounting for my UniFi access points to the existing FreeRADIUS setup. I checked the session records and updates in its local database. My first Disconnect-Request was rejected because I used a session identifier that was no longer valid after Wi-Fi roaming.
+
+With the current session information, the next request returned a Disconnect-ACK. The phone disconnected and authenticated again over EAP-TLS. This proves targeted session termination, **not** a dynamic VLAN change without disconnecting.
+
+[The roaming/CoA incident →](../docs/pages/notes.html#radius-coa)
+
 ## Problems and the next stage
 
 The trickiest parts were [getting a domain controller through its own protected switch port](../docs/pages/notes.html#dc-eap), [proving LDAPS fallback](../docs/pages/notes.html#identity) and [understanding extra SCEP enrollment requests from Android](../docs/pages/notes.html#android-scep).

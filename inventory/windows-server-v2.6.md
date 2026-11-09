@@ -1,4 +1,4 @@
-# Windows Server: Project Index
+# Windows Server Master v2.7: Project Index
 
 The Windows Server notes grew as I added the second domain controller, built the PKI and automated more of the client setup. This index connects the original work and later changes to the related articles.
 
@@ -22,6 +22,7 @@ The Windows Server notes grew as I added the second domain controller, built the
 | III.16 | IPv6 Neighbor Discovery security failure and restoration | Observed specific address tests | [Switching, Wi-Fi and 802.1X](../docs/pages/switching-wireless.html) |
 | III.17 | Proxmox AD, trusted HTTPS and LDAP integration | Observed selected checks | [Proxmox host and storage](../docs/pages/proxmox-host-storage.html) |
 | III.18 | Domain account-password aging policy change | Observed on two controllers | [Windows deployment and GPO](../docs/pages/windows-policy-deployment.html) |
+| III.19 | NIC reset during System State backup, driver update and end-to-end CRL publication checks | Backup jobs later reported successful; CA restore untested | [Monitoring and backups](../docs/pages/windows-monitoring-backup.html) |
 | IV.01 | Initial AD infrastructure guide | Historical source | [Active Directory and PKI](../docs/pages/windows-ad-pki.html) |
 | IV.02 | Directory extension and initial policy work | Historical source | [Windows deployment and GPO](../docs/pages/windows-policy-deployment.html) |
 | IV.03 | GPO and directory refinements | Historical source | [Windows deployment and GPO](../docs/pages/windows-policy-deployment.html) |

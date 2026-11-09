@@ -8,6 +8,14 @@ My post-update checks cover internet routing, DHCP and DNS, IPv6 delegation, Fre
 
 A standard OPNsense configuration backup doesn't contain every custom hook, cron job or NAS-side dependency I use. I keep a separate recovery list for RADIUS and CRL updates, LLDP settings, dynamic portal records and other local automation.
 
+## A secondary LTE link that didn't return after reboot
+
+While configuring the IPv6-only test network, the gateway's LTE modem didn't restore its PPP connection after a restart. I tried a manual device reset and interface reconfiguration; the link still lacked a usable address until a later reset. It then recovered.
+
+I haven't established the underlying cause or automated this recovery. The full WAN failover sequence wasn't repeated after the incident.
+
+[The LTE incident →](../docs/pages/notes.html#lte-recovery)
+
 ## Issues I investigated
 
 ### Invalid PF states after reboot
@@ -36,7 +44,7 @@ Network UPS Tools initially failed to detect the USB UPS, and a later listener c
 
 ## Monitoring and resilience
 
-I use service health checks and notification routing on the gateway, and collect metrics for the wider infrastructure. I have also configured a backup internet path, but failover still needs to be tested for individual services rather than assumed from the presence of a second uplink.
+I use service health checks and notification routing on the gateway, and collect metrics for the wider infrastructure. I ran a real primary-to-LTE-to-primary failover test on 5 November, including VPN recovery. The later modem boot issue is separate; I still need to retest individual services and failover after that incident.
 
 Power protection has similar limits: I tested UPS communication and a controlled loss of mains power, but not every connected device has been confirmed to receive battery-backed power.
 

@@ -14,6 +14,12 @@ The Wi-Fi setup uses managed UniFi access points and a locally hosted controller
 
 I also investigated what could be learned from the controller backup format. Those investigations helped me understand the stored WLAN settings, but the running controller and actual client connections remain the more useful checks.
 
+## UniFi session Accounting and Disconnect
+
+I used the existing FreeRADIUS database to track sessions from both UniFi access points. A Disconnect test initially failed with a stale session ID after roaming. Using the active session produced an ACK, and the phone left Wi-Fi and authenticated again using EAP-TLS. I still haven't verified a live VLAN reassignment through CoA.
+
+[The session-ID investigation →](../docs/pages/notes.html#radius-coa) · [IPv6-only test Wi-Fi →](../docs/pages/ipv6-only-lab.html)
+
 ## Three investigations I keep separate
 
 ### IPv6 Neighbor Discovery
@@ -38,6 +44,6 @@ Bringing infrastructure devices and domain controllers onto 802.1X required a di
 
 The physical cabling inventory is not finished, and some IPv6 neighbor bindings still need a complete restart and prefix-change test. I'd also like to use a dedicated Wi-Fi access point with the Proxmox lab for separate captive-portal and NAC experiments.
 
-[Certificate-based network access →](../docs/pages/identity.html)   [Upcoming Wi-Fi tests →](../docs/pages/roadmap.html)
+[Certificate-based network access →](../docs/pages/identity-pki.html)   [Upcoming Wi-Fi tests →](../docs/pages/roadmap.html)
 
 ---

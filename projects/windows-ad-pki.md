@@ -24,6 +24,12 @@ I created a valid CRL for the earlier CA and added a small helper to append it *
 
 The important lesson was that trusting a certificate issuer isn't enough when CRL checking is required: FreeRADIUS needs a usable revocation list for every issuing CA it accepts.
 
+## CRL publication through the whole chain
+
+On 5 November I checked that the revocation list produced by the Windows enterprise CA matched what the NAS served over HTTP and what OPNsense had loaded into its FreeRADIUS bundle. The checked stages agreed on the issuer, CRL revision and revocation entries.
+
+I also fixed a failure-reporting bug in my PKI publication script. Previously, remote file comparison or replacement errors could be mistaken for a successful update. I tested error cases with temporary files and confirmed that the scheduled service-account run succeeded. This makes the publication result more trustworthy, but it's not a substitute for a tested CA restore.
+
 ## Problems I had to solve
 
 ### Domain controller on a protected switch port
@@ -54,6 +60,6 @@ I set up certificate renewal and CRL publication, but I still want to improve ho
 
 The directory failover test worked, but restoring the CA and NDES service from an independent backup is a different exercise. The switch's IPv6 neighbor bindings also need to be checked after future upstream prefix changes.
 
-[The certificate-based access overview →](../docs/pages/identity.html)   [Windows workstation policies →](../docs/pages/windows-policy-deployment.html)   [Monitoring and recovery →](../docs/pages/windows-monitoring-backup.html)
+[The certificate-based access overview →](../docs/pages/identity-pki.html)   [Windows workstation policies →](../docs/pages/windows-policy-deployment.html)   [Monitoring and recovery →](../docs/pages/windows-monitoring-backup.html)
 
 ---

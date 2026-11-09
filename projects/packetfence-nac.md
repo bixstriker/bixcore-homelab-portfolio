@@ -10,6 +10,14 @@ I installed PacketFence because I wanted to see what happens when a guest regist
 
 **DNS:** Once IPSet worked, normal web names still resolved to the portal. PacketFence was forwarding queries to its own DNS listener. I changed the upstream to the lab gateway while keeping PacketFence as the DNS server assigned to clients.
 
+## From my temporary fix to upstream PR #9350
+
+On 9 November I returned to the IPSet code and applied a functional backport of [merged upstream PR #9350](https://github.com/inverse-inc/packetfence/pull/9350) to the installed 15.2.0 module. I checked the candidate against the upstream change, verified Perl syntax, kept a rollback copy and restarted only the affected service.
+
+I checked both registered and guest IPSet membership, then revoked registration and watched outside access fail and the portal reappear. Re-registering restored access. After a normal reboot the main PacketFence services were active, membership was present and HTTPS worked again without re-registering.
+
+This is a locally applied backport, **not** an official updated package. A later upgrade could replace it. I have not validated RADIUS/802.1X, Security Events, spoofing resistance or a physical NAC client.
+
 ## Results and limits
 
 - Guest registered: external TCP/443 and HTTPS worked with normal TLS validation.
@@ -17,8 +25,8 @@ I installed PacketFence because I wanted to see what happens when a guest regist
 - Registration repeated: access returned without manual IPSet changes.
 - After reboot: DHCP, DNS and IPSet services were active, membership was present, and DNS/HTTPS worked again.
 
-The admin listener became active after reboot, but a fresh browser login wasn't recorded. I also didn't repeat the full revoke/register cycle after that reboot.
+The admin listener became active after reboot, but a fresh browser login wasn't recorded. I repeated the full revoke/register cycle after the backport, but not again after that reboot.
 
-This is a **virtual guest-registration test**, not an 802.1X or physical-device NAC deployment. RADIUS/EAP-TLS, dynamic VLANs, physical clients, an upstream patch comparison and independent backups remain open.
+This is a **virtual guest-registration test**, not an 802.1X or physical-device NAC deployment. RADIUS/EAP-TLS, dynamic VLANs, physical clients, checking the next official release for this upstream fix and independent backups remain open.
 
 [Read the project](../docs/pages/packetfence-nac.html) · [IPSet problem](../docs/pages/notes.html#packetfence-ipset) · [DNS problem](../docs/pages/notes.html#packetfence-dns)
