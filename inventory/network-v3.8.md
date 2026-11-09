@@ -1,8 +1,8 @@
-# Network Master v3.10: Project Index
+# Network Master v3.13: Project Index
 
 I keep detailed working notes for the network. This index links each section to the corresponding project write-up, from gateway configuration and DNS to switching, monitoring and the IPv6 problems I have worked through.
 
-The current revision covers OPNsense 26.7.8_2 and the tested local IPv6 interface-group alias. Earlier entries are kept as a dated history. The filename is retained for old links.
+The 9 November revision adds tested UniFi RADIUS Accounting and Disconnect, and a working IPv6-only VLAN with DNS64/NAT64 on real Windows and Android clients. Prefix delegation to a virtual router and external IPv6 test access remain untested. Earlier entries are kept as a dated history. The filename is retained for old links.
 
 | Section | Work | Status | Read more |
 | --- | --- | --- | --- |
@@ -37,6 +37,9 @@ The current revision covers OPNsense 26.7.8_2 and the tested local IPv6 interfac
 
 | J | OPNsense 26.7.8_2 post-update audit, surviving hooks, NUT/LLDP/Zenarmor observations | Observed; some follow-ups open | [Gateway operations](../docs/pages/security-operations.html) |
 | K | Interface-derived IPv6 local networks, PF refresh and Guest/Core functional tests | Tested now; real prefix change not yet tested | [IPv6 isolation](../docs/pages/opnsense-ipv6.html) |
+
+| L | FreeRADIUS Accounting, UniFi session tracking and targeted Disconnect | Tested; live VLAN change untested | [RADIUS session study](../docs/pages/identity-pki.html) |
+| M | IPv6-only VLAN through OPNsense, switches and Wi-Fi with DNS64/NAT64 | Real clients tested; virtual-router DHCPv6-PD open | [IPv6-only network lab](../docs/pages/ipv6-only-lab.html) |
 
 ### How to use this index
 
