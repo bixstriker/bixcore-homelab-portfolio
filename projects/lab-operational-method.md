@@ -32,7 +32,7 @@ My November DD-WRT experiment showed why **restart and shutdown behavior need se
 
 ## Future test environment
 
-I plan to add a dedicated IPv6-only upstream and a separate physical Wi-Fi access point. That would let me try captive portals, PacketFence, EAP-TLS and other NAC scenarios with real clients while keeping the normal home Wi-Fi out of the experiments. Commercial firewall evaluations are also on the [roadmap](../docs/pages/roadmap.html), subject to trial and licensing conditions.
+I now have an [IPv6-only VLAN](../docs/pages/ipv6-only-lab.html) working on real Windows and Android Wi-Fi clients. I still need a virtual router to receive a delegated /64, and a separate physical test access point for PacketFence, EAP-TLS and NAC experiments that shouldn't use the normal enterprise SSID. Commercial firewall evaluations are also on the [roadmap](../docs/pages/roadmap.html), subject to trial and licensing conditions.
 
 [Firewall platforms tested so far →](../docs/pages/virtual-firewall-platforms.html)   [More troubleshooting notes →](../docs/pages/notes.html)
 

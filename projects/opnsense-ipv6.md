@@ -20,6 +20,12 @@ I have also set up policy routing, a commercial VPN connection for particular tr
 
 The [invalid PF route-to states](../docs/pages/notes.html#pf-state) after a reboot were different from the [WAN IPv6 source-address problem](../docs/pages/notes.html#ipv6). A [dynamic DNS failure](../docs/pages/notes.html#ddns) turned out to depend on the same IPv6 connectivity issue, and the [WireGuard full-tunnel setup](../docs/pages/notes.html#wireguard) needed its own prefix-translation solution. I keep them as separate investigations rather than one generic “IPv6 problem”.
 
+## A dedicated IPv6-only laboratory network
+
+On 9 November I added [VLAN41](../docs/pages/ipv6-only-lab.html) as a separate IPv6-only network on OPNsense, through three managed switches and both UniFi test access points. Windows and Android clients connected over Wi-Fi, used native IPv6 and reached IPv4-only sites through DNS64 and NAT64.
+
+The Proxmox uplink carries the lab tag, but virtual-router DHCPv6 prefix delegation and its downstream LAN have not been tested. The temporary inbound-IPv6 test option stays disabled; an external inbound connection hasn't been verified.
+
 ## Next checks
 
 I still want to observe the NPTv6 setup during a real ISP prefix change, repeat the new behavior after a complete reboot and work through the remaining negative-path tests between network segments. The [Zenarmor multi-core comparison](../docs/pages/zenarmor.html) is planned separately; the 10GbE links are not an inspection-throughput measurement.

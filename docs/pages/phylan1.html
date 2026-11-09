@@ -27,7 +27,7 @@
 </tbody></table></div>
 <p>The Proxmox hookscript reacts to normal VM start and stop events and uses a lock so two events cannot rearrange the bridge at the same time. I didn't need to modify MikroTik, pfSense, Sophos or any of the other guests for this.</p>
 <h2>What I checked on 6 November</h2>
-<p>I tested the external Ethernet laptop with all eleven firewall/router platforms, and confirmed internet access and RDP forwarding to the reusable Windows and Linux clients in the same round of tests. These are user-confirmed end-to-end results, not a new packet capture for every platform.</p>
+<p>I tested the external Ethernet laptop with all eleven firewall/router platforms, and confirmed internet access and RDP forwarding to the reusable Windows and Linux clients in the same round of tests. These are user-confirmed end-to-end results, not a new packet capture for every platform. The OPNsense full clone and OpenFW added on 9 November were not part of this tested set, and I haven't added them to the host switching hook.</p>
 <p>I also checked a changeover between two guests, the start of a second guest, and three firewall VMs running together. The port disconnected when more than one firewall was active and reconnected after only one remained.</p>
 <h2>Limits I haven't solved yet</h2>
 <p>This protects the physical port during normal Proxmox events; it isn't a complete network-isolation audit. There is no watchdog yet for a VM process that exits without its normal stop hook. The port should only be connected directly to the test laptop or to a dedicated, isolated access point — never to my regular home switch, where guest DHCP servers would cause trouble.</p>

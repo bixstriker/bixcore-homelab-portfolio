@@ -60,17 +60,17 @@ Of these, FortiGate-VM is already installed in its free edition. The wider evalu
 
 ## More ways to test the network
 
-### IPv6-only lab WAN
+### IPv6-only virtual router
 
-I want a separate IPv6-only upstream for the virtual firewalls so I can test DNS, routing, application behavior and the workarounds different systems need without IPv4.
+The [IPv6-only VLAN](../docs/pages/ipv6-only-lab.html) now works with real Windows and Android Wi-Fi clients. I want to connect the OPNsense test clone, confirm its WAN interface and DHCPv6 delegated /64, then try native IPv6 and NAT64 behind a separate LAN. The isolation tests still need to cover blocked paths.
 
 ### A physical Wi-Fi test network
 
-A dedicated Cudy Wi-Fi 7 access point and real laptops and phones would be useful for captive portals, VLAN behavior, DHCP and enterprise Wi-Fi, without changing the regular home WLAN.
+The UniFi IPv6-only test SSID is working with real clients. I still want a separate Cudy access point for NAC and captive-portal testing, without touching the main enterprise Wi-Fi.
 
-### RADIUS and PacketFence
+### PacketFence beyond the guest portal
 
-FreeRADIUS already handles EAP-TLS in the main network. I want to experiment with RADIUS integration in the lab, then explore what PacketFence adds for network access control.
+The [PacketFence guest-registration test](../docs/pages/packetfence-nac.html) works after a locally applied upstream backport. RADIUS/802.1X, dynamic VLAN assignment, Security Events and physical clients still need independent tests. UniFi RADIUS Accounting and targeted Disconnect already work in the main EAP-TLS setup, but live VLAN changes through CoA remain untested.
 
 ### BGP and FRR
 
