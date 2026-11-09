@@ -30,6 +30,10 @@
 <li>LDAPS directory lookup using the second controller while the first was unavailable.</li>
 <li>A separate wired certificate/authorization design for the domain controllers, avoiding a bootstrap dependency on their own directory service.</li>
 </ul>
+<h2>What I learned from RADIUS Accounting and Disconnect</h2>
+<p>On 7 November I enabled Accounting for both UniFi access points while keeping my existing OPNsense FreeRADIUS service and certificate checks. The server already recorded switch sessions; after the UniFi change I could also see live Start and Interim-Update information for Wi-Fi sessions in its local database.</p>
+<p>My first attempt to disconnect one phone's session failed with a NAK. It wasn't a failed EAP-TLS certificate: I had used the ID of an old session that ended when the phone roamed. I checked the newer Accounting record, sent a targeted Disconnect-Request for the current session and got an ACK. The phone visibly left Wi-Fi and connected again using EAP-TLS.</p>
+<p>That proves targeted session termination and reauthentication for this test. It doesn't prove that the access point can change a client's VLAN mid-session through a CoA-Request. I have not tried that yet. <a href="notes.html#radius-coa">The session-ID mistake →</a></p>
 <h2>Problems and the next stage</h2>
 <p>The trickiest parts were <a href="notes.html#dc-eap">getting a domain controller through its own protected switch port</a>, <a href="notes.html#identity">proving LDAPS fallback</a> and <a href="notes.html#android-scep">understanding extra SCEP enrollment requests from Android</a>.</p>
 <p>Now I want to make the certificate lifecycle more predictable: renewals, revocation of old device identities and recovery of the CA itself. The second domain controller helps directory queries, but it doesn't replace that work.</p>

@@ -25,6 +25,9 @@
 <h2>Enterprise Wi-Fi and network access</h2>
 <p>The Wi-Fi setup uses managed UniFi access points and a locally hosted controller. For supported clients, access is authenticated using EAP-TLS certificates through FreeRADIUS rather than a shared password. Wired 802.1X adds another layer: devices such as domain controllers need careful handling so that network authentication doesn't depend on services they can't reach yet.</p>
 <p>I also investigated what could be learned from the controller backup format. Those investigations helped me understand the stored WLAN settings, but the running controller and actual client connections remain the more useful checks.</p>
+<h2>Watching and resetting one Wi-Fi session</h2>
+<p>I added RADIUS Accounting to the UniFi enterprise Wi-Fi setup, then checked that the existing FreeRADIUS database recorded Wi-Fi session updates. A Disconnect test made me pay attention to roaming: a session identifier can stop being current while the phone is still on the network. With a fresh session record, the access point acknowledged the targeted Disconnect and the client authenticated again with EAP-TLS.</p>
+<p>This is a tested disconnect, not a successful live VLAN change. I'm keeping the latter for a controlled experiment. The separate <a href="ipv6-only-lab.html">IPv6-only test SSID</a> is a different Wi-Fi configuration and hasn't replaced the enterprise SSID.</p>
 <h2>Three investigations I keep separate</h2>
 <div class="two-col">
 <article class="mini-card"><h3>IPv6 Neighbor Discovery</h3><p>One Windows domain controller had IPv6 addresses that resolved in DNS but could not be reached. The switch-side ND inspection behavior was part of the problem. Specific neighbor bindings restored the tested connections.</p><p><a href="notes.html#omada-nd">How I diagnosed it →</a></p></article>
@@ -33,5 +36,5 @@
 </div>
 <h2>What I still want to check</h2>
 <p>The physical cabling inventory is not finished, and some IPv6 neighbor bindings still need a complete restart and prefix-change test. I'd also like to use a dedicated Wi-Fi access point with the Proxmox lab for separate captive-portal and NAC experiments.</p>
-<p><a class="source-link" href="identity.html">Certificate-based network access →</a> &nbsp; <a class="source-link" href="roadmap.html">Upcoming Wi-Fi tests →</a></p>
+<p><a class="source-link" href="identity-pki.html">Certificate-based network access →</a> &nbsp; <a class="source-link" href="roadmap.html">Upcoming Wi-Fi tests →</a></p>
 </div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>
