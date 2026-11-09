@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
-  <meta name="description" content="Twenty-eight troubleshooting cases from OPNsense, IPv6, Windows identity, switching, NAS and Proxmox.">
+  <meta name="description" content="Thirty-one troubleshooting cases from OPNsense, IPv6, Windows identity, switching, NAS and Proxmox.">
   <title>Problems and Fixes · BiXCore</title>
   <link rel="stylesheet" href="../styles.css">
 </head>
@@ -24,7 +24,10 @@
 <div class="two-col">
 <article class="mini-card" id="dynamic-ipv6-alias"><h3>My new IPv6 alias had an empty PF table</h3>
 <p>I replaced a static provider prefix with a set derived from the real local interfaces. The interface group appeared correctly, but its PF alias was empty after the first Apply.</p>
-<p>Regenerating the normal filter templates and refreshing aliases populated the table. Guest clients still reached IPv6 internet but could not reach internal services; a core client could. A real provider-prefix change has not happened since this migration.</p><p><a href="opnsense-ipv6.html">The new IPv6 isolation →</a></p></article><article class="mini-card" id="ipv6"><h3>The wrong IPv6 source address</h3>
+<p>Regenerating the normal filter templates and refreshing aliases populated the table. Guest clients still reached IPv6 internet but could not reach internal services; a core client could. A real provider-prefix change has not happened since this migration.</p><p><a href="opnsense-ipv6.html">The new IPv6 isolation →</a></p></article><article class="mini-card" id="lte-recovery"><h3>The LTE backup link stayed down after a gateway reboot</h3>
+<p>During the new IPv6 lab work, my secondary LTE modem didn't bring the PPP uplink back after an OPNsense restart. An initial device reset and interface reconfiguration weren't enough. A further device reset restored LTE in the observed session.</p>
+<p>This is a manual recovery observation, not a proven root-cause analysis or an automated failover fix. I haven't retested the full primary-to-LTE failover sequence after it.</p><p><a href="security-operations.html">Gateway resilience notes →</a></p></article>
+<article class="mini-card" id="ipv6"><h3>The wrong IPv6 source address</h3>
 <p>My WAN had more than one global IPv6 address, but outbound connections behaved differently depending on which source I used. Tests with explicitly selected addresses showed that the provider's SLAAC address could not reach the same target that worked from the DHCPv6 IA_NA address.</p>
 <p>I added a recovery mechanism for the observed source-selection problem. Provider reconnects and future prefix changes still need watching.</p><p><a href="opnsense-ipv6.html">OPNsense and IPv6 →</a></p></article>
 <article class="mini-card" id="ddns"><h3>Dynamic DNS stopped updating after a reboot</h3>
@@ -46,6 +49,9 @@
 <section id="client-incidents">
 <h2>Switching, certificates and clients</h2>
 <div class="two-col">
+<article class="mini-card" id="radius-coa"><h3>UniFi rejected a RADIUS Disconnect after Wi-Fi roaming</h3>
+<p>I enabled RADIUS Accounting for my UniFi access points and confirmed session updates in the existing FreeRADIUS database. My first targeted Disconnect-Request returned a NAK because the session identifier belonged to a connection that had ended during roaming.</p>
+<p>After checking the current accounting session, the next request returned a Disconnect-ACK. The phone visibly dropped Wi-Fi and authenticated again with EAP-TLS. That proves session disconnect and reauthentication, <strong>not</strong> a live VLAN reassignment through CoA.</p><p><a href="identity-pki.html">Certificate-based network access →</a></p></article>
 <article class="mini-card" id="identity"><h3>Testing the second LDAPS server for real</h3>
 <p>FreeRADIUS had two directory endpoints configured. I made the primary controller unavailable and repeated the authentication checks instead of assuming failover would happen simply because a second server appeared in the configuration.</p>
 <p>The directory lookup continued through the second controller. The CA and enrollment service are separate dependencies with their own recovery needs.</p><p><a href="windows-ad-pki.html">AD CS and FreeRADIUS →</a></p></article>
@@ -71,6 +77,9 @@
 <section id="services-incidents">
 <h2>NAS and infrastructure services</h2>
 <div class="two-col">
+<article class="mini-card" id="dc-backup-nic"><h3>A domain controller lost SMB during its System State backup</h3>
+<p>One scheduled backup failed after a Realtek network adapter reset; the Windows and SMB event logs showed the interruption and the failed backup write. I updated the Realtek drivers on both domain controllers and observed the next weekly System State jobs complete successfully.</p>
+<p>That does not prove the hardware issue can never recur. The backup rotation still needs success-aware handling, and restoring Active Directory and the CA from independent backups remains untested.</p><p><a href="windows-monitoring-backup.html">Windows backup and recovery →</a></p></article>
 <article class="mini-card" id="nas-ula"><h3>The NAS lost its IPv6 ULA</h3>
 <p>After network events, the NAS could lose the stable internal IPv6 address used by client DNS. An old interface-up hook was not enough to recover reliably.</p>
 <p>I replaced that approach with an idempotent recovery script, a systemd oneshot service and a periodic timer, then checked that the expected address returned.</p><p><a href="nas-services-operations.html">NAS networking →</a></p></article>

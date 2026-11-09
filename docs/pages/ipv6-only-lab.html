@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="How I built a real IPv6-only VLAN with OPNsense, managed switches, Wi-Fi 7, DHCPv6, DNS64 and NAT64, and what the client tests actually proved.">
+  <title>IPv6-only Network Lab · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / IPv6-only lab</p>
+<p class="kicker">OPNSENSE / NETWORK LAB / 9 NOVEMBER 2026</p>
+<h1>Building an IPv6-only Network That Can Still Reach IPv4</h1>
+<p class="lede">I wanted an isolated network where I could stop assuming that every device had IPv4. Rather than disabling IPv4 on a laptop and calling it done, I built a separate VLAN through my real switches and access points, with IPv6 routing, DHCPv6, DNS64 and NAT64 at the gateway.</p>
+<div class="article">
+<h2>Starting with a separate network</h2>
+<p>The gateway is my regular OPNsense appliance, but VLAN41 is a dedicated laboratory segment. I left the existing home networks alone and carried the new tag across three managed switches to two UniFi Wi-Fi 7 access points and the Proxmox uplink. The test SSID uses the isolated VLAN; it doesn't reuse the main enterprise Wi-Fi configuration.</p>
+<p>There's no IPv4 address, gateway or DHCPv4 service on this VLAN. A Windows client may still generate a link-local IPv4 address for itself, but that doesn't give it an IPv4 route to the internet.</p>
+<h2>How the IPv6 side works</h2>
+<div class="table-wrap"><table><thead><tr><th>Part</th><th>What I set up</th><th>What I checked</th></tr></thead><tbody>
+<tr><td>OPNsense interface</td><td>Dynamic global IPv6 addressing from the ISP's delegated space, plus a separate local ULA prefix</td><td>Live addresses and the interface state</td></tr>
+<tr><td>Router Advertisements</td><td>Assisted mode, with both global and local on-link prefixes</td><td>Actual advertisements and default routing on clients</td></tr>
+<tr><td>Kea DHCPv6</td><td>Address assignment for supporting clients and a separate pool for future downstream prefix delegation</td><td>Windows received a stateful IPv6 address; router delegation is not tested</td></tr>
+<tr><td>DNS64 and NAT64</td><td>Public DNS64 resolvers and Tayga translation for reaching IPv4 services</td><td>Translated connections and IPv4-only websites from both types of client</td></tr>
+<tr><td>Managed switching and Wi-Fi</td><td>VLAN41 transported to both test access points and the Proxmox uplink</td><td>Real Windows and Android connections over the test SSID</td></tr>
+</tbody></table></div>
+<p>Android was a useful contrast to Windows. It obtained a global address through SLAAC and didn't need the stateful DHCPv6 address Windows received. Both had native IPv6 connectivity. When a website was available only over IPv4, DNS64 and NAT64 made the connection possible without adding IPv4 to the client network.</p>
+<h2>The tests that mattered</h2>
+<p>On the Windows laptop I checked router advertisements, assigned IPv6 addresses, native IPv6 connectivity and an address in the NAT64 translation prefix. An Android phone on the same test Wi-Fi could open native IPv6 and IPv4-only sites too. I also tested access from the regular core network to the laptop in the lab, including a successful RDP session after adding a narrowly scoped local Windows Firewall rule. I did not change the domain GPO for that test.</p>
+<p>I also found a couple of misleading symptoms along the way. A site I used to check IPv6 had its own certificate problem; that wasn't evidence of a broken VLAN. I rebooted the gateway once while investigating early connectivity, but can't say the reboot itself fixed the problem. I kept the verified client behavior separate from guesses about the original failure.</p>
+<h2>What I deliberately haven't claimed</h2>
+<p>The Proxmox uplink carries the VLAN tag, and Kea has a configured pool of prefixes for future virtual routers. I <strong>haven't</strong> yet shown a virtual firewall obtaining a delegated prefix, routing it to a separate LAN and passing real client traffic behind that LAN. That's the next meaningful test.</p>
+<p>The firewall rules for LAB-to-Core and Guest-to-LAB separation are loaded, but I have not recorded the full set of independent negative-path tests from clients on both sides. A temporary inbound-IPv6 test option was prepared in the WAN interface; it stays <strong>disabled</strong> by default, and no successful inbound test from the public internet has been recorded. I won't treat a saved GUI rule as proof of its final runtime order.</p>
+<p>Finally, the provider's delegated prefix is dynamic. The lab uses a current prefix and some local aliases need to be checked and updated if that delegation changes. I haven't observed a real renumbering event since creating this VLAN, so I can't claim that the whole chain recovers automatically.</p>
+<h2>What I want to try next</h2>
+<p>I have a separate OPNsense VM ready for IPv6-only experiments, but its new WAN connection and DHCPv6 prefix delegation still need a fresh configuration check. When I return to that test, I'll start with the delegated prefix and downstream LAN, then verify native IPv6, DNS64/NAT64 and the paths that should remain blocked. The existing production networks are not part of that experiment.</p>
+<p><a class="source-link" href="opnsense-ipv6.html">Main gateway and IPv6 work →</a> &nbsp; <a class="source-link" href="proxmox-firewall-lab.html">Proxmox firewall lab →</a> &nbsp; <a class="source-link" href="roadmap.html">Remaining tests →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p>
+</main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

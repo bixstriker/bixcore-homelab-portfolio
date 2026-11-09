@@ -64,9 +64,9 @@ def check():
         problems.append(f'Broken local link: {p.relative_to(ROOT)} -> {ref}')
       elif u.fragment and dest in pages and unquote(u.fragment) not in pages[dest].ids:
         problems.append(f'Missing fragment: {p.relative_to(ROOT)} -> {ref}')
-  if len(pages)!=34: problems.append(f'Expected 34 site pages; found {len(pages)}')
-  if (SITE/'pages'/'notes.html').read_text('utf-8').count('<article class="mini-card" id=') != 28:
-    problems.append('Expected 28 troubleshooting cases')
+  if len(pages)!=35: problems.append(f'Expected 35 site pages; found {len(pages)}')
+  if (SITE/'pages'/'notes.html').read_text('utf-8').count('<article class="mini-card" id=') != 31:
+    problems.append('Expected 31 troubleshooting cases')
   try:
     commit_count=int(subprocess.check_output(['git','rev-list','--count','HEAD'],cwd=ROOT,text=True).strip())
     authors=subprocess.check_output(['git','log','--format=%ae%n%ce'],cwd=ROOT,text=True).splitlines()
@@ -77,7 +77,7 @@ def check():
   if problems:
     print('\n'.join('BLOCK: '+p for p in problems))
     return 1
-  print(f'PASS: {len(pages)} HTML pages, 28 cases, valid local links and noreply-only Git history')
+  print(f'PASS: {len(pages)} HTML pages, 31 cases, valid local links and noreply-only Git history')
   return 0
 if __name__=='__main__':
   sys.exit(check())
