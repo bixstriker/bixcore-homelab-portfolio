@@ -19,10 +19,13 @@ Each firewall VM has a dedicated test upstream and its own virtual client networ
 | **IPFire** | Configured RED/GREEN interfaces, fixed an initial WAN bridge mistake and checked DHCP, the web interface and a selected RDP forward. | More policy, VPN and recovery tests. |
 | **NethSecurity 8.8** | Configured an isolated virtual LAN, DHCP, internet/NAT, management and two RDP forwards to Windows/Linux clients. | Policies, authentication and recovery. |
 | **FreeSense 1.1.12** | Installed on ZFS, recovered from an installation-media mountroot panic, configured Kea DHCP and verified internet plus two RDP forwards. | IPv6 and management hardening. |
+| **OpenFW UTM Community 4.2.1** | Configured RED/GREEN networks and DHCP, opened the WebGUI and confirmed an RDP connection through an inbound forwarding rule. | SSH acceptance, tighter management settings and policy/recovery tests. |
 | **DD-WRT r66445 (x86-64)** | Tested WAN/LAN, DHCP, NAT, RDP, recovered a UEFI kernel panic, repaired the persistent boot template and validated two reboots. | ACPI shutdown and firmware-update persistence. |
 | **OPNsense Community 26.7 (lab VM)** | Deployed a separate virtual OPNsense and verified internet/NAT and two client RDP forwards. | IPv6, rules and isolation. |
 
 [FreeSense startup incident →](../docs/pages/notes.html#freesense-boot)
+
+There are now **thirteen router/firewall VMs representing twelve distinct platforms**. A second virtual OPNsense guest is an independent full clone whose IPv6-only network connection and delegated prefix remain untested. OpenFW was tested with RDP forwarding; the original eleven VMs are the ones covered by PhyLan1.
 
 ## November 6: update and real-client checks
 

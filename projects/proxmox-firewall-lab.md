@@ -6,7 +6,15 @@ My Proxmox lab lets me work with firewall systems without replacing the OPNsense
 
 Proxmox runs on a reused desktop with Debian 13. I have a dedicated upstream for the test firewalls and separate Linux bridges for their LAN interfaces. The same client VMs can be attached to the firewall being tested, so I don't need a large number of machines running at the same time.
 
-As of 6 November 2026, I have 14 VMs: eleven firewall/router systems, two test clients and a separate PacketFence NAC VM. NethSecurity 8.8, FreeSense 1.1.11, DD-WRT r66445 and a second, virtual OPNsense Community 26.7 joined the earlier MikroTik, pfSense, Sophos, VyOS, FortiGate, OpenWrt and IPFire systems. Each gets a separate virtual LAN and shares the isolated test upstream. I checked basic management, internet/NAT, DHCP and two client RDP forwards on the four newest platforms. I also checked internet, selected RDP forwarding and an external Ethernet laptop with all eleven firewall/router systems. The <a href="../docs/pages/phylan1.html">PhyLan1</a> connection works only when one firewall is running. PacketFence uses a separate isolated virtual LAN and is <a href="../docs/pages/packetfence-nac.html">documented here</a>. More consistent negative-path and performance tests are still needed.
+As of 9 November 2026, I have 18 VMs: thirteen firewall/router instances (twelve distinct platforms), two reusable clients, PacketFence NAC, OpenWISP and Taranac. NethSecurity 8.8, FreeSense 1.1.11, DD-WRT r66445 and a second, virtual OPNsense Community 26.7 joined the earlier MikroTik, pfSense, Sophos, VyOS, FortiGate, OpenWrt and IPFire systems. Each gets a separate virtual LAN and shares the isolated test upstream. I checked basic management, internet/NAT, DHCP and two client RDP forwards on the four newest platforms. I also checked internet, selected RDP forwarding and an external Ethernet laptop with all eleven firewall/router systems. The [PhyLan1 test port](../docs/pages/phylan1.html) was verified with the original eleven firewall/router VMs; OpenFW and the new OPNsense clone have not been added to that tested hookscript set. PacketFence uses a separate isolated virtual LAN and is <a href="../docs/pages/packetfence-nac.html">documented here</a>. More consistent negative-path and performance tests are still needed.
+
+## More guests, not more claims
+
+I added OpenWISP 26.09.2 and Taranac Community Edition 1.3.3 for future management and AAA/NAC experiments. OpenWISP's services and dashboard, and Taranac's initial web login, work. I haven't tested their deeper features.
+
+The other two guests are OpenFW UTM Community 4.2.1 and an independent full clone of lab OPNsense. I confirmed a real RDP session through OpenFW's inbound forwarding rule. The OPNsense clone has independent disks but inherited configuration; its separate IPv6-only WAN and DHCPv6-PD still need testing.
+
+The [IPv6-only VLAN](../docs/pages/ipv6-only-lab.html) now works with real Windows and Android Wi-Fi clients. That doesn't yet prove a virtual router can receive and route a delegated /64.
 
 ## Problems I encountered
 
@@ -34,7 +42,7 @@ A dedicated Cudy Wi-Fi 7 access point would let me try captive portals, VLANs, E
 
 ### IPv6-only and routing protocols
 
-I also want a separate IPv6-only lab uplink and more routing experiments with BGP and FRR. The goal is a repeatable test, not just a successful installation.
+The IPv6-only lab uplink is now in place. I still need a virtual firewall to receive its own delegated prefix; BGP and FRR remain planned. The goal is a repeatable test, not just a successful installation.
 
 [The common test checklist →](../docs/pages/lab-operational-method.html)
 

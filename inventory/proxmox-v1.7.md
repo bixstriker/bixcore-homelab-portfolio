@@ -1,8 +1,8 @@
-# Proxmox Master v1.9: Project Index
+# Proxmox Master v1.11: Project Index
 
-These are the 36 chapters and four appendices from my current Proxmox working notes, including earlier setup work, the storage migration and newer firewall experiments.
+These are the 39 chapters and four appendices from my current Proxmox working notes, including earlier setup work, the storage migration and newer firewall experiments.
 
-**Updated 6 November 2026:** I now have 11 firewall/router VMs, two reusable clients and PacketFence NAC (14 VMs in total). The real Ethernet laptop works with the eleven firewalls through PhyLan1. PacketFence's virtual guest registration and access revocation work after an IPSet repair and a DNS correction. This legacy filename stays available for existing links.
+**Updated 9 November 2026:** The lab has 18 VMs, including thirteen router/firewall instances (twelve distinct platforms), two test clients, PacketFence, OpenWISP and Taranac. OpenFW RDP forwarding was tested. The full OPNsense clone is independent at disk level but has not yet completed its IPv6-only WAN and DHCPv6-PD test. The older URL stays available for existing links.
 
 
 | Section | Work | Status | Read more |
@@ -43,6 +43,9 @@ These are the 36 chapters and four appendices from my current Proxmox working no
 | 34 | PhyLan1 physical test bridge, hookscript and multiple-VM disconnect | Confirmed with external laptop | [Physical LAN case study](../docs/pages/phylan1.html) |
 | 35 | End-to-end checks for eleven firewall/router VMs | Internet, RDP, laptop tested; complete isolation not proven | [Lab test method](../docs/pages/lab-operational-method.html) |
 | 36 | PacketFence 15.2 inline guest portal, IPSet and DNS recovery | Guest access tested; 802.1X open | [PacketFence](../docs/pages/packetfence-nac.html) |
+| 37 | PacketFence PR #9350 functional backport and access-regression checks | Tested with one virtual guest | [PacketFence](../docs/pages/packetfence-nac.html) |
+| 38 | IPv6-only VLAN prepared for virtual routers | Real Windows/Android client tests, router PD untested | [IPv6-only lab](../docs/pages/ipv6-only-lab.html) |
+| 39 | OpenWISP, Taranac, OPNsense full clone and OpenFW | Initial service access and OpenFW RDP verified | [Proxmox guest overview](../docs/pages/proxmox-firewall-lab.html) |
 | A | Read-only diagnostics for host, router and gateway | Methods retained | [Firewall test methods](../docs/pages/lab-operational-method.html) |
 | B | Network and VM configuration examples | Private source; sanitized design | [Proxmox host and storage](../docs/pages/proxmox-host-storage.html) |
 | C | Windows-to-Proxmox one-time reboot automation | Observed method | [Proxmox host and storage](../docs/pages/proxmox-host-storage.html) |
@@ -53,9 +56,9 @@ Other cases: [FreeSense boot](../docs/pages/notes.html#freesense-boot), [DD-WRT 
 ### How the setup changed
 
 - The installed VM numbers in the 4 November inventory replace the earlier planning numbers.
-- I normally run one firewall with one or two clients, rather than all 14 VMs together.
+- I normally run one firewall with one or two clients, rather than all 18 VMs together.
 - A previous storage arrangement was replaced by a **single-disk** ZFS pool after documented health observations. Storage migration and snapshots are not high availability or a proved external recovery plan.
 - Earlier virtual graphics paths are superseded by a later passthrough/EDID/KRDP solution. The final result does not prove all remote frames are hardware-encoded.
-- The first PacketFence captive-portal test and physical laptop port are working. IPv6-only WAN tests, the physical Wi-Fi AP, RADIUS/802.1X with PacketFence and full isolation checks are still open.
+- PacketFence's guest access works after the PR #9350 backport and the physical laptop port has been tested with eleven older router VMs. VLAN41 now works on real Wi-Fi clients, but router DHCPv6-PD, PacketFence 802.1X and full isolation tests remain open.
 
 ---
