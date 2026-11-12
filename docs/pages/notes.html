@@ -46,6 +46,9 @@
 <p>LLDP neighbors were visible, but the desired management-address advertisement also needed to survive service restarts and configuration regeneration. I added a startup/persistence hook and checked the advertised value.</p>
 <p>The distinction between a running setting and a persistent setting has been useful in other parts of the gateway too.</p><p><a href="switching-wireless.html">Switching and LLDP →</a></p></article>
 </div></section>
+<section id="client-incidents">
+<h2>Switching, certificates and clients</h2>
+<div class="two-col">
 <article class="mini-card" id="tacacs-fallback"><h3>TACACS+ did not fall back to local login on Omada</h3>
 <p>I tested TACACS+ downtime on Omada and Barox switches. Barox accepted its local recovery account; Omada rejected a working local account when TACACS+-then-local was selected. Packet captures showed unanswered connection attempts, and a targeted network drop reproduced the result.</p>
 <p>The switch's internal cause remains unknown. I reported the finding to the vendor.</p><p><a href="tacacs-switch-aaa.html">The TACACS+ switch study →</a></p></article>
@@ -56,9 +59,6 @@
 <p>An MSI upgrade failed with error 1603 on one workstation. The EXE installed the new client, but my script waited on child processes and never finished. I changed the wait logic and checked the installed version; the next manual run completed.</p><p><a href="windows-policy-deployment.html">Group Policy deployment →</a></p></article>
 <article class="mini-card" id="krdp-credentials"><h3>KRDP connected, then showed a black screen</h3>
 <p>Windows reached the Kubuntu RDP service over TLS but the session closed during login. Passing the full Linux UPN in the correct Windows account context fixed the tested connection. I can't claim to have proved the internal cause of the earlier failure.</p><p><a href="linux-mobile-identity.html">Kubuntu remote access →</a></p></article>
-<section id="client-incidents">
-<h2>Switching, certificates and clients</h2>
-<div class="two-col">
 <article class="mini-card" id="radius-coa"><h3>UniFi rejected a RADIUS Disconnect after Wi-Fi roaming</h3>
 <p>I enabled RADIUS Accounting for my UniFi access points and confirmed session updates in the existing FreeRADIUS database. My first targeted Disconnect-Request returned a NAK because the session identifier belonged to a connection that had ended during roaming.</p>
 <p>After checking the current accounting session, the next request returned a Disconnect-ACK. The phone visibly dropped Wi-Fi and authenticated again with EAP-TLS. That proves session disconnect and reauthentication, <strong>not</strong> a live VLAN reassignment through CoA.</p><p><a href="identity-pki.html">Certificate-based network access →</a></p></article>

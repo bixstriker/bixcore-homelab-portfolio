@@ -1,8 +1,8 @@
-# Proxmox Master v1.11: Project Index
+# Proxmox Master v1.12: Project Index
 
-These are the 39 chapters and four appendices from my current Proxmox working notes, including earlier setup work, the storage migration and newer firewall experiments.
+These are the 40 chapters and four appendices from my current Proxmox working notes, including earlier setup work, the storage migration and newer firewall experiments.
 
-**Updated 9 November 2026:** The lab has 18 VMs, including thirteen router/firewall instances (twelve distinct platforms), two test clients, PacketFence, OpenWISP and Taranac. OpenFW RDP forwarding was tested. The full OPNsense clone is independent at disk level but has not yet completed its IPv6-only WAN and DHCPv6-PD test. The older URL stays available for existing links.
+**Updated 12 November 2026:** The lab has 18 VMs, including thirteen router/firewall instances (twelve distinct platforms), two test clients, PacketFence, OpenWISP and Taranac. OpenFW RDP forwarding was tested. The full OPNsense clone is independent at disk level but has not yet completed its IPv6-only WAN and DHCPv6-PD test. The older URL stays available for existing links.
 
 
 | Section | Work | Status | Read more |
@@ -46,6 +46,7 @@ These are the 39 chapters and four appendices from my current Proxmox working no
 | 37 | PacketFence PR #9350 functional backport and access-regression checks | Tested with one virtual guest | [PacketFence](../docs/pages/packetfence-nac.html) |
 | 38 | IPv6-only VLAN prepared for virtual routers | Real Windows/Android client tests, router PD untested | [IPv6-only lab](../docs/pages/ipv6-only-lab.html) |
 | 39 | OpenWISP, Taranac, OPNsense full clone and OpenFW | Initial service access and OpenFW RDP verified | [Proxmox guest overview](../docs/pages/proxmox-firewall-lab.html) |
+| 40 | Version and maintenance status of VM100–117 (12 November) | NethSecurity 8.8.1, Taranac 1.3.4; OPNsense/client updates with exact builds not recorded | [Firewall lab update](../docs/pages/proxmox-firewall-lab.html) |
 | A | Read-only diagnostics for host, router and gateway | Methods retained | [Firewall test methods](../docs/pages/lab-operational-method.html) |
 | B | Network and VM configuration examples | Private source; sanitized design | [Proxmox host and storage](../docs/pages/proxmox-host-storage.html) |
 | C | Windows-to-Proxmox one-time reboot automation | Observed method | [Proxmox host and storage](../docs/pages/proxmox-host-storage.html) |

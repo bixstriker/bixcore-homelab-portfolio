@@ -17,7 +17,7 @@ Each firewall VM has a dedicated test upstream and its own virtual client networ
 | **FortiGate VM** | Used the restricted free edition for basic interfaces, management, time sync, virtual IPs and controlled client access. | A fuller evaluation, if I can get the appropriate license, including inspection, VPN and VDOMs. |
 | **OpenWrt x86-64** | Installed the VM, expanded the root filesystem and tested DHCP, NAT and selected management/forwarding access. | Additional routing and guest-network features. |
 | **IPFire** | Configured RED/GREEN interfaces, fixed an initial WAN bridge mistake and checked DHCP, the web interface and a selected RDP forward. | More policy, VPN and recovery tests. |
-| **NethSecurity 8.8** | Configured an isolated virtual LAN, DHCP, internet/NAT, management and two RDP forwards to Windows/Linux clients. | Policies, authentication and recovery. |
+| **NethSecurity 8.8.1** | Configured an isolated virtual LAN, DHCP, internet/NAT, management and two RDP forwards to Windows/Linux clients. | Policies, authentication and recovery. |
 | **FreeSense 1.1.12** | Installed on ZFS, recovered from an installation-media mountroot panic, configured Kea DHCP and verified internet plus two RDP forwards. | IPv6 and management hardening. |
 | **OpenFW UTM Community 4.2.1** | Configured RED/GREEN networks and DHCP, opened the WebGUI and confirmed an RDP connection through an inbound forwarding rule. | SSH acceptance, tighter management settings and policy/recovery tests. |
 | **DD-WRT r66445 (x86-64)** | Tested WAN/LAN, DHCP, NAT, RDP, recovered a UEFI kernel panic, repaired the persistent boot template and validated two reboots. | ACPI shutdown and firmware-update persistence. |
@@ -32,6 +32,10 @@ There are now **thirteen router/firewall VMs representing twelve distinct platfo
 I updated MikroTik CHR to RouterOS 7.25.1, Sophos Firewall Home to SFOS 23.0 GA and IPFire to Core Update 205. DD-WRT stays on its tested build because of its local boot patch.
 
 I confirmed internet connectivity, RDP forwarding to my Windows/Linux test guests and an external laptop connection across all eleven firewall/router VMs. The laptop uses my [PhyLan1 bridge selector](../docs/pages/phylan1.html). These are practical basic connectivity checks, not full IPS, VPN or policy comparisons.
+
+## Later maintenance
+
+On 12 November I confirmed NethSecurity 8.8.1 and updates to both virtual OPNsense installations, although their exact build numbers were not recorded. The two client VMs were updated, and VyOS deliberately stayed on Stream 2026.03. I have kept those version updates separate from the earlier tested forwarding and client-access results.
 
 ## DD-WRT: boot repair and remaining limitation
 
