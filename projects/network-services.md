@@ -12,6 +12,10 @@ IPv6 clients learn their resolver information through Router Advertisements and 
 
 Dynamic DNS updates external records as WAN addressing changes. ACME DNS-01 is used for certificate renewal where needed, while NAS reverse-proxy certificates have a separate maintenance step. I check certificate renewal and external service connectivity independently; one being successful does not automatically make the other work.
 
+## A careful AdGuard update
+
+I moved AdGuard Home to a new beta image after making a rollback copy of its configuration and working data. I then checked normal DNS replies, conditional Active Directory queries, blocked domains, HTTPS, DNS-over-HTTPS and DNS-over-TLS. DNS-over-QUIC was listening, but I have not completed a full QUIC client request test. Renewed certificates are still deployed manually from the gateway to the NAS services.
+
 ## Guest access and network boot
 
 The guest Captive Portal needs an IPv6 AAAA record that follows the guest network's current prefix. I added an update hook and compared the generated DNS record with the actual address. The mechanism worked in the recorded test, but a real provider prefix rotation still needs another check.

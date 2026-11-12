@@ -8,6 +8,12 @@ I use managed Omada and Grandstream switches to separate client, guest, infrastr
 
 The switches also gave me a chance to examine vendor-specific configuration formats and compare two devices without assuming their ports had identical roles.
 
+## Centralized switch administration with TACACS+
+
+I added TACACS+ authentication through AD/LDAPS for the managed Omada and Barox switches, with separate administrative and restricted roles. The most valuable result came from testing failure behavior: Barox accepted a local recovery account when the server was offline; Omada did not fall back as expected despite accepting the same local account in explicit local mode. I documented the packet captures and reported the reproducible problem to the vendor without assuming a firmware root cause.
+
+[The TACACS+ switch project →](../docs/pages/tacacs-switch-aaa.html)
+
 ## Enterprise Wi-Fi and network access
 
 The Wi-Fi setup uses managed UniFi access points and a locally hosted controller. For supported clients, access is authenticated using EAP-TLS certificates through FreeRADIUS rather than a shared password. Wired 802.1X adds another layer: devices such as domain controllers need careful handling so that network authentication doesn't depend on services they can't reach yet.

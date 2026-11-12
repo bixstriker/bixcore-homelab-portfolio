@@ -24,6 +24,8 @@
 <p>IPv6 clients learn their resolver information through Router Advertisements and RDNSS. I checked that the ordinary client and guest segments get the intended DNS behavior without relying on the same address family everywhere.</p>
 <h2>Public records and HTTPS certificates</h2>
 <p>Dynamic DNS updates external records as WAN addressing changes. ACME DNS-01 is used for certificate renewal where needed, while NAS reverse-proxy certificates have a separate maintenance step. I check certificate renewal and external service connectivity independently; one being successful does not automatically make the other work.</p>
+<h2>Checking AdGuard after an update</h2>
+<p>I upgraded AdGuard Home to a newer beta image with rollback files ready, then checked DNS, domain-specific forwarding, blocking, HTTPS, DoH and DoT. I did not count a listening DoQ port as proof of a complete QUIC client connection. TLS certificate issuance is automated on my gateway; copying those certificates into the NAS-hosted services is still manual.</p>
 <h2>Guest access and network boot</h2>
 <p>The guest Captive Portal needs an IPv6 AAAA record that follows the guest network's current prefix. I added an update hook and compared the generated DNS record with the actual address. The mechanism worked in the recorded test, but a real provider prefix rotation still needs another check.</p>
 <p>For network boot, I use a NAS-hosted PXE/ISO service with ProxyDHCP in the appropriate client segment instead of replacing the gateway's normal DHCP service.</p>

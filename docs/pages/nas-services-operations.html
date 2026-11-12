@@ -21,13 +21,20 @@
 <div class="article">
 <h2>What runs there</h2>
 <p>The NAS hosts Docker-based infrastructure such as AdGuard, a reverse proxy, the UniFi controller, remote-support services, password management, PXE/ISO boot support and monitoring. I also run other applications on it, but this project is about their network connections and how they come back after maintenance.</p>
+<h2>Container inventory and switch authentication</h2>
+<p>In November I checked all <strong>36 Docker entries</strong> on the NAS, including stopped containers, along with their networks, port mappings, mounts and restart policies. This gives me a more useful recovery inventory than a screenshot of the running containers, but I still need to test actual application restores.</p>
+<p>I also deployed TACACS-NG-UI for switch administration through Active Directory. I kept its FastAPI process at one Uvicorn worker; the backend, frontend and database together used about 122 MiB in one short measurement. I checked NAS swap activity as well, without treating one measurement as a capacity benchmark.</p>
+<p><a href="tacacs-switch-aaa.html">The TACACS+ setup and failure tests →</a></p>
 <h2>Two networking problems I had to fix</h2>
 <p><strong>Missing IPv6 ULA.</strong> Clients were relying on a stable internal IPv6 address for DNS, but that address could disappear after interface changes. My original hook was not reliable enough. I replaced it with an idempotent recovery script, a systemd oneshot service and a timer, then checked the address after the relevant events.</p>
 <p><strong>Docker routing.</strong> A reverse-proxy container attached to multiple networks could end up with an unsuitable default route or IPv6 address. I corrected the network and gateway preferences in the Compose configuration so that recreating the container wouldn't put the old problem back.</p>
 <h2>Updates without losing the infrastructure</h2>
 <p>When updating the NAS operating system and Docker, I need more than a list of container names. I keep copies of Compose definitions, environment files, volumes, network settings, restart policies and supporting scripts. DNS is brought back early, followed by the reverse proxy and dependent services.</p>
 <p>I tested this maintenance sequence during a real upgrade. It helped me spot service-order dependencies that are easy to miss if everything is simply set to restart automatically.</p>
+<h2>DNS and certificate maintenance</h2>
+<p>I updated AdGuard Home to the 1.0.0 beta 2 image after saving rollback files. I checked DNS, internal domain forwarding, HTTPS, DoH and DoT after the update. I also renewed and verified the certificate chains served by the NAS web UI, AdGuard and Home Assistant.</p>
+<p>The certificates are issued automatically on the gateway, but their deployment to these services is still manual. I have not completed a full DoQ/QUIC request test.</p>
 <h2>What I want to check next</h2>
-<p>The services have been brought back after maintenance, but I still want to restore selected applications from independent backups rather than only verify that their containers start. I also want to keep testing the NAS's IPv6 recovery after network changes.</p>
+<p>The services have been brought back after maintenance, but I still want to restore selected applications from independent backups rather than only verify that their containers start. I also want to keep testing the NAS's IPv6 recovery after network changes and verify a real restore of the TACACS+ database and configuration.</p>
 <p><a class="source-link" href="notes.html#nas-ula">The disappearing IPv6 address →</a> &nbsp; <a class="source-link" href="notes.html#docker-route">The Docker gateway issue →</a></p>
 </div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

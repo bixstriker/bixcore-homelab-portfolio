@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="My TACACS+ switch administration setup, Active Directory integration, authorization checks and an unresolved Omada local-fallback test.">
+  <title>TACACS+ and Switch Administration · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / TACACS+</p>
+<p class="kicker">SWITCH ADMINISTRATION / ACTIVE DIRECTORY / AAA</p>
+<h1>TACACS+ for Switch Administration</h1>
+<p class="lede">I wanted to use directory accounts for managing my switches, while keeping administrative privileges and recovery access under control. The interesting part turned out to be what happened when the TACACS+ service was unavailable.</p>
+<div class="article">
+<h2>How I put it together</h2>
+<p>I already use RADIUS and certificates for network clients, but switch administrator login is a different kind of access. I deployed <strong>tac_plus-ng</strong> using TACACS-NG-UI on my NAS. The backend uses validated LDAPS connections to two Active Directory controllers, with a separate web frontend and PostgreSQL database. I kept the existing reverse proxy for the UI.</p>
+<p>I set up a simple distinction between an administrator with configuration access and other authenticated users with restricted privileges. Omada and Barox interpret privilege levels differently, so I tested actual access in each interface rather than assuming the numbers mapped directly.</p>
+<p>Authentication and restricted roles worked on both switches. Authentication, authorization and accounting are configured where supported, but I have not audited every possible command or accounting record.</p>
+<h2>A controlled fallback test</h2>
+<p>Then I deliberately took the TACACS+ daemon out of service and tested whether the switches really allowed emergency local login.</p>
+<ul>
+<li><strong>Barox:</strong> the separate local administrator could sign in when TACACS+ was unavailable. Normal domain login resumed when the service came back.</li>
+<li><strong>Omada:</strong> local web login worked when explicitly set to local authentication. With TACACS+-then-local selected and the server unreachable, the same local account was rejected. I saw a similar symptom over SSH.</li>
+<li><strong>Network check:</strong> packet capture showed repeated TCP connection attempts from Omada with no reply. A targeted network drop reproduced the result without stopping the whole container stack.</li>
+</ul>
+<p>The Omada failure is reproducible <strong>in my tested configuration</strong>. That does not prove the underlying cause is a firmware bug; I cannot see the switch's internal fallback decision. I sent the observations to TP-Link support on 12 November 2026, and I still consider this open.</p>
+<h2>Resource use and recovery</h2>
+<p>The Docker project separates the TACACS+ backend, UI and database. I also reduced the FastAPI service to one Uvicorn worker. A point-in-time measurement showed roughly 122 MiB for the running stack; it was not a peak-load test.</p>
+<p>A central login service makes daily administration easier, but it also creates a dependency. I still need to document and test an independent database/configuration restore, and I won't count on the Omada local fallback until its behavior is resolved.</p>
+<p><a class="source-link" href="switching-wireless.html">Managed switches and Wi-Fi →</a> &nbsp; <a class="source-link" href="nas-services-operations.html">NAS operations →</a> &nbsp; <a class="source-link" href="notes.html#tacacs-fallback">Fallback investigation →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p>
+</main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

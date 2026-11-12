@@ -22,6 +22,9 @@
 <h2>Switches and VLANs</h2>
 <p>I use managed Omada and Grandstream switches to separate client, guest, infrastructure and lab traffic. I checked tagged and untagged VLAN membership, port PVIDs and trunk behavior in the actual switch interfaces. Exported configuration data helped with cross-checking, but it did not replace looking at the live settings.</p>
 <p>The switches also gave me a chance to examine vendor-specific configuration formats and compare two devices without assuming their ports had identical roles.</p>
+<h2>Switch administration through TACACS+</h2>
+<p>I added a separate TACACS+ service for administrative sign-in on my Omada and Barox switches. It uses AD over LDAPS and distinguishes full administrators from restricted accounts. The failure test was especially useful: Barox switched to its local recovery account, while Omada did not do so in the tested TACACS+-then-local setup, even though explicit local login worked. I have reported the behavior to TP-Link, but I don't yet know the cause.</p>
+<p><a href="tacacs-switch-aaa.html">The TACACS+ setup and fallback investigation →</a></p>
 <h2>Enterprise Wi-Fi and network access</h2>
 <p>The Wi-Fi setup uses managed UniFi access points and a locally hosted controller. For supported clients, access is authenticated using EAP-TLS certificates through FreeRADIUS rather than a shared password. Wired 802.1X adds another layer: devices such as domain controllers need careful handling so that network authentication doesn't depend on services they can't reach yet.</p>
 <p>I also investigated what could be learned from the controller backup format. Those investigations helped me understand the stored WLAN settings, but the running controller and actual client connections remain the more useful checks.</p>
