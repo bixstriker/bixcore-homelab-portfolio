@@ -22,11 +22,15 @@
 <h2>Kubuntu and Active Directory</h2>
 <p>I joined a Kubuntu workstation to the domain using realmd, SSSD and Kerberos, then checked domain account and group resolution. Wired and wireless NetworkManager profiles use managed EAP-TLS client certificates. I also set up certificate renewal automation and tested the resulting connection behavior.</p>
 <p>I kept a separate local administrator account so that a directory or network problem wouldn't leave me without a recovery path. The Linux setup also has its own login-session and WireGuard integration notes.</p>
+<h2>Dual boot and remote access on Kubuntu</h2>
+<p>On a physical Windows/Kubuntu laptop I kept GRUB first in the UEFI boot order but configured Windows as its default. A real reboot confirmed the menu and default choice.</p>
+<p>KRDP initially accepted an RDP/TLS connection but then showed a black screen and disconnected. A saved Windows RDP connection that passed the complete Linux UPN with the correct account context worked. I renewed KRDP's separate self-signed TLS certificate and tested Ed25519 SSH key login from Windows. These are remote-access credentials, not the Wi-Fi EAP-TLS client identity.</p>
+<p><a href="notes.html#krdp-credentials">The KRDP username problem →</a></p>
 <h2>Android and managed certificates</h2>
 <p>For Android, I used mobile device management with SCEP enrollment through the internal NDES service. The managed profile installs the relevant trust material and a client identity, which Android can then use for EAP-TLS Wi-Fi. I tested that on multiple devices, including work-profile scenarios.</p>
 <p>One surprise was that applying the Wi-Fi configuration could trigger another SCEP request. I investigated that as part of the profile workflow rather than assuming Wi-Fi authentication was broken. The devices connected successfully.</p>
 <h2>Renewal and cleanup</h2>
-<p>On Kubuntu, I have a documented certificate renewal process. Android enrollment is working too, but I still want a cleaner way to retire older certificates after a replacement has been issued. That matters because a new certificate doesn't automatically revoke the old one.</p>
+<p>On Kubuntu, I have a documented certificate renewal process. I tested one Android SCEP replacement through revocation of its old certificate and publication of the updated CRL. More renewal and recovery scenarios remain open.</p>
 <p>The Proxmox host has its own Active Directory and HTTPS integration; I cover that under <a href="proxmox-host-storage.html">the virtualization setup</a> rather than mixing it into the workstation enrollment story.</p>
 <p><a class="source-link" href="notes.html#android-scep">The extra Android SCEP request →</a> &nbsp; <a class="source-link" href="identity.html">How EAP-TLS works in BiXCore →</a></p>
 </div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

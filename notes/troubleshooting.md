@@ -137,6 +137,36 @@ This was also a reminder that installing a trusted certificate and actually serv
 
 [Windows administration tools →](../docs/pages/windows-policy-deployment.html)
 
+### TACACS+ did not fall back to local login on Omada
+
+I configured directory-backed TACACS+ login on Omada and Barox switches, then deliberately made the authentication service unreachable. Barox accepted its local recovery account. On Omada, the local account worked in explicit local mode but was rejected with TACACS+-then-local selected. I reproduced the timeout with a targeted network drop and saw unanswered TCP connection attempts.
+
+The behavior is reproducible in this setup; I have not proved why the firmware fails internally. I sent the case to vendor support and kept it open.
+
+[TACACS+ and the controlled fallback tests →](../docs/pages/tacacs-switch-aaa.html)
+
+### Two PKI publication jobs used the same temporary file
+
+An Android certificate revocation triggered two publication paths within seconds. One task reported that its remote temporary file had disappeared: the other had already moved it. An independent task successfully published the updated CRL, so the observed failure wasn't a missing revocation list.
+
+I introduced a named mutex and unique temporary filenames. A normal run worked, and a controlled second run waited for the lock and completed. I have not simulated two simultaneous changing-file publications after the fix.
+
+[Certificate publication and revocation →](../docs/pages/windows-ad-pki.html)
+
+### RustDesk installed, but the deployment task hung
+
+An MSI upgrade returned error 1603 on one workstation. The EXE package installed the newer version, but my PowerShell script kept waiting for child processes instead of the installer. I changed the wait strategy and checked the actual installed version. The revised manual run completed; another workstation was offline during this review.
+
+[The Group Policy deployment →](../docs/pages/windows-policy-deployment.html)
+
+### KRDP connected but rejected the Linux account context
+
+A Windows Remote Desktop connection reached the Kubuntu service over TLS, then showed a brief black screen before disconnecting. Re-entering the same credentials did not help. A saved RDP connection that sent the full Linux UPN in the correct Windows account context worked.
+
+That isolates a tested client-side credential format, not a proved defect in KRDP's internal parser. The separate TLS certificate was also renewed, and SSH key access was tested independently.
+
+[Kubuntu and Android identity →](../docs/pages/linux-mobile-identity.html)
+
 ## NAS and infrastructure services
 
 ### A network adapter reset interrupted a domain controller backup

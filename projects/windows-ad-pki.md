@@ -30,6 +30,20 @@ On 5 November I checked that the revocation list produced by the Windows enterpr
 
 I also fixed a failure-reporting bug in my PKI publication script. Previously, remote file comparison or replacement errors could be mistaken for a successful update. I tested error cases with temporary files and confirmed that the scheduled service-account run succeeded. This makes the publication result more trustworthy, but it's not a substitute for a tested CA restore.
 
+## Testing certificate replacement and revocation
+
+On 12 November I followed a managed Android client's certificate replacement beyond enrollment. The CA issued a new SCEP certificate, a scheduled task revoked the superseded one, and the refreshed CRL was published to the NAS and picked up in the FreeRADIUS trust bundle. I compared the actual CRL content at those stages. The phone then connected to Wi-Fi using its replacement certificate.
+
+This is a verified end-to-end result for one device, not proof that every future certificate lifecycle event will be handled correctly. I also did not capture a separate RADIUS Access-Accept packet for that connection.
+
+## Preventing two PKI publishing tasks from colliding
+
+The revocation event started two PKI publication paths close together. They both used the same temporary filename on the NAS, and one task logged a missing-file error after the other moved it. A separate scheduled publication still succeeded, so the active CRL was not lost.
+
+I gave the publisher a named mutex and a unique temporary filename for each transfer. A normal publish completed, and a controlled test showed a second run waiting for a held lock and then completing. I have not repeated a simultaneous two-writer test with changing certificate files.
+
+[The PKI publication collision →](../docs/pages/notes.html#pki-publish-race)
+
 ## Problems I had to solve
 
 ### Domain controller on a protected switch port

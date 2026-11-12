@@ -13,7 +13,7 @@ I built BiXCore as a personal network and security lab. It lets me explore OPNse
 - **NAC and physical lab clients:** [PacketFence](projects/packetfence-nac.md) guest access with a locally backported upstream fix, and [PhyLan1](projects/phylan1.md), tested against the original eleven firewall VMs.
 - **Software and switch tooling:** [BiX Barox Config Tool](projects/barox-config-tool.md), an offline CLI conversion and switch-comparison project with a Windows GUI and ongoing serial-console research.
 
-The [Proxmox v1.11 index](inventory/proxmox-v1.7.md) covers all 39 chapters of my working documentation, including physical client testing and PacketFence. Its older URL is retained for existing links. The site contains 31 troubleshooting cases, including a recent DD-WRT UEFI boot repair and an SSH management lockout. I have also kept [project articles](projects/), [diagrams](diagrams/) and [working-note indexes](inventory/) for people who prefer reading in GitHub.
+The [Proxmox v1.11 index](inventory/proxmox-v1.7.md) covers all 39 chapters of my working documentation, including physical client testing and PacketFence. Its older URL is retained for existing links. The site contains 35 troubleshooting cases, including a recent DD-WRT UEFI boot repair and an SSH management lockout. I have also kept [project articles](projects/), [diagrams](diagrams/) and [working-note indexes](inventory/) for people who prefer reading in GitHub.
 
 ## Where my networking experience started
 
