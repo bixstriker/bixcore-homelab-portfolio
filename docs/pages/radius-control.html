@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="What I built to manage FreeRADIUS sessions, test UniFi actions and understand Wi-Fi caching limits.">
+  <title>BiXCore RADIUS Control · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / RADIUS Control</p>
+<p class="kicker">RADIUS / UNIFI / SESSION CONTROL</p>
+<h1>Building My Own RADIUS Session Management Tool</h1>
+<p class="lede">I already had certificate-based Wi-Fi, but acting on one connected phone still meant jumping between access points, accounting records and OPNsense. I built a small tool to make that easier — and learned a lot about what “disconnect” really means.</p>
+<div class="article">
+<h2>Why I built it</h2>
+<p><strong>BiXCore RADIUS Control</strong> is a FastAPI application I run in Docker on my NAS. It shows current, ended and stale RADIUS Accounting sessions, local RADIUS users and Captive Portal connections. I can refresh the information and check which session is current before choosing an action.</p>
+<p>This grew out of a real mistake: I first tried to disconnect a phone using a session ID that was already stale after roaming. The request failed. With the current record, the next Disconnect was acknowledged and the phone authenticated again.</p>
+<h2>What it can — and cannot — change</h2>
+<p>I can enable or disable <strong>local FreeRADIUS users</strong>, change their configured VLAN and manage their active sessions. Directory-backed clients are different: I can inspect their sessions and disconnect one device, not disable an AD account or change directory permissions. Personal Captive Portal accounts have their own controls.</p>
+<h2>Keeping the privileges narrow</h2>
+<p>The web container reads a filtered snapshot, not the raw OPNsense configuration. Restricted helpers on the NAS and gateway handle specific actions and check the live session again. The UniFi access key stays on the NAS host rather than inside the web container. If the target is ambiguous or changes midway, the tool refuses the operation or reports a partial result instead of pretending it succeeded.</p>
+<h2>Testing it on real phones</h2>
+<p>In November I tested version 0.10.3 on two UniFi APs. An EAPOL reauthentication request worked. One early test was followed about 30 seconds later by a client-side departure; later attempts did not interrupt Wi-Fi, and I cannot prove what caused the earlier disconnect. A targeted online RADIUS Disconnect returned an ACK and the phone completed EAP-TLS again. I also checked and removed leftover PMKSA state for an already-ended session.</p>
+<p>I tightened the underlying FreeRADIUS authorization policy too. Disabling a local identity produced <strong>Access-Reject</strong> at a new full EAP-TLS login, and enabling it again allowed access. New logins also failed when the EAP identity did not match the certificate or the permitted local account was missing. A second simultaneous login to one personal guest-portal account was refused.</p>
+<p>I did try changing an active client's VLAN through CoA. The tested firmware replied with an <strong>Unsupported-Attribute NAK</strong>, not a successful reassignment.</p>
+<h2>What the Wi-Fi cache taught me</h2>
+<p>Disconnecting a device and cleaning up PMKSA does not erase every wireless key. I looked at the separate <strong>802.11r fast-transition cache</strong> and found FT entries remaining after targeted PMKSA cleanup. I did not find a safe, tested way to remove the FT entries for just one phone on the UniFi firmware I'm using.</p>
+<p>That matters when an account is disabled. The next <em>full</em> EAP-TLS login is checked against the current policy, but an existing FT context may survive without immediately triggering that check. I don't claim that the tool instantly revokes every cached key.</p>
+<p>A separate TLS 1.2 capture showed the phone offering an old session ID while FreeRADIUS performed a full handshake. Two complete authentications took roughly 0.16–0.27 seconds. I chose not to enable persistent session caching just to make that a little faster.</p>
+<p>Most regular clients are my own devices, with guests on a separate network. I left 802.11r enabled and accepted the documented limitation instead of flushing every AP's cache or restarting radios.</p>
+<h2>What I still need to check</h2>
+<p>These are selected client tests, not a blanket claim about every device. I still need a full post-reboot check of the FreeRADIUS custom policy and broader AD computer authorization tests. The application source and operational configuration remain private; this page describes the decisions and actual results.</p>
+<p><a class="source-link" href="identity-pki.html">Certificate-based access →</a> &nbsp; <a class="source-link" href="switching-wireless.html">UniFi and switching →</a> &nbsp; <a class="source-link" href="network-v3.8.html">Network notes →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p>
+</main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

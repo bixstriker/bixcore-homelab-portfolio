@@ -22,7 +22,7 @@ I also investigated what could be learned from the controller backup format. Tho
 
 ## UniFi session Accounting and Disconnect
 
-I used the existing FreeRADIUS database to track sessions from both UniFi access points. A Disconnect test initially failed with a stale session ID after roaming. Using the active session produced an ACK, and the phone left Wi-Fi and authenticated again using EAP-TLS. I still haven't verified a live VLAN reassignment through CoA.
+I used the existing FreeRADIUS database to track sessions from both UniFi access points. A Disconnect test initially failed with a stale session ID after roaming. Using the active session produced an ACK, and the phone left Wi-Fi and authenticated again using EAP-TLS. I later tried a live VLAN change through CoA, but the tested UniFi firmware returned an Unsupported-Attribute NAK.
 
 [The session-ID investigation →](../docs/pages/notes.html#radius-coa) · [IPv6-only test Wi-Fi →](../docs/pages/ipv6-only-lab.html)
 

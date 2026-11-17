@@ -64,7 +64,7 @@ def check():
         problems.append(f'Broken local link: {p.relative_to(ROOT)} -> {ref}')
       elif u.fragment and dest in pages and unquote(u.fragment) not in pages[dest].ids:
         problems.append(f'Missing fragment: {p.relative_to(ROOT)} -> {ref}')
-  if len(pages)!=36: problems.append(f'Expected 36 site pages; found {len(pages)}')
+  if len(pages)!=37: problems.append(f'Expected 37 site pages; found {len(pages)}')
   if (SITE/'pages'/'notes.html').read_text('utf-8').count('<article class="mini-card" id=') != 35:
     problems.append('Expected 35 troubleshooting cases')
   try:

@@ -7,7 +7,7 @@ I built BiXCore as a personal network and security lab. It lets me explore OPNse
 ## What I've worked on
 
 - **Routing and firewalls:** OPNsense, IPv6, WireGuard, VLANs, Suricata and Zenarmor, including a [working IPv6-only VLAN](projects/ipv6-only-lab.md) with DNS64/NAT64.
-- **Identity and certificates:** Active Directory, AD CS, NDES/SCEP, FreeRADIUS and EAP-TLS on Windows, Kubuntu and Android, including tested UniFi RADIUS Accounting and targeted Disconnect/re-authentication.
+- **Identity and certificates:** Active Directory, AD CS, NDES/SCEP, FreeRADIUS and EAP-TLS on Windows, Kubuntu and Android, including tested UniFi RADIUS Accounting, strict EAP-TLS checks and my [RADIUS Control](projects/radius-control.md) session management tool.
 - **Infrastructure:** Managed switches and enterprise Wi-Fi, [TACACS+ administration over AD/LDAPS](projects/tacacs-switch-aaa.md), NAS services, Docker networking, monitoring and backups. I tested different local-login fallback behavior on Omada and Barox.
 - **Virtualization:** Proxmox, single-disk ZFS recovery, GPU passthrough, and 18 VMs: 13 router/firewall instances (12 distinct platforms), two Windows/Linux clients, and PacketFence, OpenWISP and Taranac service VMs.
 - **NAC and physical lab clients:** [PacketFence](projects/packetfence-nac.md) guest access with a locally backported upstream fix, and [PhyLan1](projects/phylan1.md), tested against the original eleven firewall VMs.

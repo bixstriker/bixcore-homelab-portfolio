@@ -23,6 +23,16 @@ With the current session information, the next request returned a Disconnect-ACK
 
 [The roaming/CoA incident →](../docs/pages/notes.html#radius-coa)
 
+## When a disabled identity actually gets rejected
+
+In November I tested stricter FreeRADIUS authorization with real phones. Disabling a local account gave an Access-Reject at its next full EAP-TLS login; enabling it again restored access. A mismatched EAP identity, and a certificate without a permitted matching local record, were also denied at new login.
+
+My RADIUS Control tool added targeted reauthentication and Disconnect operations. It also exposed a limitation: after PMKSA cleanup, separate 802.11r fast-transition keys remained on the APs. A new full authentication checks the current access policy, but I don't claim instant revocation of every previously cached wireless key.
+
+I also attempted live VLAN reassignment with CoA. The UniFi AP replied with an Unsupported-Attribute NAK; it did not move the client between VLANs.
+
+[The RADIUS Control project →](../docs/pages/radius-control.html)
+
 ## Problems and the next stage
 
 The trickiest parts were [getting a domain controller through its own protected switch port](../docs/pages/notes.html#dc-eap), [proving LDAPS fallback](../docs/pages/notes.html#identity) and [understanding extra SCEP enrollment requests from Android](../docs/pages/notes.html#android-scep).

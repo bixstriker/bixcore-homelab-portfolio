@@ -26,6 +26,12 @@ When updating the NAS operating system and Docker, I need more than a list of co
 
 I tested this maintenance sequence during a real upgrade. It helped me spot service-order dependencies that are easy to miss if everything is simply set to restart automatically.
 
+## A watchdog that fired during an update
+
+After a NAS operating-system update on 17 November, I checked that its stable IPv6 DNS address returned, the important Docker services still had the right routes, and the published certificate revocation list matched across the CA, NAS and FreeRADIUS. This was a useful post-update consistency check, not a new revoked-client login test.
+
+My Plex watchdog also got a real test. After three failed reachability checks it restarted OpenVPN. Plex became reachable later, but Docker was still starting after planned maintenance, so I cannot credit the VPN restart with the recovery. The script followed its rules at the wrong time. I'll pause it for future planned updates and enable it again after checking the services.
+
 ## Certificates and DNS service updates
 
 I updated AdGuard Home to its 1.0.0 beta 2 image after keeping a rollback copy and checking that DNS, conditional Active Directory lookups, HTTPS, DNS-over-HTTPS and DNS-over-TLS still worked. A listening DoQ port is not the same as a completed QUIC test, so I have not claimed that.
@@ -34,7 +40,7 @@ I also renewed the certificates used by the NAS web interface, AdGuard Home and 
 
 ## What I want to check next
 
-The services have been brought back after maintenance, but I still want to restore selected applications from independent backups rather than only verify that their containers start. I also want to keep testing the NAS's IPv6 recovery after network changes and verify an independent restore of the TACACS+ database and configuration.
+The services have been brought back after maintenance, but I still want to restore selected applications from independent backups rather than only verify that their containers start. I also want to keep testing the NAS's IPv6 recovery after network changes and verify an independent restore of the TACACS+ database and configuration. I checked a consistent backup before the PostgreSQL 18.7 update, but haven't tested a restore.
 
 [The disappearing IPv6 address →](../docs/pages/notes.html#nas-ula)   [The Docker gateway issue →](../docs/pages/notes.html#docker-route)
 
