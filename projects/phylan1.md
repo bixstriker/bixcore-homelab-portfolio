@@ -16,7 +16,7 @@ flowchart LR
 
 The Proxmox hookscript handles ordinary VM start and stop events and serializes the switch-over. With zero running firewalls the port is disconnected; with exactly one it is connected to that VM's LAN; with two or more it is disconnected again.
 
-I tested handovers, simultaneous two-VM and three-VM runs, and the reconnection when only one firewall remained. I also confirmed internet, RDP forwarding and the external laptop path for all eleven platforms. Those are user-confirmed end-to-end checks, not separate packet captures for every VM.
+I tested handovers, simultaneous two-VM and three-VM runs, and the reconnection when only one firewall remained. I also confirmed internet, RDP forwarding and the external laptop path for all eleven platforms. Those were end-to-end client checks I observed, not separate packet captures for every VM.
 
 Unplanned QEMU termination without a normal stop event is not watched by a background watchdog. I also haven't completed the full lab-to-core isolation matrix. The port is for a direct cable or an isolated test AP, not the home switch.
 

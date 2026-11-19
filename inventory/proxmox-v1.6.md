@@ -1,12 +1,12 @@
 # Earlier Proxmox index URL
 
-The maintained [Proxmox Master v1.7 index](proxmox-v1.7.md) is available here. This earlier file is preserved so existing links keep working.
+The later [Proxmox Master v1.12 index](proxmox-v1.7.md) includes the 18-VM inventory. This earlier file preserves my 4 November snapshot so existing links keep working.
 
 # Proxmox: Project Index
 
 These are the main tasks and experiments from building the Proxmox lab. Earlier installation notes are included alongside the later storage migration, firewall tests and GPU work.
 
-**Source revision v1.7, updated 4 November 2026:** The latest documented inventory is 13 VMs (11 firewall/router platforms and two test clients). NethSecurity, FreeSense, DD-WRT and another OPNsense VM were added. DD-WRT boot and reboot were repaired; normal shutdown is still unresolved. Earlier section rows below remain historical.
+**Source revision v1.7, updated 4 November 2026:** At that point I had 13 VMs (eleven firewall/router instances and two test clients). NethSecurity, FreeSense, DD-WRT and another OPNsense VM were added. DD-WRT boot and reboot were repaired; normal shutdown is still unresolved. Earlier section rows below remain historical.
 
 
 | Section | Work | Status | Read more |

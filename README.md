@@ -25,7 +25,7 @@ I also wrote a science-fiction story, **Seele der KI**, and built an [interactiv
 
 ## What I want to explore next
 
-I have plans for more commercial firewall platforms, PacketFence and RADIUS integration, an IPv6-only test network, physical Wi-Fi clients, more Zenarmor filtering and TLS inspection experiments, and recovery testing. See the [roadmap](docs/pages/roadmap.html) for the full list.
+I want to extend PacketFence into wired and Wi-Fi NAC tests, try DHCPv6 prefix delegation from the working IPv6-only lab to a virtual router, add a dedicated isolated test access point, explore commercial firewalls, and measure Zenarmor TLS inspection and recovery behavior. See the [roadmap](docs/pages/roadmap.html) for the full list.
 
 ## About this repository
 
