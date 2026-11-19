@@ -3,6 +3,7 @@
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlsplit, unquote
+import xml.etree.ElementTree as ET
 import re
 import subprocess
 import sys
@@ -42,7 +43,7 @@ def check():
       continue
     if p.suffix.lower() not in ALLOWED_SUFFIXES and p.name not in ('.gitignore','.nojekyll'):
       problems.append(f'Unexpected file type: {p.relative_to(ROOT)}')
-    if p.suffix in ('.html','.css','.md'):
+    if p.suffix in ('.html','.css','.md','.svg','.xml','.txt'):
       content=p.read_text('utf-8')
       if 'github.com/bixstriker/bixcore-homelab"' in content or 'github.com/bixstriker/bixcore-homelab/' in content:
         problems.append(f'Old private repository link: {p.relative_to(ROOT)}')
@@ -64,6 +65,86 @@ def check():
         problems.append(f'Broken local link: {p.relative_to(ROOT)} -> {ref}')
       elif u.fragment and dest in pages and unquote(u.fragment) not in pages[dest].ids:
         problems.append(f'Missing fragment: {p.relative_to(ROOT)} -> {ref}')
+
+  # Guard against old snapshot figures and publication metadata drifting apart.
+  versions = {
+    'pages/windows-server-v2.6.html': 'Windows Server Master v2.10',
+    'pages/proxmox-v1.7.html': 'Proxmox Master v1.12',
+    'pages/network-v3.8.html': 'Network Master v3.22',
+  }
+  for relative, version in versions.items():
+    page=(SITE/relative).read_text('utf-8')
+    if f'<h1>{version}: Project Index</h1>' not in page or f'<title>{version}: Project Index' not in page:
+      problems.append(f'Index heading/title mismatch: {relative}: {version}')
+  required = {
+    'pages/hardware.html': ['Barox', 'failover', 'VPN recovery'],
+    'pages/lab.html': ['18 virtual machines', 'twelve platforms'],
+    'pages/work-index.html': ['12 router/firewall platforms', 'Network Infrastructure v3.22'],
+    'pages/proxmox-firewall-lab.html': ['All 40 Proxmox chapters'],
+    'pages/working-notes.html': ['Proxmox Master v1.12 notes'],
+    'pages/proxmox-v1.6.html': ['Historical snapshot', 'Proxmox Master v1.12'],
+    'pages/radius-control.html': ['v1.0.1', 'Omada'],
+  }
+  for relative, phrases in required.items():
+    page=(SITE/relative).read_text('utf-8')
+    for phrase in phrases:
+      if phrase not in page: problems.append(f'Missing portfolio fact: {relative}: {phrase}')
+  stale = {
+    'pages/hardware.html': ['Testing complete service recovery and failover is ongoing.'],
+    'pages/lab.html': ['There are now 13 documented virtual machines'],
+    'pages/phylan1.html': ['user-confirmed end-to-end results'],
+    'pages/proxmox-v1.6.html': ['Current edition:', 'Proxmox Master v1.11 project index'],
+  }
+  for relative, phrases in stale.items():
+    page=(SITE/relative).read_text('utf-8')
+    for phrase in phrases:
+      if phrase in page: problems.append(f'Outdated public wording: {relative}: {phrase}')
+  site_root='https://lab.bixcore.de/'
+  expected_urls=set()
+  for p,parsed in pages.items():
+    relative=p.relative_to(SITE).as_posix()
+    expected=site_root if relative=='index.html' else site_root+relative
+    expected_urls.add(expected)
+    page=p.read_text('utf-8')
+    tags=[
+      f'<link rel="canonical" href="{expected}">',
+      f'<meta property="og:url" content="{expected}">',
+      '<meta property="og:title" content="',
+      '<meta property="og:description" content="',
+      '<meta name="twitter:card" content="summary">',
+      '<link rel="icon" type="image/svg+xml" href="',
+    ]
+    for tag in tags:
+      if tag not in page: problems.append(f'Missing publication metadata: {relative}: {tag}')
+  try:
+    xml=ET.parse(SITE/'sitemap.xml')
+    ns={'sm':'http://www.sitemaps.org/schemas/sitemap/0.9'}
+    urls=[el.text for el in xml.findall('.//sm:loc',ns)]
+    if len(urls)!=len(set(urls)) or set(urls)!=expected_urls:
+      problems.append('Sitemap URLs differ from published HTML pages')
+  except Exception as exc:
+    problems.append(f'Sitemap invalid: {exc}')
+  if 'Sitemap: https://lab.bixcore.de/sitemap.xml' not in (SITE/'robots.txt').read_text('utf-8'):
+    problems.append('robots.txt does not list sitemap')
+  try:
+    svg=ET.parse(SITE/'favicon.svg')
+    if svg.getroot().tag!='{http://www.w3.org/2000/svg}svg':
+      problems.append('Favicon is not valid SVG')
+    raw=(SITE/'favicon.svg').read_text('utf-8').lower()
+    if any(token in raw for token in ['<script', 'onload=', 'onclick=', 'javascript:', '<foreignobject']):
+      problems.append('Favicon contains executable content')
+  except Exception as exc:
+    problems.append(f'Favicon invalid: {exc}')
+  for p in ROOT.rglob('*.md'):
+    content=p.read_text('utf-8')
+    for match in re.finditer(r'(?<!!)\[[^\]]*\]\(([^)]+)\)', content):
+      ref=match.group(1)
+      u=urlsplit(ref)
+      if u.scheme or u.netloc or ref.startswith(('#','/')): continue
+      dest=(p.parent/unquote(u.path)).resolve()
+      if not dest.is_relative_to(ROOT.resolve()) or not dest.exists():
+        problems.append(f'Broken Markdown link: {p.relative_to(ROOT)} -> {ref}')
+
   if len(pages)!=37: problems.append(f'Expected 37 site pages; found {len(pages)}')
   if (SITE/'pages'/'notes.html').read_text('utf-8').count('<article class="mini-card" id=') != 37:
     problems.append('Expected 37 troubleshooting cases')
