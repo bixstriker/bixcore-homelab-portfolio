@@ -26,6 +26,14 @@ I used the existing FreeRADIUS database to track sessions from both UniFi access
 
 [The session-ID investigation →](../docs/pages/notes.html#radius-coa) · [IPv6-only test Wi-Fi →](../docs/pages/ipv6-only-lab.html)
 
+## Adding wired Disconnect to Omada
+
+My RADIUS Control tool now handles eligible individual wired 802.1X sessions on the configured Omada switch. The first request returned a NAK; after narrowing the packet to the supported attributes, Omada sent a verified Disconnect-ACK.
+
+The switch didn't always send an Accounting-Stop, though, and a replacement Accounting-Start arrived after my original timeout. I now wait for a unique successor session on the same port and client before closing an unchanged old record. I tested the resulting behavior on **two physical ports**, with a workstation and a domain controller. Unknown outcomes are not automatically retried.
+
+[The Accounting investigation →](../docs/pages/notes.html#omada-accounting) · [RADIUS Control →](../docs/pages/radius-control.html)
+
 ## Three investigations I keep separate
 
 ### IPv6 Neighbor Discovery

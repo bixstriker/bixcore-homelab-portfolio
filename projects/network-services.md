@@ -22,6 +22,16 @@ The guest Captive Portal needs an IPv6 AAAA record that follows the guest networ
 
 For network boot, I use a NAS-hosted PXE/ISO service with ProxyDHCP in the appropriate client segment instead of replacing the gateway's normal DHCP service.
 
+## Making the Captive Portal discoverable over IPv6
+
+I was already providing the portal URL through DHCPv4 Option 114. For IPv6 guests I added **RFC 8910 Router Advertisement Option 37** on the guest VLAN only. I captured the actual RAs and found the URL on Guest but not on Core or the IPv6-only test network. Prefixes, RDNSS and PREF64 remained unchanged.
+
+The installed OPNsense release needed a small generator patch. I kept its original and rollback files, and will check it after upgrades. I haven't separately verified how each phone or operating system reacts to the option; the packet captures prove the advertisement itself.
+
+I also fixed a separate dual-stack portal issue. A guest iPhone had IPv4 and IPv6, yet an IPv6-first login excluded IPv4 from PF. I applied the upstream OPNsense fix for issue #11214. The original live session gained IPv4 without a new login, kept nine IPv6 entries and passed the phone's 10/10 IPv6 readiness check.
+
+[The portal issue →](../docs/pages/notes.html#portal-dualstack)
+
 ## Problems I ran into
 
 After a reboot, dynamic DNS stopped updating even though its service was running. The cause was upstream IPv6 reachability, not a missing DNS configuration. The [DDNS investigation](../docs/pages/notes.html#ddns) and the [WAN source-address tests](../docs/pages/notes.html#ipv6) explain how those two symptoms were connected.

@@ -1,8 +1,8 @@
-# Network Master v3.17: Project Index
+# Network Master v3.22: Project Index
 
 I keep detailed working notes for the network. This index links each section to the corresponding project write-up, from gateway configuration and DNS to switching, monitoring and the IPv6 problems I have worked through.
 
-The 17 November revision adds live strict EAP-TLS tests, targeted UniFi session actions and a study of TLS session resumption and 802.11r caching. OPNsense 26.7.9_3 passed a read-only audit, but its boot and fresh-client behavior were not retested. Virtual-router DHCPv6 prefix delegation is also still open. The older notes remain dated history; this filename is retained for old links.
+The 19 November revision records Guest RA Option 37, a tested dual-stack Captive Portal fix, Plex streaming and Suricata IPS tests, and the gateway side of RADIUS Control. Appendix S is an earlier v0.10.7.3 checkpoint; the application subsequently reached tested v1.0.1. Virtual-router DHCPv6 prefix delegation remains a separate open experiment. I retain historical entries and the old filename for working links.
 
 | Section | Work | Status | Read more |
 | --- | --- | --- | --- |
@@ -13,6 +13,8 @@ The 17 November revision adds live strict EAP-TLS tests, targeted UniFi session 
 | 05 | Home WireGuard, policy-routed commercial VPN and selected forwarded application | Verified selected paths | [Gateway and IPv6](../docs/pages/opnsense-ipv6.html) |
 | 06 | FreeRADIUS EAP-TLS, local-first directory fallback and CRL update persistence | Observed selected auth/failover | [Certificate-based access](../docs/pages/identity-pki.html) |
 | 07 | Dual-stack guest Captive Portal with dynamically generated AAAA | Configured and observed response | [DNS, DHCP and guest services](../docs/pages/network-services.html) |
+| 07.1 | Guest RFC 8910 RA Option 37 | Captured on Guest, absent elsewhere; OS response not retested | [Guest RA](../docs/pages/network-services.html) |
+| 07.2 | IPv6-first Captive Portal lost IPv4 permission | Upstream fix and same-session client test passed | [Guest portal incident](../docs/pages/notes.html#portal-dualstack) |
 | 08 | Suricata IPS controlled block, Zenarmor policy block and LLDP | Observed selected tests | [Gateway operations and fixes](../docs/pages/security-operations.html) |
 | 09 | Managed-switch IPv6/802.1X behavior and configuration diagnostics | Observed selected paths | [Switching, Wi-Fi and 802.1X](../docs/pages/switching-wireless.html) |
 | 10 | Enterprise Wi-Fi; Grandstream membership/PVID; UniFi controller backup inspection | Observed / offline extraction | [Switching, Wi-Fi and 802.1X](../docs/pages/switching-wireless.html) |
@@ -45,6 +47,10 @@ The 17 November revision adds live strict EAP-TLS tests, targeted UniFi session 
 | O | Strict EAP-TLS and real client/guest-portal checks | Selected tests passed; boot and AD-computer tests open | [RADIUS Control](../docs/pages/radius-control.html) |
 | P | OPNsense 26.7.9_3 hotfix audit | Read-only PASS; reboot and fresh EAP-TLS not retested | [Gateway operations](../docs/pages/security-operations.html) |
 | Q | TLS 1.2 resumption and 802.11r FT key caching | Full handshake observed; per-device FT invalidation unavailable in tested setup | [RADIUS Control](../docs/pages/radius-control.html) |
+
+| R | Plex moved to Vodafone WAN with Suricata IPS | Measured speeds, 4K Direct Play and controlled IPS drop | [Gateway and IPS tests](../docs/pages/security-operations.html) |
+| R.6 | WAN playback and a separate Windscribe forwarded endpoint | Current paths documented; prior live LTE/VPN failover tested | [NAS watchdog](../docs/pages/nas-services-operations.html) |
+| S | RADIUS Control helpers and original Omada wired pilot | Documented v0.10.7.3 checkpoint; v1.0.1 later verified on two ports | [Finished RADIUS Control](../docs/pages/radius-control.html) |
 
 ### How to use this index
 

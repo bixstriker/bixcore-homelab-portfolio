@@ -29,6 +29,11 @@
 <h2>Guest access and network boot</h2>
 <p>The guest Captive Portal needs an IPv6 AAAA record that follows the guest network's current prefix. I added an update hook and compared the generated DNS record with the actual address. The mechanism worked in the recorded test, but a real provider prefix rotation still needs another check.</p>
 <p>For network boot, I use a NAS-hosted PXE/ISO service with ProxyDHCP in the appropriate client segment instead of replacing the gateway's normal DHCP service.</p>
+<h2>IPv6 Router Advertisements for guest portal discovery</h2>
+<p>I already provided the Captive Portal API URL through DHCPv4 Option 114. I added <strong>RFC 8910 RA Option 37</strong> on the Guest VLAN, and captured actual Router Advertisements. Guest included the URL; Core and the IPv6-only lab did not. RDNSS, prefix information and PREF64 were preserved. This proves the packets were sent, not that every client OS acted on the URL.</p>
+<p>The installed OPNsense release needed a small version-specific generator patch, with rollback files kept for future upgrades.</p>
+<h2>When an IPv6-first login lost IPv4</h2>
+<p>A real guest iPhone had IPv4 and IPv6, but the portal allowed only IPv6 in its PF table after login. I traced this to OPNsense's Client Roaming address filter and applied the upstream fix for issue #11214. The existing session gained IPv4 without another login, kept all nine IPv6 entries and passed a 10/10 IPv6-readiness check. <a href="notes.html#portal-dualstack">The dual-stack portal investigation →</a></p>
 <h2>Problems I ran into</h2>
 <p>After a reboot, dynamic DNS stopped updating even though its service was running. The cause was upstream IPv6 reachability, not a missing DNS configuration. The <a href="notes.html#ddns">DDNS investigation</a> and the <a href="notes.html#ipv6">WAN source-address tests</a> explain how those two symptoms were connected.</p>
 <p>I also documented the <a href="notes.html#portal">guest portal's IPv6 record updates</a> and the <a href="notes.html#nas-ula">NAS DNS address disappearing</a> after a network event. These are separate problems with separate fixes.</p>

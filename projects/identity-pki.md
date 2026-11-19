@@ -33,6 +33,14 @@ I also attempted live VLAN reassignment with CoA. The UniFi AP replied with an U
 
 [The RADIUS Control project →](../docs/pages/radius-control.html)
 
+## Managing a wired session without managing the domain account
+
+I extended my RADIUS Control tool to individual **wired 802.1X sessions on Omada**. It independently checks the live client and port, asks for Disconnect and closes the old Accounting row only after a verified ACK and a matching new session. Both a workstation and a domain controller passed the live test on separate ports.
+
+The tool still **does not disable or change Active Directory accounts**. It handles the selected network session only. The EAP-TLS certificate rules remain separate, as do the previously documented Wi-Fi FT-cache limitations.
+
+[The finished RADIUS Control project →](../docs/pages/radius-control.html)
+
 ## Problems and the next stage
 
 The trickiest parts were [getting a domain controller through its own protected switch port](../docs/pages/notes.html#dc-eap), [proving LDAPS fallback](../docs/pages/notes.html#identity) and [understanding extra SCEP enrollment requests from Android](../docs/pages/notes.html#android-scep).

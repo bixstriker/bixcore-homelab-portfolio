@@ -38,6 +38,9 @@
 <p>I tightened FreeRADIUS authorization and tested real phones. Disabling a local identity caused an Access-Reject at its next full EAP-TLS login; enabling it allowed access again. A mismatched EAP identity and a valid certificate with no matching permitted local record were also refused on new logins.</p>
 <p>My RADIUS Control tool can target a UniFi session for reauthentication or Disconnect. I found that PMKSA cleanup did not clear the separate 802.11r fast-transition keys, so I don't describe account disabling as an instant guarantee that every cached Wi-Fi key has vanished.</p>
 <p>I also attempted a live VLAN reassignment through CoA. The AP returned an Unsupported-Attribute NAK, not a working VLAN change. <a href="radius-control.html">How I built RADIUS Control →</a></p>
+<h2>Managing wired sessions without touching the directory</h2>
+<p>I extended my RADIUS Control tool to individual Omada wired 802.1X sessions. The gateway checks the live client and port, and an old Accounting row is closed only after a verified ACK and a matching new session. I tested it on separate workstation and domain-controller ports.</p>
+<p>This does not turn RADIUS Control into an AD administration tool: it does not disable domain accounts, change directory rights or edit EAP-TLS certificates. <a href="radius-control.html">The completed RADIUS Control project →</a></p>
 <h2>Problems and the next stage</h2>
 <p>The trickiest parts were <a href="notes.html#dc-eap">getting a domain controller through its own protected switch port</a>, <a href="notes.html#identity">proving LDAPS fallback</a> and <a href="notes.html#android-scep">understanding extra SCEP enrollment requests from Android</a>.</p>
 <p>Now I want to make the certificate lifecycle more predictable: renewals, revocation of old device identities and recovery of the CA itself. The second domain controller helps directory queries, but it doesn't replace that work.</p>

@@ -34,6 +34,8 @@
 <h2>When a watchdog fired during planned maintenance</h2>
 <p>After updating the NAS operating system, I checked that its stable IPv6 DNS address returned, important containers kept their expected routes, and the certificate revocation list matched from the issuing CA through the NAS to FreeRADIUS. This was an update check, not a new revoked-client login test.</p>
 <p>My Plex watchdog also restarted OpenVPN after three failed reachability checks. Plex came back later, but Docker was still starting, so I can't say the VPN restart fixed it. During planned maintenance it wasn't needed. Next time I'll pause the watchdog and enable it once the containers are ready.</p>
+<h2>Keeping the Plex watchdog separate from playback</h2>
+<p>Remote Plex playback now uses the faster Vodafone path measured in my tests. Windscribe still has a separate forwarded endpoint monitored by the NAS watchdog. It checks the external port, not whether Plex itself responds correctly over HTTP. I kept the established Windscribe and HomeWG recovery design unchanged. <a href="security-operations.html">The routing and Suricata tests →</a></p>
 <h2>DNS and certificate maintenance</h2>
 <p>I updated AdGuard Home to the 1.0.0 beta 2 image after saving rollback files. I checked DNS, internal domain forwarding, HTTPS, DoH and DoT after the update. I also renewed and verified the certificate chains served by the NAS web UI, AdGuard and Home Assistant.</p>
 <p>The certificates are issued automatically on the gateway, but their deployment to these services is still manual. I have not completed a full DoQ/QUIC request test.</p>

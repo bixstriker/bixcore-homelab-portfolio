@@ -32,6 +32,12 @@ After a NAS operating-system update on 17 November, I checked that its stable IP
 
 My Plex watchdog also got a real test. After three failed reachability checks it restarted OpenVPN. Plex became reachable later, but Docker was still starting after planned maintenance, so I cannot credit the VPN restart with the recovery. The script followed its rules at the wrong time. I'll pause it for future planned updates and enable it again after checking the services.
 
+## Plex playback and VPN monitoring aren't the same thing
+
+After measuring faster remote Plex streaming through Vodafone, I left normal playback on WAN. Windscribe still publishes a separate endpoint for the NAS watchdog, which checks the externally forwarded port. **It is a port-reachability test, not an HTTP health check of Plex.**
+
+I kept the existing Windscribe and HomeWG recovery arrangement instead of trying to use the Plex watchdog to prove application or VPN failover behavior.
+
 ## Certificates and DNS service updates
 
 I updated AdGuard Home to its 1.0.0 beta 2 image after keeping a rollback copy and checking that DNS, conditional Active Directory lookups, HTTPS, DNS-over-HTTPS and DNS-over-TLS still worked. A listening DoQ port is not the same as a completed QUIC test, so I have not claimed that.

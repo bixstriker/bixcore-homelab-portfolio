@@ -12,7 +12,7 @@ A standard OPNsense configuration backup doesn't contain every custom hook, cron
 
 While configuring the IPv6-only test network, the gateway's LTE modem didn't restore its PPP connection after a restart. I tried a manual device reset and interface reconfiguration; the link still lacked a usable address until a later reset. It then recovered.
 
-I haven't established the underlying cause or automated this recovery. The full WAN failover sequence wasn't repeated after the incident.
+I haven't established the underlying cause of that particular modem startup failure. The separate primary-to-LTE failover and VPN restoration path was successfully tested in live use.
 
 [The LTE incident →](../docs/pages/notes.html#lte-recovery)
 
@@ -42,15 +42,23 @@ Network UPS Tools initially failed to detect the USB UPS, and a later listener c
 
 [The UPS problems →](../docs/pages/notes.html#ups)
 
+## Plex streaming, VPN routing and an IPS test
+
+Remote Plex playback had been going through Windscribe. I compared real download sessions: roughly **2.0–3.4 MB/s** through the VPN versus **4.4–5.1 MB/s** through Vodafone WAN. These figures describe the measured sessions, not a guaranteed speed.
+
+I moved normal Plex streaming onto the faster WAN path. A remote Android phone played a **4K Direct Play** stream around 29 Mbit/s. I retained a dedicated Suricata inspection path and confirmed a controlled test signature was **dropped**, not just logged. I haven't measured coverage of every packet in a complete video session.
+
+Windscribe still has its own forwarded endpoint for the NAS port-check watchdog, and the established HomeWG recovery path remains in place. I had already verified real WAN → LTE → VPN/WireGuard recovery before these Plex adjustments; this change did not redesign that failover path.
+
 ## Monitoring and resilience
 
-I use service health checks and notification routing on the gateway, and collect metrics for the wider infrastructure. I ran a real primary-to-LTE-to-primary failover test on 5 November, including VPN recovery. The later modem boot issue is separate; I still need to retest individual services and failover after that incident.
+I use service health checks and notification routing on the gateway, and collect metrics for the wider infrastructure. I ran a real primary-to-LTE-to-primary failover test on 5 November, including VPN recovery. The later isolated modem startup problem was separate from that tested recovery path.
 
 Power protection has similar limits: I tested UPS communication and a controlled loss of mains power, but not every connected device has been confirmed to receive battery-backed power.
 
 ## What remains open
 
-The startup cause of the invalid PF states is still unresolved. I also want more complete tests following WAN reconnects, prefix changes, UPS events and gateway restarts, with the resulting observations added to the working notes.
+The startup cause of the invalid PF states is still unresolved. I will keep checking individual services after WAN reconnects, prefix changes, UPS events and gateway restarts, without treating the previously successful failover test as a new experiment.
 
 [All troubleshooting cases →](../docs/pages/notes.html)   [Current test plans →](../docs/pages/roadmap.html)
 

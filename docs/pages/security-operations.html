@@ -29,7 +29,7 @@
 <p>I corrected overly broad file permissions in the UPS monitoring configuration. They read correctly afterward, but I still need to see whether that survives the next normal settings regeneration. LLDP also showed my own device as a neighbor alongside the real switch; that observation alone was not enough to claim a physical loop.</p>
 <h2>When the LTE modem did not return after reboot</h2>
 <p>While testing the new IPv6-only VLAN on 9 November, the secondary LTE modem did not bring its PPP uplink back after the gateway restarted. I inspected the device and tried a manual USB reset and interface reconfiguration. The link still had no usable address until a subsequent device reset; the modem then recovered in the observed session.</p>
-<p>I haven't identified why the first attempt failed, added automatic USB recovery or repeated the full primary-to-LTE failover sequence after that incident. It would be misleading to call this a permanent fix. <a href="notes.html#lte-recovery">The short incident note →</a></p>
+<p>I haven't identified why the first attempt failed or added automatic USB recovery. The previously tested full primary-to-LTE failover and VPN recovery are separate from that one boot incident. <a href="notes.html#lte-recovery">The short incident note →</a></p>
 <h2>Issues I investigated</h2>
 <div class="two-col">
 <article class="mini-card"><h3>Invalid PF states after reboot</h3><p>Old policy-routing states pointed at an invalid gateway even though the active rules were correct. A later boot reproduced this class of state. I requested targeted removal again, but I still don't have proof that the startup cause has been fixed.</p><p><a href="notes.html#pf-state">What I checked →</a></p></article>
@@ -37,8 +37,12 @@
 <article class="mini-card"><h3>DNS and guest access after reconnects</h3><p>I investigated dynamic DNS updates that stopped after reboot and checked the generated guest portal IPv6 record separately.</p><p><a href="notes.html#ddns">The DDNS investigation →</a></p></article>
 <article class="mini-card"><h3>UPS monitoring</h3><p>Network UPS Tools initially failed to detect the USB UPS, and a later listener configuration also needed correction. I checked the actual UPS connection and power-test behavior.</p><p><a href="notes.html#ups">The UPS problems →</a></p></article>
 </div>
+<h2>Why I moved remote Plex streaming to Vodafone</h2>
+<p>I compared actual remote downloads through Windscribe and the regular WAN. The measured VPN sessions were around <strong>2.0–3.4 MB/s</strong>; Vodafone gave <strong>4.4–5.1 MB/s</strong>. After moving ordinary playback, I checked remote 4K Direct Play on a phone at roughly 29 Mbit/s. These are application measurements, not a bandwidth guarantee.</p>
+<p>I retained a dedicated Suricata IPS path for incoming Plex traffic and verified a controlled test signature was actually <strong>dropped</strong>. I haven't independently measured every video packet.</p>
+<p>Windscribe keeps its own forwarded endpoint for the NAS watchdog and the established HomeWG backup path. I had previously tested the real WAN-to-LTE failover and VPN/WireGuard recovery; Plex's new outbound policy did not replace that design.</p>
 <h2>Monitoring and resilience</h2>
-<p>I use service health checks and notification routing on the gateway, and collect metrics for the wider infrastructure. I also tested the backup internet path on 5 November: primary WAN to LTE and back, including VPN recovery. That doesn't prove the behavior of every service, so more selective failover tests remain on my list.</p>
+<p>I use service health checks and notification routing on the gateway, and collect metrics for the wider infrastructure. I also tested the backup internet path on 5 November: primary WAN to LTE and back, including VPN recovery. This verified the LTE/VPN recovery path. I continue checking individual service behavior when the network changes.</p>
 <p>Power protection has similar limits: I tested UPS communication and a controlled loss of mains power, but not every connected device has been confirmed to receive battery-backed power.</p>
 <h2>What remains open</h2>
 <p>The startup cause of the invalid PF states is still unresolved. I also want more complete tests following WAN reconnects, prefix changes, UPS events and gateway restarts, with the resulting observations added to the working notes.</p>

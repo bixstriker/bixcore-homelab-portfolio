@@ -32,6 +32,9 @@
 <p>I added RADIUS Accounting to the UniFi enterprise Wi-Fi setup, then checked that the existing FreeRADIUS database recorded Wi-Fi session updates. A Disconnect test made me pay attention to roaming: a session identifier can stop being current while the phone is still on the network. With a fresh session record, the access point acknowledged the targeted Disconnect and the client authenticated again with EAP-TLS.</p>
 <p>This is a tested disconnect, not a successful live VLAN change. A later CoA VLAN request returned an Unsupported-Attribute NAK in the tested firmware. The separate <a href="ipv6-only-lab.html">IPv6-only test SSID</a> is a different Wi-Fi configuration and hasn't replaced the enterprise SSID.</p>
 <p><a href="radius-control.html">My RADIUS Control tool and the Wi-Fi cache tests →</a></p>
+<h2>Omada wired Disconnect: an ACK wasn't enough</h2>
+<p>I added individual wired 802.1X Disconnect for the configured Omada switch. The first packet received a NAK, but a more selective request produced an authenticated ACK. Then I found that Omada sometimes left the old Accounting row open after the client returned.</p>
+<p>I made cleanup wait for a uniquely matching successor Accounting-Start on the same client and port. The final tests passed on two physical ports, with a workstation and a domain controller. There is no arbitrary port shutdown or automatic retry on uncertain outcomes. <a href="notes.html#omada-accounting">The Accounting incident →</a> · <a href="radius-control.html">RADIUS Control →</a></p>
 <h2>Three investigations I keep separate</h2>
 <div class="two-col">
 <article class="mini-card"><h3>IPv6 Neighbor Discovery</h3><p>One Windows domain controller had IPv6 addresses that resolved in DNS but could not be reached. The switch-side ND inspection behavior was part of the problem. Specific neighbor bindings restored the tested connections.</p><p><a href="notes.html#omada-nd">How I diagnosed it →</a></p></article>
