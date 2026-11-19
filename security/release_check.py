@@ -9,7 +9,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / 'docs'
-ALLOWED_SUFFIXES = {'.md', '.html', '.css', '.webp', '.py', '.yml', '.yaml', '', '.gitignore'}
+ALLOWED_SUFFIXES = {'.md', '.html', '.css', '.webp', '.py', '.yml', '.yaml', '.svg', '.xml', '.txt', '', '.gitignore'}
 PATTERNS = {
   'private IPv4': re.compile(r'(?<![\d.])(?:10(?:\.\d{1,3}){3}|192\.168(?:\.\d{1,3}){2}|172\.(?:1[6-9]|2\d|3[01])(?:\.\d{1,3}){2})(?![\d.])'),
   'IPv6 ULA': re.compile(r'\b(?:fc|fd)[0-9a-f]{2}:(?:[0-9a-f]*:){1,7}[0-9a-f]*\b', re.I),
