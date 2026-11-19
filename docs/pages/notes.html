@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
-  <meta name="description" content="Thirty-five troubleshooting cases from OPNsense, IPv6, Windows identity, switching, NAS and Proxmox.">
+  <meta name="description" content="Thirty-seven troubleshooting cases from OPNsense, IPv6, Windows identity, switching, NAS and Proxmox.">
   <title>Problems and Fixes · BiXCore</title>
   <link rel="stylesheet" href="../styles.css">
 </head>
@@ -22,6 +22,10 @@
 <section id="network-incidents">
 <h2>OPNsense, WAN and IPv6</h2>
 <div class="two-col">
+<article class="mini-card" id="portal-dualstack"><h3>The guest portal allowed IPv6, but forgot IPv4</h3>
+<p>My iPhone had an IPv4 address, yet an IPv6-first Captive Portal login did not put that address into the session's PF allow table. The problem was in portal address filtering with Client Roaming enabled, not DHCP.</p>
+<p>I checked and applied the upstream OPNsense fix for issue #11214. Without another login, the existing session gained IPv4 access and kept its nine IPv6 entries. The phone passed a 10/10 IPv6-readiness check. I still need to check the patch after future gateway updates.</p><p><a href="network-services.html">Guest access and dual-stack behavior →</a></p></article>
+
 <article class="mini-card" id="dynamic-ipv6-alias"><h3>My new IPv6 alias had an empty PF table</h3>
 <p>I replaced a static provider prefix with a set derived from the real local interfaces. The interface group appeared correctly, but its PF alias was empty after the first Apply.</p>
 <p>Regenerating the normal filter templates and refreshing aliases populated the table. Guest clients still reached IPv6 internet but could not reach internal services; a core client could. A real provider-prefix change has not happened since this migration.</p><p><a href="opnsense-ipv6.html">The new IPv6 isolation →</a></p></article><article class="mini-card" id="lte-recovery"><h3>The LTE backup link stayed down after a gateway reboot</h3>
@@ -49,6 +53,10 @@
 <section id="client-incidents">
 <h2>Switching, certificates and clients</h2>
 <div class="two-col">
+<article class="mini-card" id="omada-accounting"><h3>Omada acknowledged Disconnect, but left the old session open</h3>
+<p>I built wired 802.1X Disconnect into RADIUS Control. The switch first returned a NAK. Once I corrected the packet, it returned an ACK, but the old Accounting record could remain open even after the client authenticated again.</p>
+<p>One new session arrived just after my original timeout. I changed cleanup to wait for a verified ACK and a uniquely matching new Accounting-Start before closing the unchanged old row. Both a workstation port and a domain-controller port passed the final live test; unknown results are never automatically retried.</p><p><a href="radius-control.html">The RADIUS Control project →</a></p></article>
+
 <article class="mini-card" id="tacacs-fallback"><h3>TACACS+ did not fall back to local login on Omada</h3>
 <p>I tested TACACS+ downtime on Omada and Barox switches. Barox accepted its local recovery account; Omada rejected a working local account when TACACS+-then-local was selected. Packet captures showed unanswered connection attempts, and a targeted network drop reproduced the result.</p>
 <p>The switch's internal cause remains unknown. I reported the finding to the vendor.</p><p><a href="tacacs-switch-aaa.html">The TACACS+ switch study →</a></p></article>

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
-  <meta name="description" content="What I built to manage FreeRADIUS sessions, test UniFi actions and understand Wi-Fi caching limits.">
+  <meta name="description" content="My own stable RADIUS Control tool for FreeRADIUS, UniFi and Omada, with tested wired Disconnect and a careful look at Accounting failures.">
   <title>BiXCore RADIUS Control · BiXCore</title>
   <link rel="stylesheet" href="../styles.css">
 </head>
@@ -15,28 +15,36 @@
     <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
   </div></header><main id="main" class="wrap subpage">
 <p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / RADIUS Control</p>
-<p class="kicker">RADIUS / UNIFI / SESSION CONTROL</p>
+<p class="kicker">RADIUS / WI-FI / WIRED 802.1X / OWN TOOLS</p>
 <h1>Building My Own RADIUS Session Management Tool</h1>
-<p class="lede">I already had certificate-based Wi-Fi, but acting on one connected phone still meant jumping between access points, accounting records and OPNsense. I built a small tool to make that easier — and learned a lot about what “disconnect” really means.</p>
+<p class="lede">I wanted to manage one network session without guessing which device was connected. What started as a small Accounting viewer became my own working tool for Wi-Fi, wired 802.1X and guest access.</p>
 <div class="article">
-<h2>Why I built it</h2>
-<p><strong>BiXCore RADIUS Control</strong> is a FastAPI application I run in Docker on my NAS. It shows current, ended and stale RADIUS Accounting sessions, local RADIUS users and Captive Portal connections. I can refresh the information and check which session is current before choosing an action.</p>
-<p>This grew out of a real mistake: I first tried to disconnect a phone using a session ID that was already stale after roaming. The request failed. With the current record, the next Disconnect was acknowledged and the phone authenticated again.</p>
-<h2>What it can — and cannot — change</h2>
-<p>I can enable or disable <strong>local FreeRADIUS users</strong>, change their configured VLAN and manage their active sessions. Directory-backed clients are different: I can inspect their sessions and disconnect one device, not disable an AD account or change directory permissions. Personal Captive Portal accounts have their own controls.</p>
-<h2>Keeping the privileges narrow</h2>
-<p>The web container reads a filtered snapshot, not the raw OPNsense configuration. Restricted helpers on the NAS and gateway handle specific actions and check the live session again. The UniFi access key stays on the NAS host rather than inside the web container. If the target is ambiguous or changes midway, the tool refuses the operation or reports a partial result instead of pretending it succeeded.</p>
-<h2>Testing it on real phones</h2>
-<p>In November I tested version 0.10.3 on two UniFi APs. An EAPOL reauthentication request worked. One early test was followed about 30 seconds later by a client-side departure; later attempts did not interrupt Wi-Fi, and I cannot prove what caused the earlier disconnect. A targeted online RADIUS Disconnect returned an ACK and the phone completed EAP-TLS again. I also checked and removed leftover PMKSA state for an already-ended session.</p>
-<p>I tightened the underlying FreeRADIUS authorization policy too. Disabling a local identity produced <strong>Access-Reject</strong> at a new full EAP-TLS login, and enabling it again allowed access. New logins also failed when the EAP identity did not match the certificate or the permitted local account was missing. A second simultaneous login to one personal guest-portal account was refused.</p>
-<p>I did try changing an active client's VLAN through CoA. The tested firmware replied with an <strong>Unsupported-Attribute NAK</strong>, not a successful reassignment.</p>
-<h2>What the Wi-Fi cache taught me</h2>
-<p>Disconnecting a device and cleaning up PMKSA does not erase every wireless key. I looked at the separate <strong>802.11r fast-transition cache</strong> and found FT entries remaining after targeted PMKSA cleanup. I did not find a safe, tested way to remove the FT entries for just one phone on the UniFi firmware I'm using.</p>
-<p>That matters when an account is disabled. The next <em>full</em> EAP-TLS login is checked against the current policy, but an existing FT context may survive without immediately triggering that check. I don't claim that the tool instantly revokes every cached key.</p>
-<p>A separate TLS 1.2 capture showed the phone offering an old session ID while FreeRADIUS performed a full handshake. Two complete authentications took roughly 0.16–0.27 seconds. I chose not to enable persistent session caching just to make that a little faster.</p>
-<p>Most regular clients are my own devices, with guests on a separate network. I left 802.11r enabled and accepted the documented limitation instead of flushing every AP's cache or restarting radios.</p>
-<h2>What I still need to check</h2>
-<p>These are selected client tests, not a blanket claim about every device. I still need a full post-reboot check of the FreeRADIUS custom policy and broader AD computer authorization tests. The application source and operational configuration remain private; this page describes the decisions and actual results.</p>
-<p><a class="source-link" href="identity-pki.html">Certificate-based access →</a> &nbsp; <a class="source-link" href="switching-wireless.html">UniFi and switching →</a> &nbsp; <a class="source-link" href="network-v3.8.html">Network notes →</a></p>
+<h2>From one stale session to a stable release</h2>
+<p>My first attempt to disconnect a roaming phone used an old RADIUS Session ID and failed. I was switching between the UniFi controller, FreeRADIUS Accounting and OPNsense to find out what was actually connected. That experience gave me a concrete reason to build <strong>BiXCore RADIUS Control</strong>.</p>
+<p>I finished stable <strong>v1.0.0 on 19 November 2026</strong> and deployed v1.0.1 later that day with a more usable phone and tablet layout. The tool runs on my NAS and works with the existing FreeRADIUS service on OPNsense. It is not a replacement RADIUS server.</p>
+<h2>What I use it for</h2>
+<p>The interface shows fresh, stale and ended RADIUS Accounting sessions, recent history, local FreeRADIUS accounts and personal Captive Portal sessions. I can refresh the data and check the current session before taking action.</p>
+<p>I can manually enable or disable <strong>local FreeRADIUS accounts</strong> and change their configured VLAN. Those changes apply to future authentications; they do not instantly move an existing Wi-Fi connection. I also manage personal portal access and a separate shared guest Wi-Fi account, with explicit confirmation for guest Disconnect.</p>
+<p><strong>Domain accounts are different:</strong> I can see their sessions and, where supported, disconnect one device, but I cannot disable AD users, alter directory permissions or change their VLAN from this tool.</p>
+<h2>Three containers instead of an overpowered web app</h2>
+<p>I moved the production application into three Docker services. <strong>web</strong> serves an authenticated FastAPI interface with four languages, light/dark themes and an action history. <strong>sync</strong> regularly imports a sanitized gateway snapshot. <strong>control</strong> handles narrowly approved changes. The browser-facing container does not hold general SSH access or unrestricted OPNsense credentials.</p>
+<p>Restricted gateway helpers check the live target again before each change. The permanent audit log records ACK, NAK, errors and refused actions. I made sensitive operations fail closed if the audit store is unavailable: I would rather see an error than lose the record of what happened.</p>
+<h2>Testing UniFi on real phones</h2>
+<p>A targeted online RADIUS Disconnect returned an ACK, and the phone disconnected and completed EAP-TLS again. EAPOL reauthentication also worked. For an already ended connection I could examine and clear selected leftover PMKSA state rather than pretend it was still online.</p>
+<p>I tightened FreeRADIUS authorization separately. In live tests a disabled local identity was rejected at its next full EAP-TLS login, and it could log in again after being enabled. A mismatched EAP identity and a certificate without a permitted matching local account also failed new logins. One personal guest portal account was denied a second simultaneous session.</p>
+<p>I tried live VLAN reassignment through UniFi CoA as well. The AP returned an <strong>Unsupported-Attribute NAK</strong>; I have not claimed that as a working feature.</p>
+<h2>Omada taught me not to trust an ACK alone</h2>
+<p>Wired 802.1X on my Omada switch needed its own implementation. My early request produced a NAK. After I narrowed the RADIUS packet to the fields the switch accepted, the switch returned a verified Disconnect-ACK.</p>
+<p>But there was another trap: the switch did not always send an Accounting-Stop for the old session. Once, the new Accounting-Start arrived just after my original timeout. Closing the old row on ACK alone could have left misleading history, or worse, targeted the wrong record.</p>
+<p>I changed the cleanup so it happens <em>only</em> after a verified ACK and a unique replacement Accounting-Start for the same client and port, while the old database row remains unchanged. There is a bounded wait and no automatic retry for an uncertain result. I tested the resulting behavior on <strong>two physical switch ports</strong>, with a workstation and a domain controller. Both had the expected new session and a correctly closed old record.</p>
+<p>The action is restricted to eligible individual wired 802.1X sessions on the configured Omada switch. It is not a blanket switch-port shutdown. <a href="notes.html#omada-accounting">The Omada failure and fix →</a></p>
+<h2>The Wi-Fi keys I decided not to flush</h2>
+<p>I found that PMKSA cleanup did not remove separate <strong>802.11r fast-transition keys</strong> on the UniFi APs. A disabled identity is rejected at its next full EAP-TLS authentication, but an existing cached FT context may remain. I accepted that limitation for my personal network rather than doing disruptive global cache flushes.</p>
+<p>I also captured a TLS 1.2 client offering an old session ID while FreeRADIUS performed a complete handshake. The full authentications took around 0.16–0.27 seconds in those samples. I left persistent TLS session caching off; the possible gain wasn't worth adding another edge case to authorization.</p>
+<h2>What the release tests cover</h2>
+<p>The deployed <strong>v1.0.1</strong> interface, three healthy containers and access-control checks passed. The release suite recorded <strong>257 Python tests passed, one skipped</strong>. Browser layout tests covered phone, tablet and desktop widths, themes and languages using a mock API; they did <em>not</em> send new live Disconnect commands. Live UniFi and Omada operations were checked separately.</p>
+<p>The software is finished, but one infrastructure maintenance task remains: the dual-interface NAS route used to reach OPNsense has not yet been verified across a full NAS reboot. A successful container restart is not the same as end-to-end boot recovery.</p>
+<p>I keep the source and live configuration private. This page is about what I built, where it failed and what I actually checked.</p>
+<p><a class="source-link" href="identity-pki.html">Certificate-based access →</a> &nbsp; <a class="source-link" href="switching-wireless.html">Switching and wired 802.1X →</a> &nbsp; <a class="source-link" href="network-v3.8.html">Network notes →</a></p>
 </div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p>
 </main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

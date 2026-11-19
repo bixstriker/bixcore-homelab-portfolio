@@ -4,6 +4,17 @@ Quite a few parts of BiXCore took more than one attempt. Some failures were caus
 
 ## OPNsense, WAN and IPv6
 
+### A dual-stack portal login allowed IPv6 but lost IPv4
+
+My guest iPhone had a valid IPv4 address and several IPv6 addresses, but after signing in over IPv6 the portal only allowed the IPv6 side. The IPv4 address appeared in ARP yet was absent from the captive-portal session and its PF allow table. This wasn't a DHCP problem.
+
+I traced the difference to OPNsense's address filtering with Client Roaming enabled, matching upstream issue #11214. After checking the upstream patch against the installed version and preserving rollback files, I applied the targeted fix and restarted only the portal background process.
+
+The **same live session** gained its missing IPv4 permission without another login. The nine existing IPv6 entries remained in PF, and the phone passed a dual-stack test with an IPv6 readiness score of 10/10. The custom patch must be checked after later OPNsense updates; I can't assume a package upgrade will preserve it.
+
+[How the guest network is set up →](../docs/pages/network-services.html)
+
+
 ### The new IPv6 alias started out empty
 
 I wanted the local IPv6 policy to follow the networks actually assigned to my interfaces, rather than a hard-coded prefix from my ISP. The interface group appeared in OPNsense, but the corresponding PF table initially had no members.
@@ -72,6 +83,17 @@ The distinction between a running setting and a persistent setting has been usef
 [Switching and LLDP →](../docs/pages/switching-wireless.html)
 
 ## Switching, certificates and clients
+
+### Omada acknowledged Disconnect but left the old session open
+
+I added individual wired 802.1X Disconnect to my RADIUS Control tool. At first the Omada switch returned a RADIUS NAK. After reducing the packet to the fields it actually expected, the switch sent a verified Disconnect-ACK and the client authenticated again.
+
+The hard part came afterward. Omada did not reliably send Accounting-Stop for the old record, and one replacement Accounting-Start arrived just after my original waiting window. Treating ACK alone as proof that the database was clean would have been misleading.
+
+I kept the exact client/port/session checks, extended the bounded wait and allowed the old Accounting record to close **only when a matching new session appeared and the old row had not changed**. No automatic retry is sent after an uncertain result. Final live tests on two different wired ports confirmed a new session and correctly closed previous record for each.
+
+[What I built around this behavior →](../docs/pages/radius-control.html)
+
 
 ### A stale Wi-Fi session ID caused a UniFi Disconnect-NAK
 

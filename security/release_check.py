@@ -65,8 +65,8 @@ def check():
       elif u.fragment and dest in pages and unquote(u.fragment) not in pages[dest].ids:
         problems.append(f'Missing fragment: {p.relative_to(ROOT)} -> {ref}')
   if len(pages)!=37: problems.append(f'Expected 37 site pages; found {len(pages)}')
-  if (SITE/'pages'/'notes.html').read_text('utf-8').count('<article class="mini-card" id=') != 35:
-    problems.append('Expected 35 troubleshooting cases')
+  if (SITE/'pages'/'notes.html').read_text('utf-8').count('<article class="mini-card" id=') != 37:
+    problems.append('Expected 37 troubleshooting cases')
   try:
     commit_count=int(subprocess.check_output(['git','rev-list','--count','HEAD'],cwd=ROOT,text=True).strip())
     authors=subprocess.check_output(['git','log','--format=%ae%n%ce'],cwd=ROOT,text=True).splitlines()
@@ -77,7 +77,7 @@ def check():
   if problems:
     print('\n'.join('BLOCK: '+p for p in problems))
     return 1
-  print(f'PASS: {len(pages)} HTML pages, 35 cases, valid local links and noreply-only Git history')
+  print(f'PASS: {len(pages)} HTML pages, 37 cases, valid local links and noreply-only Git history')
   return 0
 if __name__=='__main__':
   sys.exit(check())
