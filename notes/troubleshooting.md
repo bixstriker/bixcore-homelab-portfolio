@@ -30,7 +30,7 @@ This is a test of the **current** prefix, not proof of automatic handling of a f
 
 During the IPv6 lab work, the backup LTE modem did not bring its PPP link back after a gateway restart. A first device reset and interface reconfiguration did not restore usable connectivity. A later device reset brought LTE back in the observed session.
 
-I haven't established a root cause or enabled automated recovery. I also haven't repeated the full primary/LTE failover since this incident.
+I haven't established the cause of that particular modem startup failure or automated its recovery. The full primary-WAN-to-LTE failover and VPN restoration had passed separate real-world tests; the boot incident was a different problem.
 
 [Gateway operations →](../docs/pages/security-operations.html)
 
