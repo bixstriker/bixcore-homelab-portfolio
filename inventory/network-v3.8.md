@@ -1,8 +1,8 @@
-# Network Master v3.22: Project Index
+# Network Master v3.26: Project Index
 
 I keep detailed working notes for the network. This index links each section to the corresponding project write-up, from gateway configuration and DNS to switching, monitoring and the IPv6 problems I have worked through.
 
-The 19 November revision records Guest RA Option 37, a tested dual-stack Captive Portal fix, Plex streaming and Suricata IPS tests, and the gateway side of RADIUS Control. Appendix S is an earlier v0.10.7.3 checkpoint; the application subsequently reached tested v1.0.1. Virtual-router DHCPv6 prefix delegation remains a separate open experiment. I retain historical entries and the old filename for working links.
+The 21 November revision documents RadSec/mTLS on both UniFi access points and Omada, the failed internal-CA experiments, return to a working Let's Encrypt server chain, and the tested RadSecProxy restart automation. The private RADIUS Control project subsequently reached v1.0.2 for its source and restricted UniFi helpers, with selected live actions verified earlier the same day. Its NAS web image remained v1.0.1. The first natural ACME renewal and exported PEM replacement have not yet been observed. Older sections are dated history, and this filename remains for existing links.
 
 | Section | Work | Status | Read more |
 | --- | --- | --- | --- |
@@ -50,7 +50,13 @@ The 19 November revision records Guest RA Option 37, a tested dual-stack Captive
 
 | R | Plex moved to Vodafone WAN with Suricata IPS | Measured speeds, 4K Direct Play and controlled IPS drop | [Gateway and IPS tests](../docs/pages/security-operations.html) |
 | R.6 | WAN playback and a separate Windscribe forwarded endpoint | Current paths documented; prior live LTE/VPN failover tested | [NAS watchdog](../docs/pages/nas-services-operations.html) |
-| S | RADIUS Control helpers and original Omada wired pilot | Documented v0.10.7.3 checkpoint; v1.0.1 later verified on two ports | [Finished RADIUS Control](../docs/pages/radius-control.html) |
+| S | RADIUS Control helpers and original Omada wired pilot | Documented earlier v0.10.7.3 checkpoint; stable v1.0.1 and later v1.0.2 helper acceptance | [Finished RADIUS Control](../docs/pages/radius-control.html) |
+
+| T | RADIUS Control v1.0.1 production, Omada wired and gateway helper boundary | Prior stable release and tested wired controls | [RADIUS Control](../docs/pages/radius-control.html) |
+| U | Initial RadSec/Omada certificate failure | Historical investigation; later resolved on public server chain | [RadSec certificate case](../docs/pages/notes.html#radsec-omada-certificate) |
+| V | RadSec established for both UniFi APs and Omada | TLS 1.3, EAP-TLS, Accounting verified; later certificate rollback documented in W | [RadSec project](../docs/pages/radsec-mtls.html) |
+| W | Final RadSec/mTLS state, CA cleanup and ACME service actions | Working TLS and restart tested; full ACME renewal to exported PEM untested | [RadSec and ACME](../docs/pages/radsec-mtls.html) |
+| RADIUS Control v1.0.2 | Source/helper maintenance after RadSec migration | Three selected live actions passed; not re-run after final evening rollback | [RADIUS Control](../docs/pages/radius-control.html) |
 
 ### How to use this index
 

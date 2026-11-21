@@ -70,7 +70,7 @@ def check():
   versions = {
     'pages/windows-server-v2.6.html': 'Windows Server Master v2.10',
     'pages/proxmox-v1.7.html': 'Proxmox Master v1.12',
-    'pages/network-v3.8.html': 'Network Master v3.22',
+    'pages/network-v3.8.html': 'Network Master v3.26',
   }
   for relative, version in versions.items():
     page=(SITE/relative).read_text('utf-8')
@@ -79,11 +79,13 @@ def check():
   required = {
     'pages/hardware.html': ['Barox', 'failover', 'VPN recovery'],
     'pages/lab.html': ['18 virtual machines', 'twelve platforms'],
-    'pages/work-index.html': ['12 router/firewall platforms', 'Network Infrastructure v3.22'],
+    'pages/work-index.html': ['12 router/firewall platforms', 'Network Infrastructure v3.26', 'radsec-mtls.html'],
     'pages/proxmox-firewall-lab.html': ['All 40 Proxmox chapters'],
     'pages/working-notes.html': ['Proxmox Master v1.12 notes'],
     'pages/proxmox-v1.6.html': ['Historical snapshot', 'Proxmox Master v1.12'],
-    'pages/radius-control.html': ['v1.0.1', 'Omada'],
+    'pages/radius-control.html': ['v1.0.2', 'v1.0.1', 'Omada', 'radsec-mtls.html'],
+    'pages/radsec-mtls.html': ['TLS 1.3', 'Let\'s Encrypt', 'ACME', 'exported PEM', 'verify'],
+    'pages/notes.html': ['radsec-omada-certificate', 'radsec-unifi-das'],
   }
   for relative, phrases in required.items():
     page=(SITE/relative).read_text('utf-8')

@@ -20,6 +20,14 @@ The Wi-Fi setup uses managed UniFi access points and a locally hosted controller
 
 I also investigated what could be learned from the controller backup format. Those investigations helped me understand the stored WLAN settings, but the running controller and actual client connections remain the more useful checks.
 
+## Securing RADIUS between the APs, switch and gateway
+
+I migrated both UniFi APs and my wired Omada switch to **RadSec over TLS 1.3**. The client login is still EAP-TLS inside FreeRADIUS; RadSec protects and authenticates the network device's transport to the server.
+
+Omada rejected experimental internal server certificates with verification enabled, even when OpenSSL checks passed elsewhere. I used a trusted Let's Encrypt server chain while keeping the original separate RadSec client CA on the gateway. With verification still enabled, Omada authenticated successfully and sent Accounting. I also verified both UniFi APs over TLS 1.3.
+
+After the migration I updated the restricted UniFi session-control helpers, not the APs' whole configuration or the NAS web image. [The RadSec implementation →](../docs/pages/radsec-mtls.html)
+
 ## UniFi session Accounting and Disconnect
 
 I used the existing FreeRADIUS database to track sessions from both UniFi access points. A Disconnect test initially failed with a stale session ID after roaming. Using the active session produced an ACK, and the phone left Wi-Fi and authenticated again using EAP-TLS. I later tried a live VLAN change through CoA, but the tested UniFi firmware returned an Unsupported-Attribute NAK.

@@ -6,6 +6,14 @@ I wanted wired and Wi-Fi clients to use individual certificates instead of a sha
 
 Windows Server provides Active Directory and an enterprise certification authority. NDES handles SCEP for supported Android devices. FreeRADIUS runs on OPNsense and checks the client certificate before applying the relevant access policy at the switch or wireless access point.
 
+## Moving the RADIUS transport to TLS
+
+I later put RadSecProxy in front of FreeRADIUS for my two UniFi access points and wired Omada switch. This encrypts and authenticates the **RADIUS transport**, not the certificate identity used by the Windows, Linux or Android client inside EAP-TLS.
+
+Both UniFi and Omada completed TLS 1.3 sessions with the gateway, and I verified authentication and Accounting. Omada needed a trusted public server chain while the gateway kept a separate CA for the switch's client certificate; I left switch-side server verification enabled. I did not replace the client's enterprise CA, LDAPS or revocation checks as part of this change.
+
+[Why I used RadSec and how I fixed Omada trust →](../docs/pages/radsec-mtls.html)
+
 ## What I have tested
 
 - Certificate enrollment and wired EAP-TLS for selected Windows machines.
