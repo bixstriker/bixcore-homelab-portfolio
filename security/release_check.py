@@ -84,7 +84,7 @@ def check():
     'pages/working-notes.html': ['Proxmox Master v1.12 notes'],
     'pages/proxmox-v1.6.html': ['Historical snapshot', 'Proxmox Master v1.12'],
     'pages/radius-control.html': ['v1.0.2', 'v1.0.1', 'Omada', 'radsec-mtls.html'],
-    'pages/radsec-mtls.html': ['TLS 1.3', 'Let\'s Encrypt', 'ACME', 'exported PEM', 'verify'],
+    'pages/radsec-mtls.html': ['TLS 1.3', 'Let\'s Encrypt', 'ACME', 'exported PEM', 'certificate verification enabled'],
     'pages/notes.html': ['radsec-omada-certificate', 'radsec-unifi-das'],
   }
   for relative, phrases in required.items():
