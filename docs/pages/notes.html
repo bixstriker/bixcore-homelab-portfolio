@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
-  <meta name="description" content="Thirty-seven troubleshooting cases from OPNsense, IPv6, Windows identity, switching, NAS and Proxmox.">
+  <meta name="description" content="Thirty-nine troubleshooting cases from OPNsense, IPv6, Windows identity, switching, NAS and Proxmox.">
   <title>Problems and Fixes · BiXCore</title>
   <link rel="stylesheet" href="../styles.css">
   <link rel="canonical" href="https://lab.bixcore.de/pages/notes.html">
@@ -12,7 +12,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BiXCore">
   <meta property="og:title" content="Problems and Fixes · BiXCore">
-  <meta property="og:description" content="Thirty-seven troubleshooting cases from OPNsense, IPv6, Windows identity, switching, NAS and Proxmox.">
+  <meta property="og:description" content="Thirty-nine troubleshooting cases from OPNsense, IPv6, Windows identity, switching, NAS and Proxmox.">
   <meta property="og:url" content="https://lab.bixcore.de/pages/notes.html">
   <meta name="twitter:card" content="summary">
 </head>
@@ -61,6 +61,8 @@
 <section id="client-incidents">
 <h2>Switching, certificates and clients</h2>
 <div class="two-col">
+<article class="mini-card" id="radsec-omada-certificate"><h3>Omada rejected my own RadSec CA certificates</h3><p>I wanted certificate verification enabled on the wired switch. My own test root and intermediate chains passed OpenSSL checks, but Omada still rejected the server certificate, without giving me a useful X.509 error code.</p><p>Using a public Let's Encrypt server certificate fixed that side of TLS. A second failure on the proxy then showed an incorrect issuer for Omada's <em>client</em> certificate. After restoring the right client CA, TLS 1.3 and Access-Accept worked with verification enabled. The specific reason Omada disliked the experimental internal server chains is still unknown.</p><p><a href="radsec-mtls.html">The full RadSec investigation →</a></p></article>
+<article class="mini-card" id="radsec-unifi-das"><h3>RadSec worked, but UniFi Disconnect stopped working</h3><p>EAP-TLS and Accounting survived my move to RadSec, but my own targeted Disconnect requests stopped returning ACKs. The proxy moved Accounting Detail under a different sender, and UniFi's DAS rejected the old pre-RadSec settings.</p><p>I made the restricted helpers verify the proxy and original AP identity, session and active TLS client before choosing the correct DAS path. In live tests, Disconnect/PMKSA and a separate EAPOL reauthentication led to the expected new sessions. Those checks preceded the final late-evening certificate cleanup.</p><p><a href="radius-control.html">RADIUS Control v1.0.2 →</a></p></article>
 <article class="mini-card" id="omada-accounting"><h3>Omada acknowledged Disconnect, but left the old session open</h3>
 <p>I built wired 802.1X Disconnect into RADIUS Control. The switch first returned a NAK. Once I corrected the packet, it returned an ACK, but the old Accounting record could remain open even after the client authenticated again.</p>
 <p>One new session arrived just after my original timeout. I changed cleanup to wait for a verified ACK and a uniquely matching new Accounting-Start before closing the unchanged old row. Both a workstation port and a domain-controller port passed the final live test; unknown results are never automatically retried.</p><p><a href="radius-control.html">The RADIUS Control project →</a></p></article>

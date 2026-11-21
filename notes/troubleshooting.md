@@ -84,6 +84,32 @@ The distinction between a running setting and a persistent setting has been usef
 
 ## Switching, certificates and clients
 
+### Omada refused my own CA certificates during RadSec setup
+
+I wanted my wired Omada switch to use RADIUS over TLS with **server-certificate verification left on**. My first internally issued certificates failed the handshake. I tried a fresh root CA, then a root and intermediate chain, reissued the server certificate and checked the chain with OpenSSL. Everything could look fine on the machines running OpenSSL while the switch still refused it.
+
+I couldn't retrieve the precise X.509 error from Omada. Instead of inventing a firmware explanation, I tried the existing public Let's Encrypt server certificate and an appropriate trust bundle. The switch passed the server side of TLS, but RadSecProxy then rejected Omada's **client certificate** with an issuer-trust error. The two trust directions had become mixed up during the experiment.
+
+I restored the original client-authentication CA on the proxy while keeping Let's Encrypt for the server. Omada then completed TLS 1.3 and FreeRADIUS returned Access-Accept, with verification enabled. I removed the test certificates and profiles afterward.
+
+I still don't know which exact X.509 rule made Omada reject my experimental internal server certificates. A working public chain is a measured workaround, not proof that the switch rejects all private PKI.
+
+[How I built the RadSec connection →](../docs/pages/radsec-mtls.html)
+
+### RadSec worked, but my UniFi Disconnect stopped working
+
+After moving both UniFi APs to RadSec, clients could still complete EAP-TLS authentication and Accounting, but my own RADIUS Control Disconnect request stopped getting ACKs. It was tempting to blame the TLS migration as a whole. The evidence was more specific.
+
+The proxy had changed the **source directory for Accounting Detail**, even though the original AP identity was still inside the RADIUS record. Separately, the UniFi DAS service rejected requests using an outdated pre-RadSec setting. I traced the latter through an AP-side diagnostic message and the currently active TLS-client configuration.
+
+I changed my two restricted helpers to check the precise proxy/AP Accounting relationship and verify the matching TLS client before selecting the DAS configuration. Unknown or ambiguous state still causes a refusal, not a speculative Disconnect.
+
+In real tests, one phone returned Disconnect-ACK and completed scoped PMKSA cleanup before a new session, while a second accepted an EAPOL reauthentication request and recorded an Accounting Stop/Start. The source/helper release was **v1.0.2**; the NAS web containers were not rebuilt. Those tests happened before the final late-evening certificate cleanup, so I won't extend the claim beyond that checkpoint.
+
+[The RADIUS Control changes →](../docs/pages/radius-control.html) · [RadSec project →](../docs/pages/radsec-mtls.html)
+
+## Switching, certificates and clients
+
 ### Omada acknowledged Disconnect but left the old session open
 
 I added individual wired 802.1X Disconnect to my RADIUS Control tool. At first the Omada switch returned a RADIUS NAK. After reducing the packet to the fields it actually expected, the switch sent a verified Disconnect-ACK and the client authenticated again.

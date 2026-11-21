@@ -145,9 +145,9 @@ def check():
       if not dest.is_relative_to(ROOT.resolve()) or not dest.exists():
         problems.append(f'Broken Markdown link: {p.relative_to(ROOT)} -> {ref}')
 
-  if len(pages)!=37: problems.append(f'Expected 37 site pages; found {len(pages)}')
-  if (SITE/'pages'/'notes.html').read_text('utf-8').count('<article class="mini-card" id=') != 37:
-    problems.append('Expected 37 troubleshooting cases')
+  if len(pages)!=38: problems.append(f'Expected 38 site pages; found {len(pages)}')
+  if (SITE/'pages'/'notes.html').read_text('utf-8').count('<article class="mini-card" id=') != 39:
+    problems.append('Expected 39 troubleshooting cases')
   try:
     commit_count=int(subprocess.check_output(['git','rev-list','--count','HEAD'],cwd=ROOT,text=True).strip())
     authors=subprocess.check_output(['git','log','--format=%ae%n%ce'],cwd=ROOT,text=True).splitlines()
@@ -158,7 +158,7 @@ def check():
   if problems:
     print('\n'.join('BLOCK: '+p for p in problems))
     return 1
-  print(f'PASS: {len(pages)} HTML pages, 37 cases, valid local links and noreply-only Git history')
+  print(f'PASS: {len(pages)} HTML pages, 39 cases, valid local links and noreply-only Git history')
   return 0
 if __name__=='__main__':
   sys.exit(check())

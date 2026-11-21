@@ -2,7 +2,7 @@
 
 I originally built BiXCore RADIUS Control because I was tired of switching between the UniFi controller, RADIUS Accounting and OPNsense just to figure out which device was connected. My first attempt to disconnect a roaming phone used an old Session ID and failed. That was a useful reminder: a management tool should know what it is acting on, not just offer a button.
 
-On **19 November 2026** I finished the stable **v1.0.0** release, then deployed **v1.0.1** with a more usable phone and tablet layout. The application runs on my NAS and manages selected FreeRADIUS and network-access operations through OPNsense. I kept the code private, but the design and results are worth documenting.
+On **19 November 2026** I finished stable **v1.0.0** and deployed the **v1.0.1** responsive web interface. On **21 November**, the **v1.0.2 source/helper release** repaired UniFi control after the migration to RadSec. The NAS web, control and sync containers did not get new images in that maintenance release. The application runs on my NAS and manages selected FreeRADIUS and network-access operations through OPNsense. I kept the code private, but the design and results are worth documenting.
 
 ## What I can do from one screen
 
@@ -47,6 +47,22 @@ The per-device action is now available for eligible wired 802.1X sessions on the
 I found that targeted PMKSA cleanup on UniFi did not remove the separate **802.11r fast-transition keys**. A disabled identity is rejected at the next *full* EAP-TLS check, but that doesn't promise immediate deletion of every cached Wi-Fi key. I kept fast transition enabled for my personal network and documented the residual risk.
 
 I also captured a TLS 1.2 login where the client offered a previous session ID but the server completed a full handshake. Complete authentications took around 0.16–0.27 seconds in those samples. I chose not to add persistent TLS session caching for a marginal speed gain and a new authorization edge case.
+
+## Making the controls work again after moving to RadSec
+
+A successful client EAP-TLS login wasn't the end of my RadSec migration. My own UniFi Disconnect initially stopped returning ACKs. The proxy also changed where Accounting Detail appeared: the proxy was now the transport sender, while the real AP remained the NAS identified inside the RADIUS record.
+
+I updated the two restricted UniFi gateway helpers to accept only the known direct or proxy Accounting sources, and still require a unique matching AP, session, client MAC and identifier. I didn't turn this into a broad fallback that accepts whichever sender happens to answer.
+
+The other problem was Dynamic Authorization (DAS): the APs were rejecting Disconnect requests under the old pre-RadSec secret assumptions. I traced that using the AP diagnostics and made the helpers verify the exact, active RadSec TLS client identity before selecting the corresponding, locally verified DAS setting. This is a control-plane check, separate from the EAP-TLS user certificate and from the proxy's backend secret.
+
+**The v1.0.2 acceptance was real:** one UniFi phone received Disconnect-ACK and scoped PMKSA cleanup, then started a new Accounting session. A wired Omada workstation returned authenticated ACK with safe closure of the previous Accounting record after the new Start, leaving the domain-controller port alone. Another UniFi phone received an EAPOL reauthentication request, followed by a recorded Stop/Start. The suite reported **287 tests passed and one skipped**.
+
+The **v1.0.2 release applies to the source and two OPNsense UniFi helpers**, not to newly built NAS Docker images. Web still runs the v1.0.1 image; the separate control and sync worker images also stayed unchanged. I did not restart FreeRADIUS, APs or the NAS containers for those helper changes.
+
+These selected control tests were completed earlier on 21 November. The final RadSec certificate cleanup and restart happened later that evening, so I won't claim I repeated the full RADIUS Control acceptance suite after the final rollback.
+
+[Why I moved the network to RadSec →](../docs/pages/radsec-mtls.html) · [The UniFi DAS investigation →](../docs/pages/notes.html#radsec-unifi-das)
 
 ## The release, and what it doesn't prove
 
