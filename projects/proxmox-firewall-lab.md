@@ -20,6 +20,14 @@ The [IPv6-only VLAN](../docs/pages/ipv6-only-lab.html) now works with real Windo
 
 I updated the NethSecurity guest to **8.8.1** and Taranac to **1.3.4**. The Windows and KDE test clients and both virtual OPNsense guests were updated too, but I didn't record exact new build numbers for those systems. I intentionally left VyOS on Stream 2026.03. The new versions do not, by themselves, extend my earlier connectivity tests or prove delegated IPv6 prefixes are working.
 
+## The 26 November lab checkpoint
+
+The inventory is still 18 VMs. I updated the host to Proxmox VE 9.3.1, checked boot and storage, and verified the updated KDE guest and MikroTik RDP/internet path. IPFire was also updated, but I did not repeat its complete forwarding tests.
+
+Taranac Community Edition 1.3.5 received two independent hotfixes. Four nginx-based images now report nginx 1.30.8, and I verified that the running TACACS+ container uses the hotfix image. All 12 containers were up. Full AAA and NAC regression testing remains open.
+
+The earlier November version figures above are historical checkpoints rather than a list of the current installed builds. I have not changed the IPv6-only virtual-router and DHCPv6-PD test status.
+
 ## Problems I encountered
 
 The VLAN path for the lab WAN caused a DHCP investigation that went all the way from the gateway to the physical switch and the virtual NIC. I also corrected an upstream bridge mistake during the IPFire setup. Those are described in the [troubleshooting notes](../docs/pages/notes.html#lab). DD-WRT later needed a UEFI boot repair involving its GRUB file, embedded binary template and reboot handling; two reboot tests succeeded, but normal shutdown remains unresolved. The [DD-WRT boot repair](../docs/pages/notes.html#ddwrt-uefi) and [SSH management lockout](../docs/pages/notes.html#ddwrt-access) have their own incident notes.

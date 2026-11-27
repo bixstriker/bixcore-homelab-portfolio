@@ -22,6 +22,14 @@ For Android, I used mobile device management with SCEP enrollment through the in
 
 One surprise was that applying the Wi-Fi configuration could trigger another SCEP request. I investigated that as part of the profile workflow rather than assuming Wi-Fi authentication was broken. The devices connected successfully.
 
+## Recovering Android enrollment after a software update
+
+After a Xiaomi tablet's Android/HyperOS update, the management agent reported that the SCEP server was unreachable. The enrollment endpoint still answered, and a second Xiaomi phone using the same profile received a new certificate and connected. I therefore investigated the managed work profile before changing NDES or the CA.
+
+On 25 November I removed only the affected work profile, rebooted and enrolled it again, assigning the SCEP certificate profile before the Wi-Fi profile. The tablet and a second affected phone both recovered EAP-TLS connectivity. The CA issued new certificates, the superseded certificates were revoked and the CRL was republished. The devices' personal profiles and data were not removed.
+
+The procedure worked, but I have not established the precise Android or management-agent defect. I did not need to modify NDES, FreeRADIUS or the certificate template.
+
 ## Renewal and cleanup
 
 On Kubuntu, I have a documented certificate renewal process. I also tested an Android SCEP replacement in which the old certificate was revoked and the updated CRL reached FreeRADIUS. That is a useful single-device result, although I still need to cover more renewal and recovery scenarios.

@@ -22,6 +22,12 @@ The first VM pool used two older HDDs without disk redundancy. After checking SM
 
 I migrated the ZFS data, updated the Proxmox storage references, started the existing guests again and retired the old pool. The current setup uses a single 2 TB ZFS disk. It is suitable for an on-demand lab, but a disk failure would still require recovery from a separate backup.
 
+## Checking the host after the November updates
+
+By 26 November the host was running Debian 13.8 and Proxmox VE 9.3.1. I checked the boot path, ZFS pool and system services after the updates. An AppArmor denial in the CUPS restart path had been holding up log rotation; I corrected the profile and checked that CUPS and the next logrotate run completed. The AppArmor change must be rechecked after package updates.
+
+I also verified separate Ed25519 SSH access from Windows to the lab administration account. I did not enable root SSH access by key. The 18-VM inventory remains intact, and snapshots are still not a substitute for an independent backup of the single-disk VM pool.
+
 ## What I want to improve
 
 The remaining work is practical: an off-host restore test, more reboot and IPv6 checks, and a complete test of the network paths that should be blocked. I normally run only two or three VMs at a time, so I'm prioritizing reliability and low operating cost over building a permanent cluster.

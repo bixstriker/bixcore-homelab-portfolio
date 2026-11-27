@@ -20,6 +20,12 @@ The Intel graphics device worked for the guest, and I independently tested **har
 
 There is one measurement I couldn't make inside this VM: the virtual environment did not expose the GPU video-engine counters needed to see how much of KRDP's actual encoding workload went through Quick Sync. So hardware encoding capability is confirmed; per-frame KRDP hardware utilization was not measured.
 
+## Rechecking after the 26 November guest update
+
+I took a rollback snapshot before updating the KDE neon guest, then rebooted that guest alone. The Wayland session and KRDP listener returned. From Windows I checked the forwarded RDP path through MikroTik and confirmed the actual desktop and internet connection.
+
+The Intel HD 4600 was still attached to the guest with the i915 driver and a render node. An FFmpeg VA-API test using the i965 driver successfully encoded 60 H.264 frames at 1280 × 720 and 30 fps after the reboot. This confirms hardware encoding in the guest; it does not establish which encoder KRDP used during the real remote desktop session.
+
 ## What I would do differently
 
 Next time I would first test the guest's display mode and EDID, then check the remote desktop settings, instead of changing several graphics devices together. The current lab setup also uses a convenience-oriented desktop login, which I would not copy unchanged to a more exposed machine.

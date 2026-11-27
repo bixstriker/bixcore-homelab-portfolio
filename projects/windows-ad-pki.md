@@ -70,6 +70,12 @@ I set up certificate renewal and CRL publication, but I still want to improve ho
 
 [Android and Linux enrollment →](../docs/pages/linux-mobile-identity.html)
 
+## A subordinate CA for a narrowly scoped TLS inspection pilot
+
+On 27 November I used AD CS to issue a dedicated subordinate inspection CA for Zenarmor. The certificate has CA basic constraints, a zero path-length limit and the Server Authentication EKU. Its private key was generated on the gateway; the enterprise root's private key stayed on the CA server. I verified the chain and revocation information on Windows, corrected the certificate import order in Zenarmor and checked the issuer actually presented during the two-domain HTTPS pilot.
+
+This CA serves a different purpose from the end-device EAP-TLS certificates. I did not change the existing RADIUS server trust policy or issue a replacement enterprise root. The full inspection experiment, including the unresolved DNS-enrichment bypass, is described in [my Zenarmor notes](../docs/pages/zenarmor.html).
+
 ## What still needs attention
 
 The directory failover test worked, but restoring the CA and NDES service from an independent backup is a different exercise. The switch's IPv6 neighbor bindings also need to be checked after future upstream prefix changes.

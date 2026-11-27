@@ -45,6 +45,12 @@ A separate management-access incident was caused by SSH brute-force blocking aft
 
 [DD-WRT boot troubleshooting →](../docs/pages/notes.html#ddwrt-uefi) · [Reboot hang →](../docs/pages/notes.html#ddwrt-reboot) · [SSH access incident →](../docs/pages/notes.html#ddwrt-access)
 
+## The 26 November maintenance checkpoint
+
+I updated the MikroTik CHR and IPFire guests. I checked the actual RDP connection through MikroTik and the KDE guest's internet access afterward. I did not record the new exact RouterOS or IPFire builds or repeat the complete IPFire forwarding test.
+
+The Taranac Community Edition guest remained on 1.3.5, but I applied two separate fixes: the nginx update in four containers and a TACACS+ image hotfix. I checked the installed nginx versions and the running TACACS+ image ID against the hotfix image. All 12 containers were up, ten with an explicit healthy status. That is a maintenance check, not a new end-to-end validation of every NAC, RADIUS, TACACS+, EST or captive portal policy.
+
 ## What the tests taught me
 
 Most of the early problems were about getting packets through the right interface. A virtual NIC connected to the wrong bridge can look like a DHCP or firewall problem, so I now check the host, switch and gateway before changing guest rules.
