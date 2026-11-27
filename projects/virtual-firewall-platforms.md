@@ -19,7 +19,7 @@ Each firewall VM has a dedicated test upstream and its own virtual client networ
 | **IPFire** | Configured RED/GREEN interfaces, fixed an initial WAN bridge mistake and checked DHCP, the web interface and a selected RDP forward. | More policy, VPN and recovery tests. |
 | **NethSecurity 8.8.1** | Configured an isolated virtual LAN, DHCP, internet/NAT, management and two RDP forwards to Windows/Linux clients. | Policies, authentication and recovery. |
 | **FreeSense 1.1.12** | Installed on ZFS, recovered from an installation-media mountroot panic, configured Kea DHCP and verified internet plus two RDP forwards. | IPv6 and management hardening. |
-| **OpenFW UTM Community 4.2.1** | Configured RED/GREEN networks and DHCP, opened the WebGUI and confirmed an RDP connection through an inbound forwarding rule. | SSH acceptance, tighter management settings and policy/recovery tests. |
+| **OpenFW UTM Community 4.5.1** (original tests: 4.2.1) | Configured RED/GREEN networks and DHCP, opened the WebGUI and confirmed an RDP connection through an inbound forwarding rule. | SSH acceptance, tighter management settings and policy/recovery tests. |
 | **DD-WRT r66445 (x86-64)** | Tested WAN/LAN, DHCP, NAT, RDP, recovered a UEFI kernel panic, repaired the persistent boot template and validated two reboots. | ACPI shutdown and firmware-update persistence. |
 | **OPNsense Community 26.7 (lab VM)** | Deployed a separate virtual OPNsense and verified internet/NAT and two client RDP forwards. | IPv6, rules and isolation. |
 
@@ -46,6 +46,8 @@ A separate management-access incident was caused by SSH brute-force blocking aft
 [DD-WRT boot troubleshooting →](../docs/pages/notes.html#ddwrt-uefi) · [Reboot hang →](../docs/pages/notes.html#ddwrt-reboot) · [SSH access incident →](../docs/pages/notes.html#ddwrt-access)
 
 ## The 26 November maintenance checkpoint
+
+On 17 November both virtual OPNsense guests were updated to 26.7.9_3. On 22 November I confirmed OpenFW UTM Community 4.5.1 in its WebGUI. My earlier OpenFW forwarding tests were on 4.2.1; I have not repeated its complete firewall, NAT or port-forward tests on 4.5.1.
 
 I updated the MikroTik CHR and IPFire guests. I checked the actual RDP connection through MikroTik and the KDE guest's internet access afterward. I did not record the new exact RouterOS or IPFire builds or repeat the complete IPFire forwarding test.
 

@@ -48,7 +48,7 @@ Updated 26 November 2026: the 18-VM lab now runs Proxmox VE 9.3.1 on Debian 13.8
 | 39 | OpenWISP, Taranac, OPNsense full clone and OpenFW | Initial service access and OpenFW RDP verified | [Proxmox guest overview](../docs/pages/proxmox-firewall-lab.html) |
 | 40 | Version and maintenance status of VM100–117 (12 November) | NethSecurity 8.8.1, Taranac 1.3.4; OPNsense/client updates with exact builds not recorded | [Firewall lab update](../docs/pages/proxmox-firewall-lab.html) |
 | 41 | 17 November Taranac and virtual OPNsense updates | Taranac 1.3.5 and OPNsense 26.7.9_3 version checkpoint | [Firewall lab](../docs/pages/proxmox-firewall-lab.html) |
-| 42 | 22 November host maintenance and VM checks | Debian 13.8, Proxmox 9.2.32 and selected client checks | [Host and storage](../docs/pages/proxmox-host-storage.html) |
+| 42 | 22 November host maintenance and VM checks | Debian 13.8, Proxmox 9.2.32, OpenFW 4.5.1 version confirmed and selected client checks | [Host and storage](../docs/pages/proxmox-host-storage.html) |
 | 43 | 26 November Proxmox 9.3.1, KDE, MikroTik, IPFire and Taranac fixes | Host reboot, RDP and VA-API tested; Taranac hotfix images checked; full AAA regression open | [Firewall lab](../docs/pages/proxmox-firewall-lab.html) |
 | A | Read-only diagnostics for host, router and gateway | Methods retained | [Firewall test methods](../docs/pages/lab-operational-method.html) |
 | B | Network and VM configuration examples | Private source; sanitized design | [Proxmox host and storage](../docs/pages/proxmox-host-storage.html) |

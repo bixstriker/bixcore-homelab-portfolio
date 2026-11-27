@@ -28,15 +28,15 @@
 <p class="lede">I built BiXCore gradually, reusing existing computers where I could and adding network equipment when I had a specific problem to solve. These are the systems behind the projects on this site.</p>
 <div class="article">
 <section><h2>Network and security</h2><div class="two-col">
-<article class="mini-card"><h3>OPNsense gateway</h3><p>An Intel N305 appliance with Intel X520/10GbE networking. It handles routing, network separation, WireGuard, Suricata, Zenarmor and FreeRADIUS.</p></article>
+<article class="mini-card"><h3>OPNsense gateway</h3><p>An Intel N305 appliance with Intel X520/10GbE networking. It handles routing, network separation, WireGuard, Suricata, Zenarmor, FreeRADIUS and RadSecProxy.</p></article>
 <article class="mini-card"><h3>Managed switching</h3><p>A TP-Link Omada SG3210X-M2, two Grandstream GWN7721 switches and an industrial Barox switch. I use them for VLANs, trunking, wired 802.1X, LLDP and IPv6 investigations. I also tested centralized TACACS+ administrator login and local recovery behavior on Omada and Barox. <a href="tacacs-switch-aaa.html">Switch administration tests →</a></p></article>
 <article class="mini-card"><h3>Wi-Fi</h3><p>Two UniFi U7 Pro XG access points, managed by a locally hosted controller. Enterprise Wi-Fi authentication is linked to the PKI and RADIUS setup.</p></article>
 <article class="mini-card"><h3>Power and backup connectivity</h3><p>An Eaton 3S UPS is connected to the firewall for power monitoring. The current backup connection is a Zyxel LTE5398-M904 on Ethernet in IP passthrough mode. On 26 November I verified physical WAN-to-LTE-to-WAN failover, including automatic VPN recovery and targeted cleanup of stale firewall states. <a href="wan-failover-recovery.html">What I tested →</a></p></article>
 </div></section>
 <section><h2>Servers and storage</h2><div class="two-col">
 <article class="mini-card"><h3>Windows Server and PKI</h3><p>Two Windows Server 2025 domain controllers provide Active Directory and DNS. The enterprise CA and NDES enrollment service run on one of them; that distinction matters when planning recovery.</p></article>
-<article class="mini-card"><h3>NAS</h3><p>A UGREEN NASync DXP4800 hosts Docker-based infrastructure services, including DNS filtering, reverse proxy, controller applications and monitoring.</p></article>
-<article class="mini-card"><h3>Proxmox test host</h3><p>A reused Intel Core i7-4790K desktop with 32 GB of RAM, Debian 13 and Proxmox VE 9.2. It shares the machine with Windows through UEFI dual boot.</p></article>
+<article class="mini-card"><h3>NAS</h3><p>A UGREEN NASync DXP4800 hosts Docker-based infrastructure services, including DNS filtering, reverse proxy, controller applications, monitoring and the switch-event notification receiver. <a href="nas-services-operations.html">NAS services →</a></p></article>
+<article class="mini-card"><h3>Proxmox test host</h3><p>A reused Intel Core i7-4790K desktop with 32 GB of RAM, Debian 13.8 and Proxmox VE 9.3.1. It shares the machine with Windows through UEFI dual boot.</p></article>
 <article class="mini-card"><h3>Virtual machine storage and graphics</h3><p>The Proxmox lab uses a single 2 TB ZFS disk following a storage migration. Intel HD 4600 passthrough is used for KDE graphics experiments. The disk is not redundant.</p></article>
 </div></section>
 <section><h2>Test clients</h2><p>Windows and Linux virtual machines are my main test clients for DHCP, NAT, port forwarding, VPNs and remote desktop. I also use real wired and Android Wi-Fi clients when a feature needs physical hardware to validate it.</p>

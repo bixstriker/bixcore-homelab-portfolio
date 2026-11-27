@@ -52,6 +52,8 @@ I added a destination-based policy-routing rule after the NAS's existing source-
 
 In the 19 November tests, both Windows SMB Multichannel paths remained selected. With an earlier temporary version of the rule, an 8.22 GB file copy read at approximately 504 MB/s and wrote at 324 MB/s, with traffic on both interfaces and matching SHA-256 hashes. The permanent rule was then checked through route lookups, SMB channel selection and container health checks. I did not repeat the full file-copy benchmark with that final rule, and its behavior after a reboot, DHCP renewal or another physical link flap still needs a dedicated test.
 
+On 25 November I checked the permanent routing setup again during real Vodafone-to-O2 failover and failback. Normal NAS egress and explicit source-based routing for the second SMB interface still followed the intended paths. That is additional live evidence, not a new NAS reboot, DHCP-renewal or physical NAS link-flap test.
+
 [The routing investigation →](../docs/pages/notes.html#nas-egress)
 
 ## Receiving switch events rather than constantly polling

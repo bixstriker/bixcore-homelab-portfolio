@@ -22,6 +22,8 @@ I updated the NethSecurity guest to **8.8.1** and Taranac to **1.3.4**. The Wind
 
 ## The 26 November lab checkpoint
 
+On 17 November both virtual OPNsense guests were updated to 26.7.9_3. On 22 November I confirmed OpenFW UTM Community 4.5.1 in its WebGUI. My earlier OpenFW forwarding tests were on 4.2.1; I have not repeated its complete firewall, NAT or port-forward tests on 4.5.1.
+
 The inventory is still 18 VMs. I updated the host to Proxmox VE 9.3.1, checked boot and storage, and verified the updated KDE guest and MikroTik RDP/internet path. IPFire was also updated, but I did not repeat its complete forwarding tests.
 
 Taranac Community Edition 1.3.5 received two independent hotfixes. Four nginx-based images now report nginx 1.30.8, and I verified that the running TACACS+ container uses the hotfix image. All 12 containers were up. Full AAA and NAC regression testing remains open.
