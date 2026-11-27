@@ -4,6 +4,30 @@ Quite a few parts of BiXCore took more than one attempt. Some failures were caus
 
 ## OPNsense, WAN and IPv6
 
+### Automating cleanup of invalid PF states after boot
+
+My earlier manual PF cleanup stopped the warnings but did not prevent the problem from returning. On 26 November I found the same invalid gateway states after reboot, even though the active rules and the local broadcast rule were correct.
+
+I extended my periodic check to verify the working gateway and recheck each matching state before removal. A second real reboot reproduced the warnings, then the check removed all 25 invalid states automatically. This mitigates the startup race without flushing unrelated states; it does not fix the upstream cause.
+
+[The physical reboot and recovery tests →](../docs/pages/wan-failover-recovery.html)
+
+### Why my TLS inspection kept being bypassed
+
+The browser sometimes presented the public certificate despite a site-specific inspection rule. With the exclusion for flows without DNS enrichment enabled, the chosen HTTPS connections bypassed inspection. Turning that option off restored the local issuer and TLS-Inspected status.
+
+A direct DNS test against Unbound, including a query and TLS connection using the same source address, did not fix the bypass. The missing enrichment remains unexplained; the result does not establish that AdGuard Home caused it.
+
+[The TLS pilot →](../docs/pages/zenarmor.html)
+
+### My Zenarmor multi-core tests exposed kernel panics
+
+I tried native and emulated Netmap with several worker configurations to compare inspection performance. Instead, I recorded seven crash dumps and two further failures without a new dump. The repeated FreeBSD mbuf/iflib stack and Netmap messages were evidence of a stability problem, not proof of which component was responsible.
+
+I returned to routed Emulated Netmap without multi-core. The gateway resumed service, but a full stress test and a reliable performance comparison are still outstanding.
+
+[The stability investigation →](../docs/pages/zenarmor-multicore.html)
+
 ### A dual-stack portal login allowed IPv6 but lost IPv4
 
 My guest iPhone had a valid IPv4 address and several IPv6 addresses, but after signing in over IPv6 the portal only allowed the IPv6 side. The IPv4 address appeared in ARP yet was absent from the captive-portal session and its PF allow table. This wasn't a DHCP problem.
@@ -54,7 +78,7 @@ The connection was restored in the documented session. I kept a follow-up check 
 
 After a reboot, repeated ARP errors led me to PF states containing a route-to address of 0.0.0.0. The active firewall rules already pointed to the real gateway, so changing the saved rules was not the answer.
 
-I removed the affected states individually and confirmed the errors stopped. The underlying startup-order issue still needs a permanent fix.
+I removed the affected states individually and confirmed the errors stopped. The underlying startup-order issue is not fixed upstream. I later added a tested [automatic mitigation](../docs/pages/notes.html#pf-bootzero).
 
 [Gateway operations →](../docs/pages/security-operations.html)
 
@@ -216,6 +240,14 @@ That isolates a tested client-side credential format, not a proved defect in KRD
 [Kubuntu and Android identity →](../docs/pages/linux-mobile-identity.html)
 
 ## NAS and infrastructure services
+
+### My NAS chose the wrong network interface
+
+After a brief link loss and recovery, the NAS had two connected routes to the same subnet. New connections could leave through the secondary interface, even though the primary default route was back. That broke the intended source-address restriction on my gateway management connection.
+
+I added a guarded policy-routing rule after the existing source-based rules and a systemd timer to maintain it. Route checks and SMB Multichannel passed, with both SMB paths still selected. A fresh reboot, DHCP renewal and physical link-flap test of this change were still outstanding.
+
+[NAS routing and SMB tests →](../docs/pages/nas-services-operations.html)
 
 ### A network adapter reset interrupted a domain controller backup
 

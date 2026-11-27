@@ -56,6 +56,12 @@ I use service health checks and notification routing on the gateway, and collect
 
 Power protection has similar limits: I tested UPS communication and a controlled loss of mains power, but not every connected device has been confirmed to receive battery-backed power.
 
+## What changed on 26–27 November
+
+I replaced the earlier USB LTE modem with an Ethernet-connected Zyxel. A physical WAN failure and failback exercise verified targeted PF cleanup and automatic Windscribe recovery in both directions. A separate reboot proved the new automatic mitigation for invalid startup states. The [full recovery project](../docs/pages/wan-failover-recovery.html) covers the evidence and the checked but not yet restored backups.
+
+The NUT permission correction also survived configuration regeneration and reboot. My post-boot audit checked the custom hooks, FreeRADIUS and selected services.
+
 ## What remains open
 
 The startup cause of the invalid PF states is still unresolved. I will keep checking individual services after WAN reconnects, prefix changes, UPS events and gateway restarts, without treating the previously successful failover test as a new experiment.

@@ -1,31 +1,27 @@
 # Working with Zenarmor on OPNsense
 
-I use Zenarmor alongside the firewall and Suricata on my OPNsense gateway. It started as another way to understand and control the traffic moving through the network. I want to explore the more advanced inspection features as well, using separate test clients.
+## What I already use
 
-## What I've already tested
+I use Zenarmor for application and web-category filtering alongside OPNsense. I have tested a controlled category block on a client. Suricata is a separate IPS, and I have independently verified a controlled signature drop. Its current inspection path uses PF divert-to, not the Netmap interfaces that Zenarmor uses.
 
-Zenarmor is running on the gateway, and I have checked that a test client was blocked by a restricted web-category policy. I also checked the engine and service state after an OPNsense update. Those tests showed that the configured policy was working in that situation.
+## Trying full TLS inspection with my own CA
 
-Suricata runs separately as the IPS. I've also triggered a controlled Suricata block, but that is a different test from Zenarmor's category filtering.
+On 27 November I gained access to the advanced Zenarmor features and tried full TLS inspection on two selected websites, not on all traffic. I issued a dedicated subordinate inspection CA from my existing Windows AD CS enterprise root. The root private key remained on the CA server. The subordinate certificate had CA constraints, a zero path-length limit and the Server Authentication extended key usage. Its chain and revocation checks passed on Windows.
 
-## Encrypted connections
+The first import failed because I had placed the certificates in the wrong order. After correcting that, the root, intermediate and corresponding intermediate key were accepted. I verified the actual CA used by the inspection engine instead of assuming that the certificate shown in one GUI field was the active issuer.
 
-One area I'm particularly interested in is the difference between inspecting TLS connection metadata and decrypting HTTPS content. Lightweight inspection can work with information visible during the TLS handshake. Full TLS inspection goes further and needs the test client to trust an inspection CA.
+On my test browser the selected HTTPS connections presented certificates issued by the BiXCore inspection CA. Zenarmor Live Sessions showed TLS-Inspected, including IPv6 connections. The pilot covered TCP-based HTTPS; I used the application policy to block QUIC during the test so the browser could use TCP instead of HTTP/3. I did not enable category-wide inspection or guest-network inspection.
 
-If I can use full TLS inspection in the lab, I'll try it on my own test devices. I want to see how the browser behaves, where certificate pinning causes problems, what changes with QUIC or encrypted client hello, and how to exclude sites that shouldn't be decrypted. The aim is to understand both the visibility it provides and the complications it introduces.
+## Why some HTTPS connections bypassed the policy
 
-## Policies and reports
+The site-specific rule looked correct, yet the browser sometimes received the original public certificate rather than the local issuer. I isolated a reproducible difference: enabling the option to exclude flows without DNS enrichment data made the selected connections bypass inspection; disabling that exclusion restored it.
 
-I'd like to compare web-category rules, application filtering and exceptions across a few different test clients. I'd also like to understand how accurately the live-session view and reports explain why a connection was allowed or blocked.
+My normal DNS path uses AdGuard Home on the NAS and Unbound on the gateway. It would have been easy to blame the separate DNS server. Instead, I temporarily pointed the Windows client at Unbound directly, then repeated the experiment with a DNS query and TLS connection bound to the same source address. The browser still received the public certificate with the exclusion enabled. I restored the normal DNS configuration.
 
-For controlled tests I can compare the client's result, Zenarmor's logs and, where relevant, Suricata events. That should make it easier to spot the difference between a rule behaving as expected and a client failing for some unrelated reason.
+This established the effect of the policy option, not the reason Zenarmor lacked the enrichment information. I have not isolated the effect of the separate certificate-pinning exclusion either. I am keeping the pilot results separate from any claim about decrypting every application.
 
-## How much traffic can the gateway inspect?
+## Performance and stability
 
-The Intel N305 appliance has 10GbE interfaces, but the link speed doesn't tell me how much traffic Zenarmor can inspect. I want to establish a routing baseline, then compare throughput, latency and CPU use with inspection enabled. A multi-core comparison is another part of that work if the feature is available.
+The N305 gateway has 10GbE interfaces, but that says nothing about inspection throughput. My multi-core and Netmap experiments on 27 November exposed serious stability problems, so I returned to routed Emulated Netmap without multi-core. The two-domain TLS pilot succeeded with that fallback. I have no reliable comparative throughput numbers or long-running stress-test result after the final changes.
 
-There are no benchmark numbers yet. I keep the proposed measurements in a [separate performance test plan](../docs/pages/zenarmor-multicore.html) rather than mixing them into the results of the filtering tests I've already completed.
-
-[All Zenarmor plans →](../docs/pages/roadmap.html#zenarmor-plans)   [OPNsense and IPv6 →](../docs/pages/opnsense-ipv6.html)   [Zenarmor TLS documentation →](https://www.zenarmor.com/docs/opnsense/policies/tls-inspection-rules)
-
----
+[The multi-core investigation →](../docs/pages/zenarmor-multicore.html) · [DNS enrichment case →](../docs/pages/notes.html#zenarmor-dns-enrichment) · [My next tests →](../docs/pages/roadmap.html#zenarmor-plans)

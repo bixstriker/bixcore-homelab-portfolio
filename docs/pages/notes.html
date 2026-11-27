@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
-  <meta name="description" content="Thirty-nine troubleshooting cases from OPNsense, IPv6, Windows identity, switching, NAS and Proxmox.">
+  <meta name="description" content="Forty-three troubleshooting cases from OPNsense, IPv6, Windows identity, switching, NAS and Proxmox.">
   <title>Problems and Fixes · BiXCore</title>
   <link rel="stylesheet" href="../styles.css">
   <link rel="canonical" href="https://lab.bixcore.de/pages/notes.html">
@@ -12,7 +12,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BiXCore">
   <meta property="og:title" content="Problems and Fixes · BiXCore">
-  <meta property="og:description" content="Thirty-nine troubleshooting cases from OPNsense, IPv6, Windows identity, switching, NAS and Proxmox.">
+  <meta property="og:description" content="Forty-three troubleshooting cases from OPNsense, IPv6, Windows identity, switching, NAS and Proxmox.">
   <meta property="og:url" content="https://lab.bixcore.de/pages/notes.html">
   <meta name="twitter:card" content="summary">
 </head>
@@ -30,6 +30,12 @@
 <section id="network-incidents">
 <h2>OPNsense, WAN and IPv6</h2>
 <div class="two-col">
+<article class="mini-card" id="pf-bootzero"><h3>Automating cleanup of invalid PF states after boot</h3><p>My earlier manual PF cleanup stopped the warnings but did not prevent the problem from returning. On 26 November I found the same invalid gateway states after reboot, even though the active rules and the local broadcast rule were correct.</p><p>I extended my periodic check to verify the working gateway and recheck each matching state before removal. A second real reboot reproduced the warnings, then the check removed all 25 invalid states automatically. This mitigates the startup race without flushing unrelated states; it does not fix the upstream cause.</p><p><a href="wan-failover-recovery.html">The physical reboot and recovery tests →</a></p></article>
+
+<article class="mini-card" id="zenarmor-dns-enrichment"><h3>Why my TLS inspection kept being bypassed</h3><p>The browser sometimes presented the public certificate despite a site-specific inspection rule. With the exclusion for flows without DNS enrichment enabled, the chosen HTTPS connections bypassed inspection. Turning that option off restored the local issuer and TLS-Inspected status.</p><p>A direct DNS test against Unbound, including a query and TLS connection using the same source address, did not fix the bypass. The missing enrichment remains unexplained; the result does not establish that AdGuard Home caused it.</p><p><a href="zenarmor.html">The TLS pilot →</a></p></article>
+
+<article class="mini-card" id="zenarmor-netmap"><h3>My Zenarmor multi-core tests exposed kernel panics</h3><p>I tried native and emulated Netmap with several worker configurations to compare inspection performance. Instead, I recorded seven crash dumps and two further failures without a new dump. The repeated FreeBSD mbuf/iflib stack and Netmap messages were evidence of a stability problem, not proof of which component was responsible.</p><p>I returned to routed Emulated Netmap without multi-core. The gateway resumed service, but a full stress test and a reliable performance comparison are still outstanding.</p><p><a href="zenarmor-multicore.html">The stability investigation →</a></p></article>
+
 <article class="mini-card" id="portal-dualstack"><h3>The guest portal allowed IPv6, but forgot IPv4</h3>
 <p>My iPhone had an IPv4 address, yet an IPv6-first Captive Portal login did not put that address into the session's PF allow table. The problem was in portal address filtering with Client Roaming enabled, not DHCP.</p>
 <p>I checked and applied the upstream OPNsense fix for issue #11214. Without another login, the existing session gained IPv4 access and kept its nine IPv6 entries. The phone passed a 10/10 IPv6-readiness check. I still need to check the patch after future gateway updates.</p><p><a href="network-services.html">Guest access and dual-stack behavior →</a></p></article>
@@ -47,7 +53,7 @@
 <p>The connection was restored in the documented session. I kept a follow-up check for future WAN renewals.</p><p><a href="network-services.html">DNS and dynamic records →</a></p></article>
 <article class="mini-card" id="pf-state"><h3>Firewall states pointing to an invalid gateway</h3>
 <p>After a reboot, repeated ARP errors led me to PF states containing a route-to address of 0.0.0.0. The active firewall rules already pointed to the real gateway, so changing the saved rules was not the answer.</p>
-<p>I removed the affected states individually and confirmed the errors stopped. The underlying startup-order issue still needs a permanent fix.</p><p><a href="security-operations.html">Gateway operations →</a></p></article>
+<p>I removed the affected states individually and confirmed the errors stopped. The underlying startup-order issue is not fixed upstream. I later added a tested <a href="notes.html#pf-bootzero">automatic mitigation</a>.</p><p><a href="security-operations.html">Gateway operations →</a></p></article>
 <article class="mini-card" id="wireguard"><h3>WireGuard: IPv4 worked, but IPv6 needed a different approach</h3>
 <p>I wanted one mobile client to send both IPv4 and IPv6 traffic through home. A static IPv6 translation did not fit a provider prefix that can change, so I moved to NPTv6 using the tracked delegated prefix.</p>
 <p>I checked the effective firewall translation, external client addresses, DNS and permitted local access. A real upstream prefix rotation remains an open test.</p><p><a href="opnsense.html">WireGuard test results →</a></p></article>
@@ -105,6 +111,8 @@
 <section id="services-incidents">
 <h2>NAS and infrastructure services</h2>
 <div class="two-col">
+<article class="mini-card" id="nas-egress"><h3>My NAS chose the wrong network interface</h3><p>After a brief link loss and recovery, the NAS had two connected routes to the same subnet. New connections could leave through the secondary interface, even though the primary default route was back. That broke the intended source-address restriction on my gateway management connection.</p><p>I added a guarded policy-routing rule after the existing source-based rules and a systemd timer to maintain it. Route checks and SMB Multichannel passed, with both SMB paths still selected. A fresh reboot, DHCP renewal and physical link-flap test of this change were still outstanding.</p><p><a href="nas-services-operations.html">NAS routing and SMB tests →</a></p></article>
+
 <article class="mini-card" id="dc-backup-nic"><h3>A domain controller lost SMB during its System State backup</h3>
 <p>One scheduled backup failed after a Realtek network adapter reset; the Windows and SMB event logs showed the interruption and the failed backup write. I updated the Realtek drivers on both domain controllers and observed the next weekly System State jobs complete successfully.</p>
 <p>That does not prove the hardware issue can never recur. The backup rotation still needs success-aware handling, and restoring Active Directory and the CA from independent backups remains untested.</p><p><a href="windows-monitoring-backup.html">Windows backup and recovery →</a></p></article>

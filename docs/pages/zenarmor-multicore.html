@@ -4,15 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
-  <meta name="description" content="My planned throughput, latency and per-core CPU comparison of Zenarmor inspection on an Intel N305.">
-  <title>Zenarmor Performance Test · BiXCore</title>
+  <meta name="description" content="My Zenarmor multi-core and Netmap stability investigation on the N305 gateway.">
+  <title>Zenarmor inspection performance on the N305 · BiXCore</title>
   <link rel="stylesheet" href="../styles.css">
   <link rel="canonical" href="https://lab.bixcore.de/pages/zenarmor-multicore.html">
   <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BiXCore">
-  <meta property="og:title" content="Zenarmor Performance Test · BiXCore">
-  <meta property="og:description" content="My planned throughput, latency and per-core CPU comparison of Zenarmor inspection on an Intel N305.">
+  <meta property="og:title" content="Zenarmor inspection performance on the N305 · BiXCore">
+  <meta property="og:description" content="My Zenarmor multi-core and Netmap stability investigation on the N305 gateway.">
   <meta property="og:url" content="https://lab.bixcore.de/pages/zenarmor-multicore.html">
   <meta name="twitter:card" content="summary">
 </head>
@@ -22,23 +22,22 @@
     <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
     <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / <a href="zenarmor.html">Zenarmor</a> / Performance</p>
-<p class="kicker">PERFORMANCE TEST PLAN</p>
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Performance</p>
+<p class="kicker">NETMAP / MULTI-CORE / STABILITY</p>
 <h1>Zenarmor inspection performance on the N305</h1>
-<p class="lede">I want to find out what happens to throughput and latency when traffic inspection is enabled on the gateway, and whether using more CPU cores changes the result. I haven't measured it yet.</p>
+<p class="lede">I set out to compare inspection throughput, but kernel panics changed the priority.</p>
 <div class="article">
-<h2>The setup I want to compare</h2>
-<p>First I'll check the throughput of ordinary routing with the same clients and traffic generator. Then I'll enable Zenarmor inspection and repeat the runs under the same conditions. If the multi-core engine is available, I'll compare that too.</p>
-<h2>Measurements</h2>
-<ol>
-<li>Record OPNsense and Zenarmor versions, inspected interfaces, policy settings, NIC offload options and the active feature set.</li>
-<li>Check that the traffic generator and receiver are fast enough to avoid limiting the test.</li>
-<li>Try several packet sizes, connection counts and TCP/UDP traffic mixes.</li>
-<li>Record throughput, latency, jitter, packet loss and CPU use per core.</li>
-<li>Where relevant, repeat tests with policy rules enabled and check that their decisions remain consistent.</li>
-<li>Run each configuration several times and note thermal behavior and other background load on the gateway.</li>
-</ol>
-<h2>Why the distinction matters</h2>
-<p>My gateway's 10GbE ports describe what the network interfaces support, not how quickly the inspection engine can process packets. Testing the same traffic with and without inspection should give me a more useful picture than the interface speed alone.</p>
-<p><a class="source-link" href="zenarmor.html">Other Zenarmor experiments →</a> &nbsp; <a class="source-link" href="roadmap.html">All upcoming projects →</a></p>
+<h2>What I wanted to measure</h2>
+<p>I wanted to know whether using more CPU cores would raise inspection throughput on my Intel N305 gateway. I already had 10GbE network interfaces, and I planned to compare ordinary routing, single-core inspection and multi-core inspection with the same clients and traffic generator.</p>
+<p>On 27 November I tried Zenarmor 2.7.4 on OPNsense 26.7.9_3, varying native and emulated Netmap, the number of workers and selected L3 settings. I used iperf as part of the experiments. Stability became the more important question before I could finish a meaningful benchmark.</p>
+<h2>What happened during testing</h2>
+<p>Several configurations caused kernel panics or loss of the inspection process. My investigation recorded <strong>seven crash dumps and two further failures without a new dump</strong>. In native Netmap I also saw uplink flaps and increasing receive-miss counters. Some multi-worker configurations exhausted buffers or respawned after a segmentation fault.</p>
+<p>A repeating kernel stack included <code>generic_mbuf_dtor</code>, <code>mb_free_ext</code> and <code>iflib_completed_tx_reclaim</code>. Together with the Netmap lifecycle and buffer messages, it suggests a problem in the interaction between the FreeBSD networking stack, driver framework, Netmap and the inspection engine. I cannot assign a proven root cause to Zenarmor or the NIC driver from these observations alone.</p>
+<h2>Returning to the working mode</h2>
+<p>I returned to routed Emulated Netmap with multi-core disabled. The two logical worker mappings cover separate interfaces; they are not evidence that multi-core inspection is enabled. Suricata remains separate on PF divert-to. I restored the intended Netmap ring size through the OPNsense tunables interface and checked the allocated buffer pool.</p>
+<p>The gateway returned to service in this fallback, and I subsequently verified a narrow TLS inspection pilot. I am not going to run more disruptive native Netmap or multi-core experiments on the production gateway before the crash evidence has been investigated. I have not performed a long stress test or another reboot after the final inspection changes.</p>
+<h2>The benchmark is still a plan, not a result</h2>
+<p>I have no defensible multi-core versus single-core speed comparison. For a future comparison I want to record the exact engine and interface settings, establish a routing baseline, repeat equal TCP/UDP workloads at several packet sizes, and measure throughput, latency, loss and per-core CPU use. Thermal conditions and other gateway services also matter.</p>
+<p>The link rate alone does not tell me the inspection rate. The useful result of this session was identifying a reproducible stability boundary and returning the firewall to a workable configuration, rather than producing a misleading performance number.</p>
+<p><a href="notes.html#zenarmor-netmap">The crash case →</a> · <a href="zenarmor.html">TLS inspection tests →</a> · <a href="roadmap.html">Remaining work →</a></p>
 </div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>
