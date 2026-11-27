@@ -52,9 +52,9 @@ This is a test of the **current** prefix, not proof of automatic handling of a f
 
 ### LTE stayed down after an OPNsense reboot
 
-During the IPv6 lab work, the backup LTE modem did not bring its PPP link back after a gateway restart. A first device reset and interface reconfiguration did not restore usable connectivity. A later device reset brought LTE back in the observed session.
+During the IPv6 lab work, the former USB LTE modem did not bring its PPP link back after a gateway restart. A first device reset and interface reconfiguration did not restore usable connectivity. A later device reset brought LTE back in the observed session.
 
-I haven't established the cause of that particular modem startup failure or automated its recovery. The full primary-WAN-to-LTE failover and VPN restoration had passed separate real-world tests; the boot incident was a different problem.
+I did not establish the cause of that old USB modem startup failure; I later replaced the modem with an Ethernet-connected Zyxel. The full primary-WAN-to-LTE failover and VPN restoration had passed separate real-world tests; the boot incident was a different problem.
 
 [Gateway operations →](../docs/pages/security-operations.html)
 
@@ -132,7 +132,6 @@ In real tests, one phone returned Disconnect-ACK and completed scoped PMKSA clea
 
 [The RADIUS Control changes →](../docs/pages/radius-control.html) · [RadSec project →](../docs/pages/radsec-mtls.html)
 
-## Switching, certificates and clients
 
 ### Omada acknowledged Disconnect but left the old session open
 

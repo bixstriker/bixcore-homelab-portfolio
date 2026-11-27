@@ -33,12 +33,13 @@
  </div>
  <div class="hero-graphic" aria-label="Simplified diagram of the home network">
   <div class="graphic-caption"><span>NETWORK OVERVIEW</span><span class="signal">OPNsense gateway</span></div>
-  <svg class="graphic-svg" viewBox="0 0 500 315" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="diagram-title diagram-desc"><title id="diagram-title">Overview of the BiXCore network</title><desc id="diagram-desc">An OPNsense gateway connects the home network to separate client, guest and virtual test environments.</desc>
- <g stroke="#476d80" stroke-width="2" fill="none"><path d="M250 65V104"/><path d="M250 169V218"/><path d="M96 218H404"/><path d="M96 218V238"/><path d="M250 218V238"/><path d="M404 218V238"/><path stroke="#74d9d8" stroke-dasharray="5 6" d="M250 170C240 191 130 171 105 238"/></g>
- <rect x="171" y="18" width="158" height="46" rx="9" fill="#12293d" stroke="#4c6b7b"/><text x="250" y="46" fill="#cddfea" font-size="16" font-weight="600" text-anchor="middle">Internet</text>
+  <svg class="graphic-svg" viewBox="0 0 500 315" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="diagram-title diagram-desc"><title id="diagram-title">Overview of the BiXCore network</title><desc id="diagram-desc">Primary internet and LTE backup connect to OPNsense, which separates the trusted, guest and virtual test environments.</desc>
+ <g stroke="#476d80" stroke-width="2" fill="none"><path d="M128 64V82H250V104"/><path stroke="#74d9d8" stroke-dasharray="5 6" d="M372 64V82H250"/><path d="M250 169V218"/><path d="M96 218H404"/><path d="M96 218V238"/><path d="M250 218V238"/><path d="M404 218V238"/><path stroke="#74d9d8" stroke-dasharray="5 6" d="M250 170C240 191 130 171 105 238"/></g>
+ <rect x="34" y="18" width="188" height="46" rx="9" fill="#12293d" stroke="#4c6b7b"/><text x="128" y="46" fill="#cddfea" font-size="15" font-weight="600" text-anchor="middle">Primary internet</text>
+ <rect x="278" y="18" width="188" height="46" rx="9" fill="#12293d" stroke="#4c6b7b"/><text x="372" y="46" fill="#cddfea" font-size="15" font-weight="600" text-anchor="middle">LTE backup</text>
  <rect x="139" y="104" width="222" height="65" rx="13" fill="#153a48" stroke="#7bdedb" stroke-width="1.7"/><text x="250" y="128" fill="#7bdedb" font-size="12" font-weight="700" text-anchor="middle">SECURITY GATEWAY</text><text x="250" y="152" fill="#e9f4fc" font-size="18" font-weight="700" text-anchor="middle">OPNsense</text>
  <g fill="#11283a" stroke="#456477"><rect x="14" y="238" width="162" height="61" rx="11"/><rect x="188" y="238" width="124" height="61" rx="11"/><rect x="324" y="238" width="162" height="61" rx="11"/></g>
- <g fill="#e2f1f9" font-size="15" font-weight="650" text-anchor="middle"><text x="95" y="264">Trusted network</text><text x="95" y="282" fill="#9cc4d0" font-size="11">PKI · EAP-TLS</text><text x="250" y="264">Guests</text><text x="250" y="282" fill="#9cc4d0" font-size="11">Restricted</text><text x="405" y="264">Virtual lab</text><text x="405" y="282" fill="#9cc4d0" font-size="11">Firewall tests</text></g>
+ <g fill="#e2f1f9" font-size="15" font-weight="650" text-anchor="middle"><text x="95" y="264">Trusted network</text><text x="95" y="282" fill="#9cc4d0" font-size="11">PKI · EAP-TLS · RadSec</text><text x="250" y="264">Guests</text><text x="250" y="282" fill="#9cc4d0" font-size="11">Restricted</text><text x="405" y="264">Virtual lab</text><text x="405" y="282" fill="#9cc4d0" font-size="11">Firewall tests</text></g>
  
  </svg>
   <p class="annotation">The home network and the virtual test environment have separate access policies.</p>
@@ -69,7 +70,7 @@
  <p class="muted">The lab uses dedicated virtual networks and a separate upstream. I have checked the main connectivity paths and am continuing the tests for traffic that should be blocked.</p>
  <p><a class="source-link" href="pages/hardware.html">Equipment used in the lab →</a></p></div>
  <div class="architecture-display" aria-label="Everyday services and the separate test lab">
-  <div class="home-architecture-group"><h3>Everyday network</h3><p>OPNsense, managed switches and Wi-Fi, Active Directory, PKI, DNS, NAS and remote access.</p><a href="pages/opnsense.html">Network details →</a></div>
+  <div class="home-architecture-group"><h3>Everyday network</h3><p>OPNsense with primary internet and LTE backup, managed switches and Wi-Fi, RadSec, Active Directory, PKI, DNS, NAS and remote access.</p><a href="pages/opnsense.html">Network details →</a></div>
   <div class="home-architecture-group"><h3>Test environment</h3><p>Proxmox, virtual firewall WAN/LAN networks and Windows or Linux clients. I normally run only the machines needed for a particular test.</p><a href="pages/lab.html">Lab setup →</a></div>
   <div class="home-architecture-group"><h3>Monitoring and recovery</h3><p>Windows and gateway monitoring, certificate renewal, backups, and fixes for problems that showed up after restarts or updates.</p><a href="pages/security-operations.html">Operations and troubleshooting →</a></div>
  </div>

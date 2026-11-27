@@ -34,7 +34,7 @@ A configuration export alone is not enough for this gateway. I keep an additiona
 
 I then created a complete Clonezilla disk image of the system NVMe. Clonezilla checked the saved partition images, and the USB original and NAS copy matched by SHA-256 for all 32 files. I kept both copies. After booting the original gateway, I checked the custom hooks, service status, certificate validation configuration and selected connections.
 
-The archive and disk image were made before the later startup-state mitigation, so I keep its separate recovery package as well. A verified image is not the same as a successful restore: I have not yet restored it onto a spare disk or booted an isolated virtual clone. That is a future recovery exercise.
+The archive and disk image were made before the later startup-state mitigation and the 27 November LTE management changes. I keep the separate PF recovery package and the LTE management recovery notes; neither earlier backup includes those changes. A verified image is not the same as a successful restore: I have not yet restored it onto a spare disk or booted an isolated virtual clone. That is a future recovery exercise.
 
 ## Keeping the LTE modem manageable
 

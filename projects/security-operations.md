@@ -8,11 +8,11 @@ My post-update checks cover internet routing, DHCP and DNS, IPv6 delegation, Fre
 
 A standard OPNsense configuration backup doesn't contain every custom hook, cron job or NAS-side dependency I use. I keep a separate recovery list for RADIUS and CRL updates, LLDP settings, dynamic portal records and other local automation.
 
-## A secondary LTE link that didn't return after reboot
+## Historical incident: the old USB LTE modem after reboot
 
-While configuring the IPv6-only test network, the gateway's LTE modem didn't restore its PPP connection after a restart. I tried a manual device reset and interface reconfiguration; the link still lacked a usable address until a later reset. It then recovered.
+While configuring the IPv6-only test network, the gateway's former USB LTE modem didn't restore its PPP connection after a restart. I tried a manual device reset and interface reconfiguration; the link still lacked a usable address until a later reset. It then recovered.
 
-I haven't established the underlying cause of that particular modem startup failure. The separate primary-to-LTE failover and VPN restoration path was successfully tested in live use.
+I did not establish the cause of that particular USB modem startup failure; I later retired the modem in favor of Ethernet LTE. The separate primary-to-LTE failover and VPN restoration path was successfully tested in live use.
 
 [The LTE incident →](../docs/pages/notes.html#lte-recovery)
 
