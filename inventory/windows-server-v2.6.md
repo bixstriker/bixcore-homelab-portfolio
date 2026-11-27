@@ -1,4 +1,4 @@
-# Windows Server Master v2.10: Project Index
+# Windows Server Master v2.12: Project Index
 
 The Windows Server notes grew as I added the second domain controller, built the PKI and automated more of the client setup. This index connects the original work and later changes to the related articles.
 
@@ -26,6 +26,9 @@ The Windows Server notes grew as I added the second domain controller, built the
 | III.20 | PowerShell 7.7 ZIP/GPO migration, SCEP replacement/CRL and PKI publisher mutex | Tested on selected endpoints; simultaneous changing-file publish not retested | [Windows deployment](../docs/pages/windows-policy-deployment.html) · [PKI](../docs/pages/windows-ad-pki.html) |
 | III.21 | RustDesk 1.5.3 MSI/EXE deployment, GPO checks and add-only keyboard layouts | Selected nodes tested; offline workstation and LogonUI follow-up open | [Group Policy deployment](../docs/pages/windows-policy-deployment.html) |
 | III.22 | Physical Windows/Kubuntu dual boot, KRDP credentials/TLS and key-based SSH | Restart, KRDP login and SSH checked | [Linux/Kubuntu integration](../docs/pages/linux-mobile-identity.html) |
+| III.23 | Wireless 802.1X policy and Android SCEP recovery | Machine Wi-Fi pilot and two Android re-enrollments passed; other workstations pending | [Windows deployment](../docs/pages/windows-policy-deployment.html) |
+| III.24 | Inspection intermediate CA and UPS shutdown tasks on both controllers | CA issuance and TLS pilot checked; real UPS readings and simulated trip passed; physical battery shutdown open | [AD CS and PKI](../docs/pages/windows-ad-pki.html) |
+| III.24 (UPS) | Independent scheduled UPS checks and guarded shutdown | SYSTEM execution and dry-run verified, no actual battery shutdown | [Windows monitoring](../docs/pages/windows-monitoring-backup.html) |
 | IV.01 | Initial AD infrastructure guide | Historical source | [Active Directory and PKI](../docs/pages/windows-ad-pki.html) |
 | IV.02 | Directory extension and initial policy work | Historical source | [Windows deployment and GPO](../docs/pages/windows-policy-deployment.html) |
 | IV.03 | GPO and directory refinements | Historical source | [Windows deployment and GPO](../docs/pages/windows-policy-deployment.html) |

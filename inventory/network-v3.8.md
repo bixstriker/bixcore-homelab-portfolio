@@ -1,8 +1,8 @@
-# Network Master v3.26: Project Index
+# Network Master v3.37: Project Index
 
 I keep detailed working notes for the network. This index links each section to the corresponding project write-up, from gateway configuration and DNS to switching, monitoring and the IPv6 problems I have worked through.
 
-The 21 November revision documents RadSec/mTLS on both UniFi access points and Omada, the failed internal-CA experiments, return to a working Let's Encrypt server chain, and the tested RadSecProxy restart automation. The private RADIUS Control project subsequently reached v1.0.2 for its source and restricted UniFi helpers, with selected live actions verified earlier the same day. Its NAS web image remained v1.0.1. The first natural ACME renewal and exported PEM replacement have not yet been observed. Older sections are dated history, and this filename remains for existing links.
+The 27 November revision adds switch-event notifications, IoT discovery across VLANs, the Ethernet LTE backup connection, physical WAN failover and failback with automatic VPN recovery, and a tested workaround for invalid PF states after boot. The Zenarmor tests include both a successful two-domain TLS pilot and failed multi-core/Netmap experiments. Older entries remain dated evidence rather than the current configuration.
 
 | Section | Work | Status | Read more |
 | --- | --- | --- | --- |
@@ -57,6 +57,17 @@ The 21 November revision documents RadSec/mTLS on both UniFi access points and O
 | V | RadSec established for both UniFi APs and Omada | TLS 1.3, EAP-TLS, Accounting verified; later certificate rollback documented in W | [RadSec project](../docs/pages/radsec-mtls.html) |
 | W | Final RadSec/mTLS state, CA cleanup and ACME service actions | Working TLS and restart tested; full ACME renewal to exported PEM untested | [RadSec and ACME](../docs/pages/radsec-mtls.html) |
 | RADIUS Control v1.0.2 | Source/helper maintenance after RadSec migration | Three selected live actions passed; not re-run after final evening rollback | [RADIUS Control](../docs/pages/radius-control.html) |
+| X | NUT configuration permissions and regeneration | Regeneration checked; later reboot audit passed | [Gateway operations](../docs/pages/security-operations.html) |
+| Y | SNMP traps, SQLite and Telegram; Guest DNS | Real Omada link events delivered; other ports mapped | [NAS notification receiver](../docs/pages/nas-services-operations.html) |
+| Z | IoT camera discovery and SMB to NAS across VLANs | Discovery A/B test and actual recording import confirmed | [IoT discovery and DNS](../docs/pages/network-services.html) |
+| AA | GPON module preparation for future FTTH | Local preparation only; ISP/OLT interoperability not tested | [Future network work](../docs/pages/roadmap.html) |
+| AB | Netmap buffer tuning and Suricata ruleset maintenance | Configuration and selected reload checks; later Netmap experiments in AH | [Inspection investigation](../docs/pages/zenarmor-multicore.html) |
+| AC | Ethernet LTE migration and initial failover | Physical transition observed; stale-state issue led to later work | [WAN recovery](../docs/pages/wan-failover-recovery.html) |
+| AD | Targeted PF cleanup and LTE IPv6 monitoring | Physical transition and autonomous monitor recovery observed | [WAN recovery](../docs/pages/wan-failover-recovery.html) |
+| AE | Default-route observer and periodic VPN/PF recovery | Earlier implementation checkpoint; subsequent physical test in AF | [WAN recovery](../docs/pages/wan-failover-recovery.html) |
+| AF | Physical failover/failback, custom backup and disk image; boot-state mitigation | Both WAN transitions and reboot cleanup tested; actual image restore open | [WAN recovery and backup](../docs/pages/wan-failover-recovery.html) |
+| AG | Persistent access to Ethernet LTE modem in passthrough | HTTPS and SSH checked after modem reboot and renumbering | [LTE management](../docs/pages/wan-failover-recovery.html) |
+| AH | Zenarmor multi-core crashes and narrow TLS inspection | Fallback and selected HTTPS tests; root cause and comparative benchmark unresolved | [Zenarmor pilot](../docs/pages/zenarmor.html) |
 
 ### How to use this index
 
