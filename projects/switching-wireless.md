@@ -62,6 +62,12 @@ Bringing infrastructure devices and domain controllers onto 802.1X required a di
 
 [The EAP-TLS bootstrap issue →](../docs/pages/notes.html#dc-eap)
 
+## Getting notified when a switch link changes
+
+I wanted a link failure to produce an actual event, rather than waiting for my dashboard to be opened. I configured traps from the two Grandstream switches and the Omada switch, using SNMPv3 authentication and encryption on Omada. My NAS-side receiver records events and sends Telegram notifications for selected ports. I verified real link-down and link-up notifications from an Omada test port; I did not unplug every critical server or uplink.
+
+[How the receiver and delivery queue work →](../docs/pages/nas-services-operations.html)
+
 ## What I still want to check
 
 The physical cabling inventory is not finished, and some IPv6 neighbor bindings still need a complete restart and prefix-change test. I'd also like to use a dedicated Wi-Fi access point with the Proxmox lab for separate captive-portal and NAC experiments.

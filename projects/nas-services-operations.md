@@ -44,6 +44,24 @@ I updated AdGuard Home to its 1.0.0 beta 2 image after keeping a rollback copy a
 
 I also renewed the certificates used by the NAS web interface, AdGuard Home and Home Assistant, checking the served TLS chain and hostname. Certificate issuance on OPNsense is automatic, but deploying the renewed files to those services is still a manual step.
 
+## Keeping two network interfaces without confusing routing
+
+After a short link loss on the NAS's primary interface, the link and its address returned but new local connections could leave through the other interface. Both interfaces were in the same subnet. The default route was correct; the competing connected routes could still select the wrong source address, and a restricted gateway SSH connection then refused the request.
+
+I added a destination-based policy-routing rule after the NAS's existing source-based rules and a guarded systemd service and timer to maintain it. The rule is added only when the primary link, address and routing table are ready, and is removed when those checks fail. It does not replace the vendor's routing configuration or the existing SMB source-specific paths.
+
+In the 19 November tests, both Windows SMB Multichannel paths remained selected. With an earlier temporary version of the rule, an 8.22 GB file copy read at approximately 504 MB/s and wrote at 324 MB/s, with traffic on both interfaces and matching SHA-256 hashes. The permanent rule was then checked through route lookups, SMB channel selection and container health checks. I did not repeat the full file-copy benchmark with that final rule, and its behavior after a reboot, DHCP renewal or another physical link flap still needs a dedicated test.
+
+[The routing investigation →](../docs/pages/notes.html#nas-egress)
+
+## Receiving switch events rather than constantly polling
+
+On 22 November I moved the switch notification service into my own small Docker receiver. Two Grandstream switches send SNMPv2c traps, and the Omada switch sends authenticated, encrypted SNMPv3 traps. Net-SNMP receives the messages and a Python handler records them in SQLite. A separate delivery queue sends selected Telegram notifications with retries, so a slow delivery does not block the trap handler.
+
+I retain the received events and notify on link changes for 13 selected ports, as well as switch restart events. I run the container with a read-only root filesystem, restricted privileges and separate persistent data and credentials. I tested a real Omada link-down and link-up: both events were stored, sent and received on my phone. The remaining critical ports were mapped but not individually disconnected for testing.
+
+A NAS-hosted UDP trap receiver cannot report an event it never receives while the NAS is offline. The Telegram queue helps after receipt; it is not proof of guaranteed delivery through every outage. I still need to test recovery after a NAS reboot and a longer notification-service interruption.
+
 ## What I want to check next
 
 The services have been brought back after maintenance, but I still want to restore selected applications from independent backups rather than only verify that their containers start. I also want to keep testing the NAS's IPv6 recovery after network changes and verify an independent restore of the TACACS+ database and configuration. I checked a consistent backup before the PostgreSQL 18.7 update, but haven't tested a restore.

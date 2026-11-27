@@ -38,6 +38,12 @@ On one workstation an MSI update returned error 1603. The EXE upgrade installed 
 
 [The deployment investigation →](../docs/pages/notes.html#rustdesk-upgrade)
 
+## A separate Group Policy for certificate-based Wi-Fi
+
+The domain-joined Windows machines already had machine certificates and a wired 802.1X policy, but one workstation was still using an older locally configured wireless profile with the wrong authentication mode. On 25 November I created a wireless computer-authentication GPO through Group Policy Management, with EAP-TLS, explicit trust of the RADIUS server's CA and name, and a client-certificate filter for my enterprise CA and Client Authentication EKU.
+
+I applied it to a pilot workstation first. WLAN AutoConfig recorded a successful machine authentication, and I confirmed the connection using the new profile. I then extended the GPO's application to the existing authorized computer group and checked policy replication and application. The remaining powered-off clients had not yet been individually tested at this checkpoint. The wired policy, certificate template and RADIUS configuration did not need to be changed.
+
 ## Problems and follow-up work
 
 Some of these took a few iterations. The PowerShell installation method had to change, and [Windows Admin Center needed its HTTPS listener checked](../docs/pages/notes.html#wac). The RustDesk update worked on the Windows machines available for testing, including MSI and EXE installations. One powered-off workstation still needs its upgrade checked when it is next used.

@@ -52,6 +52,9 @@
 <article class="mini-card"><h3>LLDP after configuration changes</h3><p>Neighbor discovery worked, but I also wanted the correct management address to be advertised after startup and configuration regeneration. That required a persistent startup setting.</p><p><a href="notes.html#lldp">The LLDP fix →</a></p></article>
 <article class="mini-card"><h3>Wired certificate authentication</h3><p>Bringing infrastructure devices and domain controllers onto 802.1X required a different authorization path from ordinary workstations. I tested the final behavior against the switch and FreeRADIUS.</p><p><a href="notes.html#dc-eap">The EAP-TLS bootstrap issue →</a></p></article>
 </div>
+<h2>Getting notified when a switch link changes</h2>
+<p>I wanted a link failure to produce an actual event, rather than waiting for my dashboard to be opened. I configured traps from the two Grandstream switches and the Omada switch, using SNMPv3 authentication and encryption on Omada. My NAS-side receiver records events and sends Telegram notifications for selected ports. I verified real link-down and link-up notifications from an Omada test port; I did not unplug every critical server or uplink.</p>
+<p><a href="nas-services-operations.html">How the receiver and delivery queue work →</a></p>
 <h2>What I still want to check</h2>
 <p>The physical cabling inventory is not finished, and some IPv6 neighbor bindings still need a complete restart and prefix-change test. I'd also like to use a dedicated Wi-Fi access point with the Proxmox lab for separate captive-portal and NAC experiments.</p>
 <p><a class="source-link" href="identity-pki.html">Certificate-based network access →</a> &nbsp; <a class="source-link" href="roadmap.html">Upcoming Wi-Fi tests →</a></p>

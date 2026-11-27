@@ -24,6 +24,14 @@ The backup rotation also needs a safer success check: simply keeping the most re
 
 [The failure and follow-up →](../docs/pages/notes.html#dc-backup-nic)
 
+## Shutting down the domain controllers safely on battery power
+
+On 27 November I added a local scheduled PowerShell task to each domain controller. Each queries its own UPS through NUT, one via the NAS and one via OPNsense. The task runs as SYSTEM every minute and only requests a normal Windows shutdown if two readings, five seconds apart, confirm battery operation with charge at or below 50 percent.
+
+An unavailable UPS server, invalid reading, return to mains power or charge above the threshold prevents shutdown. The decision is made locally on each server, so my remote administration connection is not part of the shutdown dependency.
+
+I checked real online readings, simulated the trip condition without shutting the servers down, and verified both manual and scheduled SYSTEM executions. Both tasks completed successfully. I have not discharged the UPS units to the threshold or observed an actual battery-triggered shutdown. The ordering of shutdowns also needs care because the NUT server must remain available until its dependent controller can make the decision.
+
 ## What I still want to test
 
 The latest scheduled jobs were reported successful, but I haven't rebuilt either controller and the CA from a complete verified backup set. That is the exercise I want to finish before treating the recovery plan as tested end to end.

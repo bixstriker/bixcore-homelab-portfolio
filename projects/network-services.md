@@ -32,6 +32,16 @@ I also fixed a separate dual-stack portal issue. A guest iPhone had IPv4 and IPv
 
 [The portal issue →](../docs/pages/notes.html#portal-dualstack)
 
+## Letting an IoT camera find the NAS without opening the whole network
+
+Moving my Xiaomi camera to the isolated IoT network stopped its NAS discovery. The camera was sending NetBIOS discovery broadcasts, which did not cross the VLAN boundary. I used the OPNsense UDP Broadcast Relay for discovery and added a narrowly scoped SMB rule from that camera to the intended NAS interface.
+
+I checked the active PF rules and captured the discovery and SMB traffic. With the discovery rule disabled, the camera could not find the NAS; enabling it restored discovery. I then confirmed that the camera's recordings were actually imported to the NAS. I left the general IoT-to-Core block in place, rather than allowing every IoT device to reach the storage network.
+
+The test verifies this particular camera and its transfer path, not complete isolation against every possible protocol. No changes to the NAS's SMB service or credentials were necessary.
+
+A separate check on 22 November confirmed that ordinary Core clients receive AdGuard as their DNS resolver, while Guest uses the gateway's local resolver in both IPv4 and IPv6. An encrypted DNS listener being enabled does not prove that every client uses it.
+
 ## Problems I ran into
 
 After a reboot, dynamic DNS stopped updating even though its service was running. The cause was upstream IPv6 reachability, not a missing DNS configuration. The [DDNS investigation](../docs/pages/notes.html#ddns) and the [WAN source-address tests](../docs/pages/notes.html#ipv6) explain how those two symptoms were connected.
