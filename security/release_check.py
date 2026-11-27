@@ -173,24 +173,7 @@ def check():
     if re.search(r'^\|[^\n]*\|\n[ \t]*\n(?=\|)',p.read_text('utf-8'),re.M):
       problems.append(f'Interrupted Markdown table: {p.relative_to(ROOT)}')
   notes=(ROOT/'notes'/'troubleshooting.md').read_text('utf-8')
-  headings=re.findall(r'^## (.+) problems.append(f'Expected 39 site pages; found {len(pages)}')
-  if (SITE/'pages'/'notes.html').read_text('utf-8').count('<article class="mini-card" id=') != 43:
-    problems.append('Expected 43 troubleshooting cases')
-  try:
-    commit_count=int(subprocess.check_output(['git','rev-list','--count','HEAD'],cwd=ROOT,text=True).strip())
-    authors=subprocess.check_output(['git','log','--format=%ae%n%ce'],cwd=ROOT,text=True).splitlines()
-    if commit_count < 1: problems.append('Git repository has no commits')
-    if any(e != '212264745+bixstriker@users.noreply.github.com' for e in authors):
-      problems.append('Unexpected Git author or committer email')
-  except Exception as exc: problems.append(f'History check failed: {exc}')
-  if problems:
-    print('\n'.join('BLOCK: '+p for p in problems))
-    return 1
-  print(f'PASS: {len(pages)} HTML pages, 43 cases, valid local links and noreply-only Git history')
-  return 0
-if __name__=='__main__':
-  sys.exit(check())
-,notes,re.M)
+  headings=re.findall(r'^## (.+)$',notes,re.M)
   if len(headings)!=len(set(headings)):
     problems.append('Duplicate troubleshooting section headings in Markdown')
   if len(re.findall(r'^### ',notes,re.M))!=43:
