@@ -68,9 +68,9 @@ def check():
 
   # Guard against old snapshot figures and publication metadata drifting apart.
   versions = {
-    'pages/windows-server-v2.6.html': 'Windows Server Master v2.10',
-    'pages/proxmox-v1.7.html': 'Proxmox Master v1.12',
-    'pages/network-v3.8.html': 'Network Master v3.26',
+    'pages/windows-server-v2.6.html': 'Windows Server Master v2.12',
+    'pages/proxmox-v1.7.html': 'Proxmox Master v1.15',
+    'pages/network-v3.8.html': 'Network Master v3.37',
   }
   for relative, version in versions.items():
     page=(SITE/relative).read_text('utf-8')
@@ -79,13 +79,17 @@ def check():
   required = {
     'pages/hardware.html': ['Barox', 'failover', 'VPN recovery'],
     'pages/lab.html': ['18 virtual machines', 'twelve platforms'],
-    'pages/work-index.html': ['12 router/firewall platforms', 'Network Infrastructure v3.26', 'radsec-mtls.html'],
-    'pages/proxmox-firewall-lab.html': ['All 40 Proxmox chapters'],
-    'pages/working-notes.html': ['Proxmox Master v1.12 notes'],
-    'pages/proxmox-v1.6.html': ['Historical snapshot', 'Proxmox Master v1.12'],
+    'pages/work-index.html': ['12 router/firewall platforms', 'Network Infrastructure v3.37', 'radsec-mtls.html'],
+    'pages/proxmox-firewall-lab.html': ['All 43 Proxmox chapters'],
+    'pages/working-notes.html': ['Proxmox Master v1.15 notes'],
+    'pages/proxmox-v1.6.html': ['Historical snapshot', 'Proxmox Master v1.15'],
     'pages/radius-control.html': ['v1.0.2', 'v1.0.1', 'Omada', 'radsec-mtls.html'],
     'pages/radsec-mtls.html': ['TLS 1.3', 'Let\'s Encrypt', 'ACME', 'exported PEM', 'certificate verification enabled'],
-    'pages/notes.html': ['radsec-omada-certificate', 'radsec-unifi-das'],
+    'pages/notes.html': ['radsec-omada-certificate', 'radsec-unifi-das', 'zenarmor-netmap', 'zenarmor-dns-enrichment', 'pf-bootzero', 'nas-egress'],
+    'pages/wan-failover-recovery.html': ['297 in total', '25 of 25 invalid states', 'Clonezilla', 'SHA-256', 'not yet restored'],
+    'pages/zenarmor.html': ['TLS-Inspected', 'DNS enrichment', 'not on all traffic'],
+    'pages/zenarmor-multicore.html': ['seven crash dumps', 'Emulated Netmap', 'no defensible'],
+    'index.html': ['43 troubleshooting cases', 'wan-failover-recovery.html'],
   }
   for relative, phrases in required.items():
     page=(SITE/relative).read_text('utf-8')
@@ -147,9 +151,9 @@ def check():
       if not dest.is_relative_to(ROOT.resolve()) or not dest.exists():
         problems.append(f'Broken Markdown link: {p.relative_to(ROOT)} -> {ref}')
 
-  if len(pages)!=38: problems.append(f'Expected 38 site pages; found {len(pages)}')
-  if (SITE/'pages'/'notes.html').read_text('utf-8').count('<article class="mini-card" id=') != 39:
-    problems.append('Expected 39 troubleshooting cases')
+  if len(pages)!=39: problems.append(f'Expected 39 site pages; found {len(pages)}')
+  if (SITE/'pages'/'notes.html').read_text('utf-8').count('<article class="mini-card" id=') != 43:
+    problems.append('Expected 43 troubleshooting cases')
   try:
     commit_count=int(subprocess.check_output(['git','rev-list','--count','HEAD'],cwd=ROOT,text=True).strip())
     authors=subprocess.check_output(['git','log','--format=%ae%n%ce'],cwd=ROOT,text=True).splitlines()
@@ -160,7 +164,7 @@ def check():
   if problems:
     print('\n'.join('BLOCK: '+p for p in problems))
     return 1
-  print(f'PASS: {len(pages)} HTML pages, 39 cases, valid local links and noreply-only Git history')
+  print(f'PASS: {len(pages)} HTML pages, 43 cases, valid local links and noreply-only Git history')
   return 0
 if __name__=='__main__':
   sys.exit(check())

@@ -1,6 +1,6 @@
 # Earlier Proxmox index URL
 
-The later [Proxmox Master v1.12 index](proxmox-v1.7.md) includes the 18-VM inventory. This earlier file preserves my 4 November snapshot so existing links keep working.
+The later [Proxmox Master v1.15 index](proxmox-v1.7.md) includes the 18-VM inventory. This earlier file preserves my 4 November snapshot so existing links keep working.
 
 # Proxmox: Project Index
 

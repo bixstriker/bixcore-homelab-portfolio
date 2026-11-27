@@ -12,7 +12,7 @@ WireGuard and NPTv6 work with the current delegated prefix. I want to see what h
 
 ### Restoring services from backup
 
-I have backups and working recovery procedures for several systems. Next I want to restore individual NAS applications, the Proxmox guest data and the Windows certificate services in a controlled test, not just check that backup jobs have run.
+I have checked the OPNsense Clonezilla image and custom recovery archive, including the later PF hotfix package, but have not yet restored the image. I also want to restore individual NAS applications, Proxmox guest data and Windows certificate services in controlled tests.
 
 [NAS work →](../docs/pages/nas-services-operations.html)
 
@@ -82,7 +82,7 @@ I already use Zenarmor on the OPNsense gateway and have tested policy-based bloc
 
 ### TLS inspection
 
-Compare what the lightweight TLS inspection can see with a controlled full TLS decryption test, if that feature becomes available. I'm interested in client trust, pinned applications, QUIC and websites that should bypass decryption.
+The initial two-domain full TLS inspection pilot passed. Next I want to understand the DNS-enrichment bypass, check client trust and application pinning in controlled cases, and verify QUIC and exceptions without broadening inspection to all traffic.
 
 ### Filtering policies and reporting
 
@@ -94,8 +94,8 @@ Look at how Zenarmor's policy decisions and Suricata IPS events relate to the sa
 
 ### Inspection performance
 
-Measure throughput, latency, loss and CPU use on the Intel N305 with and without inspection. If multi-core processing is available, repeat the measurements with the same traffic and policy settings.
+Multi-core and native Netmap experiments caused crashes, so I returned to routed Emulated Netmap without multi-core. Further comparisons need a safe test environment and a stable engine; I do not have a valid comparative throughput result yet.
 
-[Zenarmor work and test ideas →](../docs/pages/zenarmor.html)   [The performance test plan →](../docs/pages/zenarmor-multicore.html)
+[Zenarmor work and test ideas →](../docs/pages/zenarmor.html)   [The Netmap investigation →](../docs/pages/zenarmor-multicore.html)
 
 ---

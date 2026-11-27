@@ -28,7 +28,7 @@ The Proxmox uplink carries the lab tag, but virtual-router DHCPv6 prefix delegat
 
 ## Next checks
 
-I still want to observe the NPTv6 setup during a real ISP prefix change, repeat the new behavior after a complete reboot and work through the remaining negative-path tests between network segments. The [Zenarmor multi-core comparison](../docs/pages/zenarmor.html) is planned separately; the 10GbE links are not an inspection-throughput measurement.
+I still want to observe the NPTv6 setup during a real ISP prefix change, repeat the new behavior after a complete reboot and work through the remaining negative-path tests between network segments. The [Zenarmor multi-core tests](../docs/pages/zenarmor-multicore.html) exposed Netmap stability problems; the 10GbE links are not an inspection-throughput measurement. I separately verified [physical WAN failover and automatic VPN recovery](../docs/pages/wan-failover-recovery.html).
 
 [Read the troubleshooting notes →](../docs/pages/notes.html)   [Updates and gateway operations →](../docs/pages/security-operations.html)   [DNS and guest services →](../docs/pages/network-services.html)
 
