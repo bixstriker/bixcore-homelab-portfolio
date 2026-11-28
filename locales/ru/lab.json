@@ -1,0 +1,24 @@
+{
+  "page": "pages/lab.html",
+  "source_blob": "ff86942601a6fc5e6ddf366b4a36c1c4773abec2",
+  "translations": {
+    "My virtual firewall lab: Proxmox networking, Windows and Linux test clients, and the systems I've tried.": "Моя виртуальная лаборатория firewall: сети Proxmox, тестовые клиенты Windows и Linux и испытанные системы.",
+    "My Virtual Firewall Lab · BiXCore": "Моя виртуальная лаборатория firewall · BiXCore",
+    "/ Virtualization": "/ Виртуализация",
+    "PROXMOX / FIREWALLS / CLIENT TESTS": "PROXMOX / FIREWALL / ТЕСТЫ КЛИЕНТОВ",
+    "My Virtual Firewall Lab": "Моя виртуальная лаборатория firewall",
+    "I use Proxmox to try different routers and firewalls without changing the gateway that runs my everyday network. Windows and Linux clients make it possible to check the results from the other end of a connection.": "Я использую Proxmox для испытания разных маршрутизаторов и межсетевых экранов, не меняя шлюз своей повседневной сети. Клиенты Windows и Linux позволяют проверять результаты с другого конца соединения.",
+    "How I built it": "Как я её создал",
+    "The host runs Debian 13.8 and Proxmox VE 9.3.1. Each active firewall has a lab-side uplink and its own virtual LAN, with test clients attached as needed. The latest verified inventory contains 18 virtual machines: thirteen firewall/router instances across twelve platforms, two Windows/Linux clients, and PacketFence, OpenWISP and Taranac. I normally run only two or three VMs when testing.": "На хосте установлены Debian 13.8 и Proxmox VE 9.3.1. У каждого активного firewall свой лабораторный uplink и виртуальная LAN, к которой при необходимости подключаются тестовые клиенты. Последняя проверенная инвентаризация включает 18 виртуальных машин: тринадцать экземпляров firewall и маршрутизаторов на двенадцати платформах, два клиента Windows/Linux, а также PacketFence, OpenWISP и Taranac. Обычно во время тестов работают только две или три VM.",
+    "Firewalls in the lab": "Firewall в лаборатории",
+    "I have worked with MikroTik CHR, pfSense CE, Sophos Firewall Home, VyOS, FortiGate VM, OpenWrt, IPFire, NethSecurity, FreeSense, DD-WRT, OPNsense and OpenFW. I keep two independent OPNsense guests for different lab tasks. Basic installation, management, DHCP, DNS, NAT and selected forwarding tests differ by platform; the original physical-laptop test set covered eleven firewall instances, not every VM added later. I have not completed the same security and recovery checklist for all twelve platforms.": "Я работал с MikroTik CHR, pfSense CE, Sophos Firewall Home, VyOS, FortiGate VM, OpenWrt, IPFire, NethSecurity, FreeSense, DD-WRT, OPNsense и OpenFW. Две независимые гостевые OPNsense служат для разных лабораторных задач. Базовые тесты установки, управления, DHCP, DNS, NAT и отдельных перенаправлений различаются по платформам. Первоначальный набор испытаний с физическим ноутбуком охватывал одиннадцать экземпляров firewall, а не все позднее добавленные VM. Единый перечень проверок безопасности и восстановления для всех двенадцати платформ ещё не завершён.",
+    "Other Proxmox projects include directory integration, trusted HTTPS, storage recovery and Intel iGPU passthrough for a Linux desktop. My latest DD-WRT experiment involved diagnosing a UEFI kernel panic and fixing a persistent GRUB template; reboot now works, but shutdown still needs investigation.": "Другие проекты Proxmox включают интеграцию со службой каталогов, доверенный HTTPS, восстановление хранилища и Intel iGPU passthrough для рабочего стола Linux. В последнем эксперименте с DD-WRT я диагностировал UEFI kernel panic и исправил постоянный шаблон GRUB. Перезагрузка теперь работает, но выключение ещё требует исследования.",
+    "What still needs work": "Что предстоит сделать",
+    "A consistent throughput and latency comparison.": "Единообразное сравнение пропускной способности и задержек.",
+    "Negative-path tests between all relevant zones and the home network.": "Негативные тесты между всеми соответствующими зонами и домашней сетью.",
+    "A full recovery test for the current single-disk VM storage.": "Полноценный тест восстановления текущего однодискового хранилища VM.",
+    "DHCPv6 prefix delegation to a virtual router over the existing IPv6-only lab uplink, plus a dedicated isolated Wi-Fi test access point. The IPv6-only network itself has already been tested with real Windows and Android clients.": "Делегирование префикса DHCPv6 виртуальному маршрутизатору через существующий лабораторный uplink только с IPv6 и отдельная изолированная тестовая точка Wi-Fi. Сама сеть только с IPv6 уже проверена на реальных клиентах Windows и Android.",
+    "Results by firewall platform →": "Результаты по платформам firewall →",
+    "Building the host and migrating storage →": "Создание хоста и миграция хранилища →"
+  }
+}
