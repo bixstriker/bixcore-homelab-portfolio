@@ -11,4 +11,18 @@ jobs:
         run: python3 security/release_check.py
 
       - name: Validate staged localization
-        run: python3 tools/localize.py --check
+        run: |
+          python3 tools/localize.py --check
+          python3 tools/localize.py --preview --output "$RUNNER_TEMP/bixcore-localization-preview"
+          if python3 tools/localize.py --require-complete; then
+            echo 'All translations complete'
+          else
+            echo 'Incomplete localization is not eligible for release'
+          fi
+      - name: Save localization preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: bixcore-localization-preview
+          path: ${{ runner.temp }}/bixcore-localization-preview
+          retention-days: 7
+          include-hidden-files: true

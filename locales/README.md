@@ -11,3 +11,5 @@ Each locale JSON contains the original English page path, its Git blob fingerpri
 Language selectors link to the same article in each available language. Localized links retain the selected language. No automatic redirect or browser translation service is used. Do not copy a partial preview into the published docs directory. The final deployment workflow and visual verification across all three languages are separate release steps.
 
 The translation dictionaries are staged work. The original English Markdown project notes remain the technical reference.
+
+The CI job also builds the preview, checks generated links, anchors, canonical and hreflang metadata, and saves the static output as a short-lived GitHub Actions artifact. Serve the extracted preview at the root of a local HTTP server; its absolute site paths are not designed for file:// browsing. The incomplete preview cannot be released by the strict build command.

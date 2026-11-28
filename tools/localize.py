@@ -178,6 +178,72 @@ def load():
             available[lang].add(page)
     return pages,available,translations
 
+
+def validate_rendered(rendered,available):
+    from html.parser import HTMLParser
+    from urllib.parse import unquote
+    import posixpath
+    class Page(HTMLParser):
+        def __init__(self):
+            super().__init__()
+            self.ids=set()
+            self.refs=[]
+            self.lang=None
+            self.alternates={}
+            self.canonical=None
+            self.switch=[]
+        def handle_starttag(self,tag,attrs):
+            a=dict(attrs)
+            if tag=='html':
+                self.lang=a.get('lang')
+            if a.get('id'):
+                if a['id'] in self.ids:
+                    raise ValueError(f'Duplicate generated id: {a["id"]}')
+                self.ids.add(a['id'])
+            for k in ('href','src'):
+                if a.get(k):
+                    self.refs.append(a[k])
+            if tag=='link' and a.get('rel')=='canonical':
+                self.canonical=a.get('href')
+            if tag=='link' and a.get('rel')=='alternate':
+                self.alternates[a.get('hreflang')]=a.get('href')
+            if tag=='a' and a.get('hreflang'):
+                self.switch.append((a['hreflang'],a.get('href'),a.get('aria-current')))
+    parsed={}
+    for path,content in rendered.items():
+        p=Page()
+        p.feed(content)
+        p.close()
+        parsed[path]=p
+    for lang in LANGS:
+        for page in available[lang]:
+            path=local_path(lang,page)
+            p=parsed[path]
+            expected={l:url_for(l,page) for l in LANGS if page in available[l]}
+            expected['x-default']=url_for('en',page)
+            if p.lang!=lang or p.canonical!=url_for(lang,page) or p.alternates!=expected:
+                raise ValueError(f'Generated language metadata mismatch: {path}')
+            switches=[(l,'/'+local_path(l,page),'page' if l==lang else None) for l in LANGS if page in available[l]]
+            if p.switch!=switches:
+                raise ValueError(f'Generated language selector mismatch: {path}')
+            for ref in p.refs:
+                u=urlsplit(ref)
+                if u.scheme or u.netloc:
+                    continue
+                target=unquote(u.path)
+                if target.startswith('/'):
+                    target=target.lstrip('/')
+                elif target:
+                    target=posixpath.normpath(posixpath.join(posixpath.dirname(path),target))
+                else:
+                    target=path
+                if target in parsed:
+                    if u.fragment and unquote(u.fragment) not in parsed[target].ids:
+                        raise ValueError(f'Broken generated anchor: {path} -> {ref}')
+                elif target.endswith('.html') or not (SITE/target).is_file():
+                    raise ValueError(f'Broken generated link: {path} -> {ref}')
+    print(f'PASS: generated navigation, anchors, canonical URLs and hreflang on {len(rendered)} pages')
+
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--check',action='store_true',help='validate the staged translations')
@@ -196,6 +262,7 @@ def main():
     for lang in LANGS:
         for page in sorted(available[lang]):
             rendered[local_path(lang,page)]=render(pages[page].read_text('utf-8'),page,lang,maps.get((lang,page),{}),available,not complete)
+    validate_rendered(rendered,available)
     if args.output:
         dest=args.output.resolve()
         if dest.exists() or dest==SITE.resolve() or SITE.resolve() in dest.parents:
