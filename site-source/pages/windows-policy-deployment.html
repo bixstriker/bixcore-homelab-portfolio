@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Using Group Policy for Windows management, WinRM, WireGuard automation and profile migration.">
+  <title>Windows Client Management with Group Policy · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/pages/windows-policy-deployment.html">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Windows Client Management with Group Policy · BiXCore">
+  <meta property="og:description" content="Using Group Policy for Windows management, WinRM, WireGuard automation and profile migration.">
+  <meta property="og:url" content="https://lab.bixcore.de/pages/windows-policy-deployment.html">
+  <meta name="twitter:card" content="summary">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Windows Server</p>
+<p class="kicker">GROUP POLICY / MANAGEMENT / AUTOMATION</p>
+<h1>Managing Windows with Group Policy</h1>
+<p class="lede">Once I joined more Windows machines to Active Directory, I wanted common settings and administration tools to follow them automatically. I use Group Policy to make that repeatable instead of configuring every PC from scratch.</p>
+<div class="article">
+<h2 id="profile-migration">Moving existing PCs into the domain</h2>
+<p>I didn't want to lose years of local user profiles while joining the Windows PCs to Active Directory. I used ForensiT User Profile Wizard to associate existing profiles with domain accounts, then checked that the desktop, applications and files still belonged to the right user.</p>
+<p>One migration wasn't smooth: Windows loaded a temporary profile because of an old ProfileList entry and permissions on the profile's user data. I corrected the registry mapping and file permissions, then verified that normal sign-in worked. I kept that recovery sequence in the working notes for future PC migrations.</p>
+<h2>Workstation policies</h2>
+<p>The policies cover domain organisation, managed local administrator passwords with Windows LAPS, machine certificate enrollment, wired EAP-TLS settings and selected user preferences. I also adjusted the domain password-aging policy and checked the resulting configuration on both domain controllers.</p>
+<p>I changed the keyboard-layout GPOs to add only the missing layouts without replacing people's custom input methods or their chosen order. The scripts passed selected checks, but I still want to inspect the actual sign-in-screen selector after another logon.</p>
+<h2 id="winrm-remoting">Remote administration</h2>
+<p>I configured Kerberos-based PowerShell remoting through WinRM and tested several workstation-to-workstation and workstation-to-server connections. That is separate from RDP access: the target still needs the right authorization rules for the task being performed.</p>
+<h2>Tools I deploy centrally</h2>
+<ul>
+<li><strong>PowerShell 7:</strong> a verified PowerShell 7.7 ZIP package deployed through the existing GPO and SYSTEM task. The script checks the package hash, configures remoting and avoids reinstalling the same version. Six Windows nodes were checked, although some reboot-trigger behavior remains open.</li>
+<li><strong>Sysinternals and RSAT:</strong> centrally distributed tools, with RSAT limited to the designated administration machine.</li>
+<li><strong>Windows Admin Center:</strong> HTTPS setup and certificate/HTTP.sys troubleshooting, not just installation of the web console.</li>
+<li><strong>Sysmon:</strong> installed with a managed configuration and scheduled deployment tasks; the events are useful for investigation, although I haven't built a complete SIEM.</li>
+<li><strong>RustDesk:</strong> a self-hosted support setup whose existing GPO now handles version-checked MSI and EXE upgrades to 1.5.3, with package-signature and hash checks.</li>
+</ul>
+<h2 id="windows-wireguard">WireGuard that connects only when I'm away</h2>
+<p>On a Windows laptop, I set up WireGuard to start automatically when the machine is outside the home network and disconnect when it comes back. A PowerShell script checks the active physical network interfaces and is triggered by Windows startup and network-change events. The tasks run as SYSTEM, so the tunnel can come up before a user signs in.</p>
+<p>I tested home Wi-Fi and Ethernet, switching to a phone hotspot, returning home, a restart while away and manual control through the WireGuard app. The script also remembers the current network state so it doesn't immediately undo a manual disconnect. I did see overlapping connect events in the logs, which is worth checking further.</p>
+<h2>Policy checks on both domain controllers</h2>
+<p>I also reviewed how a domain account-policy change propagated across both Windows Server controllers, rather than assuming the GPO editor's value was enough. I keep the actual password-policy settings out of the public portfolio; the useful part to document here is the check that the resulting domain policy agrees on both controllers.</p>
+<h2>When a RustDesk upgrade stalled</h2>
+<p>One MSI upgrade returned error 1603. The EXE update worked, but my deployment script was waiting on RustDesk's child processes and appeared to hang. I changed it to wait for the installer itself and verify the installed version. The next manual run completed, without changing the remote-support server.</p>
+<p><a href="notes.html#rustdesk-upgrade">The RustDesk deployment incident →</a></p>
+<h2>A separate Group Policy for certificate-based Wi-Fi</h2>
+<p>The domain-joined Windows machines already had machine certificates and a wired 802.1X policy, but one workstation was still using an older locally configured wireless profile with the wrong authentication mode. On 25 November I created a wireless computer-authentication GPO through Group Policy Management, with EAP-TLS, explicit trust of the RADIUS server's CA and name, and a client-certificate filter for my enterprise CA and Client Authentication EKU.</p>
+<p>I applied it to a pilot workstation first. WLAN AutoConfig recorded a successful machine authentication, and I confirmed the connection using the new profile. I then extended the GPO's application to the existing authorized computer group and checked policy replication and application. The remaining powered-off clients had not yet been individually tested at this checkpoint. The wired policy, certificate template and RADIUS configuration did not need to be changed.</p>
+<h2>Problems and follow-up work</h2>
+<p>Some of these took a few iterations. The PowerShell installation method had to change, and <a href="notes.html#wac">Windows Admin Center needed its HTTPS listener checked</a>. The RustDesk upgrade succeeded on the available test PCs, while one machine that was offline still needs its update checked.</p>
+<p>I also want to validate more combinations of source and destination for PowerShell remoting and keep checking that policy-driven installs behave correctly after a rebuild. Those are practical follow-up tests, not missing descriptions of the deployment itself.</p>
+<p><a class="source-link" href="windows-ad-pki.html">Active Directory and certificates →</a> &nbsp; <a class="source-link" href="windows-monitoring-backup.html">Windows monitoring and backups →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

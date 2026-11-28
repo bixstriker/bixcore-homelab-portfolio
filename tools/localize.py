@@ -17,7 +17,7 @@ from collections import Counter
 import xml.etree.ElementTree as ET
 
 ROOT=Path(__file__).resolve().parents[1]
-SITE=ROOT/'docs'
+SITE=ROOT/'site-source'
 LOCALES=ROOT/'locales'
 LANGS=('de','en','ru')
 ORIGIN='https://lab.bixcore.de/'
@@ -265,7 +265,7 @@ def main():
     validate_rendered(rendered,available)
     if args.output:
         dest=args.output.resolve()
-        if dest.exists() or dest==SITE.resolve() or SITE.resolve() in dest.parents:
+        if dest.exists() or dest==SITE.resolve() or SITE.resolve() in dest.parents or dest==(ROOT/'docs').resolve() or (ROOT/'docs').resolve() in dest.parents:
             raise ValueError('Output must be a new directory outside the canonical docs tree')
         dest.mkdir(parents=True)
         for f in SITE.iterdir():
@@ -278,6 +278,7 @@ def main():
         css=dest/'styles.css'
         with css.open('a',encoding='utf-8') as f:
             f.write('\n.language-switch{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;font-size:.8rem}.language-switch a{padding:.25rem .4rem;border:1px solid currentColor;border-radius:.35rem;text-decoration:none}.language-switch a[aria-current=page]{font-weight:700;background:#153a48;color:#e9f4fc}.translation-preview{max-width:80rem;margin:.5rem auto;padding:0 1rem;font-size:.85rem}\n@media(max-width:900px){.header-inner{flex-wrap:wrap}.language-switch{margin-left:auto}}\n')
+            f.write('\n'+(ROOT/'tools'/'localization.css').read_text('utf-8'))
         for path,content in rendered.items():
             f=dest/path
             f.parent.mkdir(parents=True,exist_ok=True)

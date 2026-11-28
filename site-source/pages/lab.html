@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="My virtual firewall lab: Proxmox networking, Windows and Linux test clients, and the systems I've tried.">
+  <title>My Virtual Firewall Lab · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/pages/lab.html">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="My Virtual Firewall Lab · BiXCore">
+  <meta property="og:description" content="My virtual firewall lab: Proxmox networking, Windows and Linux test clients, and the systems I've tried.">
+  <meta property="og:url" content="https://lab.bixcore.de/pages/lab.html">
+  <meta name="twitter:card" content="summary">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Virtualization</p>
+<p class="kicker">PROXMOX / FIREWALLS / CLIENT TESTS</p>
+<h1>My Virtual Firewall Lab</h1>
+<p class="lede">I use Proxmox to try different routers and firewalls without changing the gateway that runs my everyday network. Windows and Linux clients make it possible to check the results from the other end of a connection.</p>
+<div class="article">
+<h2>How I built it</h2>
+<p>The host runs Debian 13.8 and Proxmox VE 9.3.1. Each active firewall has a lab-side uplink and its own virtual LAN, with test clients attached as needed. The latest verified inventory contains 18 virtual machines: thirteen firewall/router instances across twelve platforms, two Windows/Linux clients, and PacketFence, OpenWISP and Taranac. I normally run only two or three VMs when testing.</p>
+<h2>Firewalls in the lab</h2>
+<p>I have worked with MikroTik CHR, pfSense CE, Sophos Firewall Home, VyOS, FortiGate VM, OpenWrt, IPFire, NethSecurity, FreeSense, DD-WRT, OPNsense and OpenFW. I keep two independent OPNsense guests for different lab tasks. Basic installation, management, DHCP, DNS, NAT and selected forwarding tests differ by platform; the original physical-laptop test set covered eleven firewall instances, not every VM added later. I have not completed the same security and recovery checklist for all twelve platforms.</p>
+<p>Other Proxmox projects include directory integration, trusted HTTPS, storage recovery and Intel iGPU passthrough for a Linux desktop. My latest DD-WRT experiment involved diagnosing a UEFI kernel panic and fixing a persistent GRUB template; reboot now works, but shutdown still needs investigation.</p>
+<h2>What still needs work</h2>
+<ul>
+<li>A consistent throughput and latency comparison.</li>
+<li>Negative-path tests between all relevant zones and the home network.</li>
+<li>A full recovery test for the current single-disk VM storage.</li>
+<li>DHCPv6 prefix delegation to a virtual router over the existing IPv6-only lab uplink, plus a dedicated isolated Wi-Fi test access point. The IPv6-only network itself has already been tested with real Windows and Android clients.</li>
+</ul>
+<p><a class="source-link" href="virtual-firewall-platforms.html">Results by firewall platform →</a> &nbsp; <a class="source-link" href="proxmox-host-storage.html">Building the host and migrating storage →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

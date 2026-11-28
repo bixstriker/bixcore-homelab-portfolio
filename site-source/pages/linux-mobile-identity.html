@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Joining Kubuntu to Active Directory and using SCEP certificates for Android enterprise Wi-Fi.">
+  <title>Linux and Android on the Same PKI · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/pages/linux-mobile-identity.html">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Linux and Android on the Same PKI · BiXCore">
+  <meta property="og:description" content="Joining Kubuntu to Active Directory and using SCEP certificates for Android enterprise Wi-Fi.">
+  <meta property="og:url" content="https://lab.bixcore.de/pages/linux-mobile-identity.html">
+  <meta name="twitter:card" content="summary">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Client identity</p>
+<p class="kicker">KUBUNTU / ANDROID / SCEP</p>
+<h1>Linux and Android on the Same PKI</h1>
+<p class="lede">Getting certificate-based network access working on Windows was only part of the project. I also wanted Kubuntu and Android devices to join the same enterprise Wi-Fi without sharing a password, and each platform needed a different enrollment approach.</p>
+<div class="article">
+<h2>Kubuntu and Active Directory</h2>
+<p>I joined a Kubuntu workstation to the domain using realmd, SSSD and Kerberos, then checked domain account and group resolution. Wired and wireless NetworkManager profiles use managed EAP-TLS client certificates. I also set up certificate renewal automation and tested the resulting connection behavior.</p>
+<p>I kept a separate local administrator account so that a directory or network problem wouldn't leave me without a recovery path. The Linux setup also has its own login-session and WireGuard integration notes.</p>
+<h2>Dual boot and remote access on Kubuntu</h2>
+<p>On a physical Windows/Kubuntu laptop I kept GRUB first in the UEFI boot order but configured Windows as its default. A real reboot confirmed the menu and default choice.</p>
+<p>KRDP initially accepted an RDP/TLS connection but then showed a black screen and disconnected. A saved Windows RDP connection that passed the complete Linux UPN with the correct account context worked. I renewed KRDP's separate self-signed TLS certificate and tested Ed25519 SSH key login from Windows. These are remote-access credentials, not the Wi-Fi EAP-TLS client identity.</p>
+<p><a href="notes.html#krdp-credentials">The KRDP username problem →</a></p>
+<h2>Android and managed certificates</h2>
+<p>For Android, I used mobile device management with SCEP enrollment through the internal NDES service. The managed profile installs the relevant trust material and a client identity, which Android can then use for EAP-TLS Wi-Fi. I tested that on multiple devices, including work-profile scenarios.</p>
+<p>One surprise was that applying the Wi-Fi configuration could trigger another SCEP request. I investigated that as part of the profile workflow rather than assuming Wi-Fi authentication was broken. The devices connected successfully.</p>
+<h2>Recovering Android enrollment after a software update</h2>
+<p>After a Xiaomi tablet's Android/HyperOS update, the management agent reported that the SCEP server was unreachable. The enrollment endpoint still answered, and a second Xiaomi phone using the same profile received a new certificate and connected. I therefore investigated the managed work profile before changing NDES or the CA.</p>
+<p>On 25 November I removed only the affected work profile, rebooted and enrolled it again, assigning the SCEP certificate profile before the Wi-Fi profile. The tablet and a second affected phone both recovered EAP-TLS connectivity. The CA issued new certificates, the superseded certificates were revoked and the CRL was republished. The devices' personal profiles and data were not removed.</p>
+<p>The procedure worked, but I have not established the precise Android or management-agent defect. I did not need to modify NDES, FreeRADIUS or the certificate template.</p>
+<h2>Renewal and cleanup</h2>
+<p>On Kubuntu, I have a documented certificate renewal process. I tested one Android SCEP replacement through revocation of its old certificate and publication of the updated CRL. More renewal and recovery scenarios remain open.</p>
+<p>The Proxmox host has its own Active Directory and HTTPS integration; I cover that under <a href="proxmox-host-storage.html">the virtualization setup</a> rather than mixing it into the workstation enrollment story.</p>
+<p><a class="source-link" href="notes.html#android-scep">The extra Android SCEP request →</a> &nbsp; <a class="source-link" href="identity.html">How EAP-TLS works in BiXCore →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

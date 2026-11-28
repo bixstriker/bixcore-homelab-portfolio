@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="How I built an isolated Proxmox firewall lab and what I plan to try with commercial systems and NAC.">
+  <title>The Virtual Firewall Lab · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/pages/proxmox-firewall-lab.html">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="The Virtual Firewall Lab · BiXCore">
+  <meta property="og:description" content="How I built an isolated Proxmox firewall lab and what I plan to try with commercial systems and NAC.">
+  <meta property="og:url" content="https://lab.bixcore.de/pages/proxmox-firewall-lab.html">
+  <meta name="twitter:card" content="summary">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Proxmox</p>
+<p class="kicker">VIRTUAL FIREWALLS / REAL CLIENT TESTS</p>
+<h1>The Virtual Firewall Lab</h1>
+<p class="lede">My Proxmox lab lets me work with firewall systems without replacing the OPNsense gateway I use every day. I can build a configuration, connect a Windows or Linux client, test the traffic and then move on to another platform.</p>
+<div class="article">
+<h2>How the lab works</h2>
+<p>Proxmox runs on a reused desktop with Debian 13. I have a dedicated upstream for the test firewalls and separate Linux bridges for their LAN interfaces. The same client VMs can be attached to the firewall being tested, so I don't need a large number of machines running at the same time.</p>
+<p>As of 12 November 2026 the lab contains 18 VMs: thirteen router/firewall instances, two reusable Windows/Linux clients, PacketFence NAC, OpenWISP and Taranac. The router/firewall instances cover twelve different platforms, including two independent virtual OPNsense guests. In addition to MikroTik CHR, pfSense CE, Sophos Firewall Home, VyOS, FortiGate VM, OpenWrt and IPFire, I installed NethSecurity 8.8.1, FreeSense 1.1.12, DD-WRT r66445 and a separate OPNsense Community 26.7 guest. Each firewall has its own virtual LAN, connected only when needed to the shared test clients. I verified basic management, IPv4 connectivity, DHCP, NAT and selected RDP forwards with the four new systems. I have also tested an external laptop over the dedicated PhyLan1 Ethernet port with all eleven router/firewall guests. A Proxmox hookscript connects that port only when exactly one of those guests is running. The new OPNsense clone and OpenFW were not part of those eleven PhyLan1 tests; full negative-path and performance testing remains open.</p>
+<p>The new <a href="packetfence-nac.html">PacketFence VM</a> is not one of the eleven firewalls and does not use PhyLan1. I tested virtual guest registration, access revocation and recovery after fixing separate IPSet and DNS problems. The <a href="phylan1.html">physical test-port design</a> has its own write-up.</p>
+<h2>Four additional guests on 9 November</h2>
+<p>I installed OpenWISP 26.09.2 on a small Debian server and confirmed that its Docker services were running, HTTPS was reachable and I could sign into the dashboard. I also installed Taranac Community Edition, checked its initial setup and WebGUI login, and later updated it to 1.3.4. Neither has yet gone through a full RADIUS, NAC or network-management exercise.</p>
+<p>I made a full disk clone of the lab OPNsense guest for future IPv6-only tests. Its virtual disks are independent, but some guest settings were copied as well. I still need to confirm its new NIC attachments before trying DHCPv6 prefix delegation, and I won't start it alongside its source while they might share an internal LAN.</p>
+<p>OpenFW UTM Community 4.2.1 is the other new firewall. I checked its LAN DHCP, management interface and a real RDP connection through a WAN-side forwarding rule to the Windows test VM. I haven't completed SSH login or a full policy review; enabling broad management listeners during setup is not a permanent security baseline.</p>
+<h2>Version checks on 12 November</h2>
+<p>I updated NethSecurity to 8.8.1 and Taranac to 1.3.4. Both virtual OPNsense guests and my Windows/KDE clients received updates as well, although I did not record their exact new builds. VyOS remains on Stream 2026.03 by choice. These are maintenance results, not new firewall-policy or DHCPv6-PD test results.</p>
+<h2>The 26 November lab checkpoint</h2>
+<p>On 17 November both virtual OPNsense guests were updated to 26.7.9_3. On 22 November I confirmed OpenFW UTM Community 4.5.1 in its WebGUI. My earlier OpenFW forwarding tests were on 4.2.1; I have not repeated its complete firewall, NAT or port-forward tests on 4.5.1.</p>
+<p>The inventory is still 18 VMs. I updated the host to Proxmox VE 9.3.1, checked boot and storage, and verified the updated KDE guest and MikroTik RDP/internet path. IPFire was also updated, but I did not repeat its complete forwarding tests.</p>
+<p>Taranac Community Edition 1.3.5 received two independent hotfixes. Four nginx-based images now report nginx 1.30.8, and I verified that the running TACACS+ container uses the hotfix image. All 12 containers were up. Full AAA and NAC regression testing remains open.</p>
+<p>The earlier November version figures above are historical checkpoints rather than a list of the current installed builds. I have not changed the IPv6-only virtual-router and DHCPv6-PD test status.</p>
+<h2>Problems I encountered</h2>
+<p>The VLAN path for the lab WAN caused a DHCP investigation that went all the way from the gateway to the physical switch and the virtual NIC. I also corrected an upstream bridge mistake during the IPFire setup. Those are described in the <a href="notes.html#lab">troubleshooting notes</a>. More recently, DD-WRT required an unusual UEFI boot repair: the wrong root partition and filesystem were embedded not only in GRUB configuration but also in a binary configuration template. Correcting the template and the UEFI reboot parameter gave two successful restarts. The <a href="notes.html#ddwrt-uefi">boot case</a> and an <a href="notes.html#ddwrt-access">SSH blocklist incident</a> are documented separately; DD-WRT shutdown is still not solved.</p>
+<h2>Where I want to go next</h2>
+<div class="two-col">
+<article class="mini-card"><h3>Commercial firewalls</h3><p>I would like to test Palo Alto VM-Series, Juniper vSRX, Check Point CloudGuard and SonicWall NSv, as well as a more fully licensed FortiGate VM. Cisco Catalyst 8000V is also on the list for routing and WAN experiments. These depend on trial images and licenses being available.</p><p><a href="roadmap.html">Commercial platform plans →</a></p></article>
+<article class="mini-card"><h3>RADIUS, 802.1X and NAC</h3><p>The real network already uses FreeRADIUS with certificate-based access. In the lab I want to test how firewall and access-control systems interact with RADIUS, and later connect that work to PacketFence. PacketFence's first isolated virtual guest/captive-portal tests already work, but RADIUS and 802.1X are still open.</p><p><a href="roadmap.html">NAC and Wi-Fi plans →</a></p></article>
+<article class="mini-card"><h3>Real Wi-Fi clients</h3><p>A dedicated Cudy Wi-Fi 7 access point would let me try captive portals, VLANs, EAP-TLS and guest isolation with physical devices, without changing the main Wi-Fi setup.</p><p><a href="roadmap.html">Physical client tests →</a></p></article>
+<article class="mini-card"><h3>IPv6-only and routing protocols</h3><p>The <a href="ipv6-only-lab.html">IPv6-only upstream</a> now works with physical Wi-Fi clients and is carried to Proxmox. I still need to test it with a virtual router, get a delegated /64 and route traffic through a separate guest LAN. BGP and FRR experiments remain on my list.</p><p><a href="lab-operational-method.html">The common test checklist →</a></p></article>
+</div>
+<p>Before comparing products, I want to check unwanted access paths, management exposure, restarts and configuration recovery. A simple successful RDP port forward is a useful first test, not the end of the assessment.</p>
+<p><a class="source-link" href="virtual-firewall-platforms.html">What I tested on each firewall →</a> &nbsp; <a class="source-link" href="proxmox-v1.7.html">All 43 Proxmox chapters →</a> &nbsp; <a class="source-link" href="phylan1.html">Physical client tests →</a> &nbsp; <a class="source-link" href="roadmap.html">Full list of planned experiments →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

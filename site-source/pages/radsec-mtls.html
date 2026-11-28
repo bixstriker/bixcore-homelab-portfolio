@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="How I moved two UniFi access points and an Omada switch to RadSec with TLS 1.3, resolved certificate trust failures, and tested ACME service actions.">
+  <title>Moving Authentication to RadSec · BiXCore</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/pages/radsec-mtls.html">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Moving Authentication to RadSec · BiXCore">
+  <meta property="og:description" content="How I moved two UniFi access points and an Omada switch to RadSec with TLS 1.3, resolved certificate trust failures, and tested ACME service actions.">
+  <meta property="og:url" content="https://lab.bixcore.de/pages/radsec-mtls.html">
+  <meta name="twitter:card" content="summary">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / RadSec</p>
+<p class="kicker">RADSEC / MUTUAL TLS / WI-FI / WIRED 802.1X</p>
+<h1>Moving My Wi-Fi and Wired 802.1X Authentication to RadSec</h1>
+<p class="lede">My EAP-TLS clients already worked. I wanted to protect the RADIUS traffic between the access points, the switch and my firewall too. Getting there taught me that a certificate chain can look valid in OpenSSL and still fail on a real switch.</p>
+<div class="article">
+<h2>Securing the RADIUS transport, not replacing client certificates</h2>
+<p>I put OPNsense RadSecProxy in front of FreeRADIUS. My two UniFi Wi-Fi 7 APs and the Omada switch connect to the proxy over <strong>TLS 1.3 with mutual certificate authentication</strong>. FreeRADIUS still decides whether a Windows, Linux or Android client is allowed on the network and records its sessions.</p>
+<p>There are two separate checks here. <strong>RadSec transport mTLS</strong> authenticates the network devices and the proxy. <strong>EAP-TLS</strong> is the client's certificate-based login carried inside that connection. I kept the existing EAP-TLS, directory authorization and CRL policy rather than rebuilding it for the new transport.</p>
+<h2>UniFi was straightforward; Omada was not</h2>
+<p>Both UniFi APs came up over TLS 1.3, with EAP-TLS authentication and Accounting. The wired Omada switch repeatedly rejected my new internal server certificates when I left its certificate verification enabled.</p>
+<p>I tried separate experimental roots, an intermediate CA and several reissued server certificates. OpenSSL accepted the chains on the computers I tested, but Omada still rejected them. The switch didn't expose the exact X.509 verification code, so I cannot claim to know which extension or firmware rule was responsible.</p>
+<p>I eventually used a <strong>Let's Encrypt server certificate</strong> and its public trust chain for the Omada-facing RadSecProxy profile. I did <em>not</em> disable certificate verification on the switch. The next failed handshake taught me something else: the proxy had lost the correct issuer for Omada's <em>client</em> certificate. Its logs now showed a clear issuer-validation error.</p>
+<p>I restored the existing, separate <strong>BiXCore RadSec CA for client authentication</strong>, leaving the public certificate for server authentication. That distinction fixed the connection. Omada completed TLS 1.3 and FreeRADIUS returned Access-Accept. I removed the temporary CA and certificate experiments and left the working UniFi profiles unchanged.</p>
+<h2>What I verified on the working setup</h2>
+<p>Omada kept <strong>server-certificate verification enabled</strong>. I confirmed TLS 1.3, a fresh successful wired login and RADIUS Accounting on the new transport. The two UniFi APs also had tested TLS 1.3 connections, authentication and Accounting. Old sessions from before the migration were treated as historical records, not automatic proof of a broken current transport.</p>
+<p>After the last certificate cleanup, I performed a real restart of RadSecProxy through a custom configd service command. The listener recovered, the proxy still presented the intended certificate, and another Omada 802.1X authentication succeeded.</p>
+<h2>ACME automation — and the part I still need to prove</h2>
+<p>I enabled certificate auto-renewal and attached two ACME actions, one for FreeRADIUS and one for RadSecProxy. The stock plugin restart action was not selectable in the ACME interface, so I added a narrow, named configd action instead of modifying the plugin. The command and actual RadSecProxy restart have been tested.</p>
+<p><strong>A restart is not the same as a successful certificate renewal.</strong> RadSecProxy consumes an exported PEM file; at the first real renewal, I still need to confirm that the new certificate and key are exported, the fingerprint and expiry change, and a fresh TLS connection works. I haven't forced an early renewal just for this test.</p>
+<h2>What the migration meant for my own management tool</h2>
+<p>RadSec changed the source used for Accounting Detail and exposed a separate UniFi Disconnect problem. I updated my restricted RADIUS Control helpers and tested the resulting client-specific operations in the <strong>v1.0.2 source/helper release</strong>. The NAS web, sync and control Docker images stayed on their earlier versions.</p>
+<p>Those RADIUS Control acceptance tests happened earlier on 21 November, before the last evening certificate cleanup. They prove selected controls after the RadSec migration, but I haven't repeated every control action after that final restart. <a href="radius-control.html">How I adapted RADIUS Control →</a></p>
+<p>The most useful lesson for me was to keep the trust directions separate, check the actual device behavior and be precise about the difference between a configured renewal action and a renewal I have really watched succeed.</p>
+<p><a class="source-link" href="notes.html#radsec-omada-certificate">Omada certificate failure →</a> &nbsp; <a class="source-link" href="notes.html#radsec-unifi-das">UniFi Disconnect regression →</a> &nbsp; <a class="source-link" href="identity-pki.html">Client EAP-TLS and PKI →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p>
+</main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

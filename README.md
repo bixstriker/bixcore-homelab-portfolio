@@ -32,3 +32,7 @@ I want to extend PacketFence into wired and Wi-Fi NAC tests, try DHCPv6 prefix d
 This is a snapshot of my portfolio website and its public project notes. The website is plain HTML and CSS and has no analytics or external JavaScript. I keep device configurations, operational backups and detailed working logs outside the portfolio.
 
 The public website is hosted through GitHub Pages from `docs/` at **https://lab.bixcore.de/**. Project notes are updated as experiments are verified.
+
+## Multilingual site maintenance
+
+The published site remains GitHub Pages from `main` / `docs`. English HTML and shared assets live in `site-source/`; German and Russian translations are stored in `locales/de/` and `locales/ru/`. The `docs/` directory is generated output, not the editing source. Edit English first, review the corresponding translations and source fingerprints, then run `python3 tools/localize.py --require-complete --output /tmp/bixcore-release` (a new directory). Replace the generated `docs/` tree with that complete output and commit both source and output together. CI verifies all language versions and rejects stale published output. Existing English URLs remain unchanged.
