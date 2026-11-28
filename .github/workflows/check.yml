@@ -9,3 +9,6 @@ jobs:
           fetch-depth: 0
       - name: Check content, links and Git history
         run: python3 security/release_check.py
+
+      - name: Validate staged localization
+        run: python3 tools/localize.py --check

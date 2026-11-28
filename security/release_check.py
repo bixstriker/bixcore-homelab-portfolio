@@ -10,7 +10,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / 'docs'
-ALLOWED_SUFFIXES = {'.md', '.html', '.css', '.webp', '.py', '.yml', '.yaml', '.svg', '.xml', '.txt', '', '.gitignore'}
+ALLOWED_SUFFIXES = {'.md', '.html', '.css', '.webp', '.py', '.yml', '.yaml', '.svg', '.xml', '.txt', '.json', '', '.gitignore'}
 PATTERNS = {
   'private IPv4': re.compile(r'(?<![\d.])(?:10(?:\.\d{1,3}){3}|192\.168(?:\.\d{1,3}){2}|172\.(?:1[6-9]|2\d|3[01])(?:\.\d{1,3}){2})(?![\d.])'),
   'IPv6 ULA': re.compile(r'\b(?:fc|fd)[0-9a-f]{2}:(?:[0-9a-f]*:){1,7}[0-9a-f]*\b', re.I),
@@ -43,7 +43,7 @@ def check():
       continue
     if p.suffix.lower() not in ALLOWED_SUFFIXES and p.name not in ('.gitignore','.nojekyll'):
       problems.append(f'Unexpected file type: {p.relative_to(ROOT)}')
-    if p.suffix in ('.html','.css','.md','.svg','.xml','.txt'):
+    if p.suffix in ('.html','.css','.md','.svg','.xml','.txt','.json'):
       content=p.read_text('utf-8')
       if 'github.com/bixstriker/bixcore-homelab"' in content or 'github.com/bixstriker/bixcore-homelab/' in content:
         problems.append(f'Old private repository link: {p.relative_to(ROOT)}')
