@@ -1,5 +1,7 @@
 name: Check public portfolio
 on: [push, pull_request]
+permissions:
+  contents: read
 jobs:
   safety-and-links:
     runs-on: ubuntu-latest
@@ -7,22 +9,18 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Check content, links and Git history
+      - name: Check canonical content, privacy, links and Git history
         run: python3 security/release_check.py
-
-      - name: Validate staged localization
+      - name: Require complete localization and identical published output
         run: |
-          python3 tools/localize.py --check
-          python3 tools/localize.py --preview --output "$RUNNER_TEMP/bixcore-localization-preview"
-          if python3 tools/localize.py --require-complete; then
-            echo 'All translations complete'
-          else
-            echo 'Incomplete localization is not eligible for release'
-          fi
-      - name: Save localization preview
+          python3 tools/localize.py --require-complete --output "$RUNNER_TEMP/bixcore-release"
+          test "$(find "$RUNNER_TEMP/bixcore-release" -name '*.html' | wc -l)" -eq 117
+          test "$(cat "$RUNNER_TEMP/bixcore-release/CNAME")" = lab.bixcore.de
+          diff -qr "$RUNNER_TEMP/bixcore-release" docs
+      - name: Save verified multilingual site
         uses: actions/upload-artifact@v4
         with:
-          name: bixcore-localization-preview
-          path: ${{ runner.temp }}/bixcore-localization-preview
+          name: bixcore-localization-release
+          path: ${{ runner.temp }}/bixcore-release
           retention-days: 7
           include-hidden-files: true
