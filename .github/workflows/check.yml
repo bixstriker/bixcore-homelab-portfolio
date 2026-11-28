@@ -10,6 +10,7 @@ jobs:
       pages: read
     outputs:
       pages_mode: ${{ steps.pages-mode.outputs.mode }}
+      pages_artifact: ${{ steps.pages-artifact.outputs.name }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,10 +33,21 @@ jobs:
       - name: Save verified multilingual site
         uses: actions/upload-artifact@v4
         with:
-          name: bixcore-localization-release
+          name: bixcore-localization-release-${{ github.run_attempt }}
           path: ${{ runner.temp }}/bixcore-release
           retention-days: 7
           include-hidden-files: true
+      # Upload the deployment archive in the completed validation job, not the
+      # deployment job. This avoids the artifact visibility race (deploy-pages#451).
+      # Attempt-specific names also avoid collisions when a full run is retried.
+      - name: Select Pages artifact name
+        id: pages-artifact
+        run: echo "name=github-pages-${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_OUTPUT"
+      - name: Package verified release for Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          name: ${{ steps.pages-artifact.outputs.name }}
+          path: ${{ runner.temp }}/bixcore-release
       - name: Check Pages publishing source
         id: pages-mode
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
@@ -66,12 +78,7 @@ jobs:
         run: |
           current=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq .object.sha)
           test "$current" = "$GITHUB_SHA"
-      - uses: actions/download-artifact@v4
-        with:
-          name: bixcore-localization-release
-          path: release
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: release
       - uses: actions/deploy-pages@v4
         id: deployment
+        with:
+          artifact_name: ${{ needs.safety-and-links.outputs.pages_artifact }}
