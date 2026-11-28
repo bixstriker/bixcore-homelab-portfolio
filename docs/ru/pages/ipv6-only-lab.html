@@ -2,6 +2,8 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="Как я создал реальный VLAN IPv6-only с OPNsense, управляемыми коммутаторами, Wi-Fi 7, DHCPv6, DNS64 и NAT64 и что подтвердили клиентские тесты.">
@@ -19,14 +21,15 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/ipv6-only-lab.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/ipv6-only-lab.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/ipv6-only-lab.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Перейти к содержанию</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/ru/index.html" aria-label="BiXCore Lab, главная"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ИНЖЕНЕРНАЯ ЛАБОРАТОРИЯ</span></span></a>
+    <a class="brand" href="/ru/" aria-label="BiXCore Lab, главная"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ИНЖЕНЕРНАЯ ЛАБОРАТОРИЯ</span></span></a>
     <nav class="top-nav" aria-label="Основная навигация"><a href="/ru/pages/work-index.html">Проекты</a><a href="/ru/pages/notes.html">Диагностика</a><a href="/ru/pages/hardware.html">Оборудование</a><a href="/ru/pages/roadmap.html">Планы</a><a href="/ru/pages/about.html">Обо мне</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Выбор языка"><a href="/de/pages/ipv6-only-lab.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/ipv6-only-lab.html" hreflang="en" lang="en">English</a><a href="/ru/pages/ipv6-only-lab.html" hreflang="ru" lang="ru" aria-current="page">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/ru/index.html">Главная</a> / <a href="/ru/pages/work-index.html">Проекты</a> / Лаборатория IPv6-only</p>
+<p class="breadcrumb"><a href="/ru/">Главная</a> / <a href="/ru/pages/work-index.html">Проекты</a> / Лаборатория IPv6-only</p>
 <p class="kicker">OPNSENSE / СЕТЕВАЯ ЛАБОРАТОРИЯ / 9 НОЯБРЯ 2026</p>
 <h1>Создание сети IPv6-only с доступом к IPv4</h1>
 <p class="lede">Я хотел отдельную сеть, в которой не нужно предполагать наличие IPv4 у каждого устройства. Вместо простого отключения IPv4 на ноутбуке создал отдельный VLAN на реальных коммутаторах и точках доступа, с маршрутизацией IPv6, DHCPv6, DNS64 и NAT64 на шлюзе.</p>
@@ -57,7 +60,7 @@
 </div>
 <p class="muted">Упрощённое публичное представление испытанной сети, не физическая карта портов.</p>
 <h2>Как работает IPv6</h2>
-<div class="table-wrap"><table><thead><tr><th>Компонент</th><th>Что настроил</th><th>Что проверил</th></tr></thead><tbody>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Таблица данных 1"><table><thead><tr><th scope="col">Компонент</th><th scope="col">Что настроил</th><th scope="col">Что проверил</th></tr></thead><tbody>
 <tr><td>Интерфейс OPNsense</td><td>Динамическая глобальная IPv6-адресация из делегированного пространства провайдера и отдельный локальный ULA-префикс</td><td>Действующие адреса и состояние интерфейса</td></tr>
 <tr><td>Router Advertisements</td><td>Режим Assisted с глобальным и локальным on-link префиксами</td><td>Реальные объявления и маршруты по умолчанию на клиентах</td></tr>
 <tr><td>Kea DHCPv6</td><td>Выдача адресов поддерживающим клиентам и отдельный пул будущего делегирования префиксов</td><td>Windows получил stateful IPv6-адрес; делегирование маршрутизатору не испытано</td></tr>

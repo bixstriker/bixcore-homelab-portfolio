@@ -2,6 +2,8 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="Hookscript Proxmox подключает внешний ноутбук к одной работающей виртуальной firewall, отключая тестовый порт при нескольких активных firewall VM.">
@@ -19,20 +21,21 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/phylan1.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/phylan1.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/phylan1.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Перейти к содержанию</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/ru/index.html" aria-label="BiXCore Lab, главная"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ИНЖЕНЕРНАЯ ЛАБОРАТОРИЯ</span></span></a>
+    <a class="brand" href="/ru/" aria-label="BiXCore Lab, главная"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ИНЖЕНЕРНАЯ ЛАБОРАТОРИЯ</span></span></a>
     <nav class="top-nav" aria-label="Основная навигация"><a href="/ru/pages/work-index.html">Проекты</a><a href="/ru/pages/notes.html">Диагностика</a><a href="/ru/pages/hardware.html">Оборудование</a><a href="/ru/pages/roadmap.html">Планы</a><a href="/ru/pages/about.html">Обо мне</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Выбор языка"><a href="/de/pages/phylan1.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/phylan1.html" hreflang="en" lang="en">English</a><a href="/ru/pages/phylan1.html" hreflang="ru" lang="ru" aria-current="page">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/ru/index.html">Главная</a> / <a href="/ru/pages/work-index.html">Проекты</a> / PhyLan1: физический клиент лаборатории firewall</p>
+<p class="breadcrumb"><a href="/ru/">Главная</a> / <a href="/ru/pages/work-index.html">Проекты</a> / PhyLan1: физический клиент лаборатории firewall</p>
 <p class="kicker">ЛИЧНАЯ ЛАБОРАТОРИЯ / 6 НОЯБРЯ 2026</p><h1>PhyLan1: физический клиент лаборатории firewall</h1><p class="lede">Я хотел тестировать каждую виртуальную firewall с реальным ноутбуком через Ethernet, не добавляя физическую NIC в каждую VM и не меняя её сетевую настройку. Хост Proxmox переключает один выделенный тестовый порт между существующими виртуальными LAN.</p>
 <div class="article"><h2>Как это работает</h2>
 <p>Выделенная тестовая NIC хоста принадлежит Linux bridge без IP-адреса хоста или шлюза. Временная виртуальная Ethernet-пара соединяет его с LAN bridge выбранной firewall. Upstream firewall остаётся в изолированном лабораторном VLAN за основным шлюзом OPNsense.</p>
 <p>Ноутбук получает сетевые настройки от активной firewall. Дополнительная NIC или bridge внутри firewall VM не устанавливаются.</p>
 <h2>Только одна firewall одновременно</h2>
-<div class="table-wrap"><table><thead><tr><th>Работающие firewall VM</th><th>Физический тестовый порт</th></tr></thead><tbody>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Таблица данных 1"><table><thead><tr><th scope="col">Работающие firewall VM</th><th scope="col">Физический тестовый порт</th></tr></thead><tbody>
 <tr><td>Ни одной</td><td>Нет подключения к LAN гостя</td></tr>
 <tr><td>Ровно одна</td><td>Подключён к существующему LAN bridge этой firewall</td></tr>
 <tr><td>Две или три</td><td>Отключён от всех LAN гостей</td></tr>

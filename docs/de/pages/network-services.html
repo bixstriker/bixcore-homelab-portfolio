@@ -2,6 +2,8 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="DNS, DHCP, AD-Weiterleitung, dynamische Einträge, ACME-Zertifikate und Gastdienste in meinem Netzwerk.">
@@ -19,14 +21,15 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/network-services.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/network-services.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/network-services.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <a class="brand" href="/de/" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
     <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/network-services.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/network-services.html" hreflang="en" lang="en">English</a><a href="/ru/pages/network-services.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Netzwerk</p>
+<p class="breadcrumb"><a href="/de/">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Netzwerk</p>
 <p class="kicker">DNS / DHCP / DDNS / ACME</p>
 <h1>DNS, DHCP und Netzwerkdienste</h1>
 <p class="lede">Clients sollten zuverlässiges DNS erhalten, ohne dass Windows-Domänencontroller jede Internetabfrage bearbeiten müssen. IPv6, Gastzugang und Zertifikatserneuerung brachten zusätzliche Anforderungen mit sich.</p>
@@ -45,7 +48,7 @@
 <p>Die Captive-Portal-API-URL stellte ich bereits über DHCPv4 Option 114 bereit. Ich ergänzte <strong>RFC 8910 RA Option 37</strong> im Gast-VLAN und erfasste tatsächliche Router Advertisements. Guest enthielt die URL, Core und das reine IPv6-Labor nicht. RDNSS, Präfixinformationen und PREF64 blieben erhalten. Damit ist der Paketversand belegt, nicht die Reaktion jedes Clientbetriebssystems.</p>
 <p>Das installierte OPNsense-Release erforderte einen kleinen versionsspezifischen Generator-Patch; Rollback-Dateien für spätere Upgrades blieben erhalten.</p>
 <h2>Als eine IPv6-zuerst-Anmeldung IPv4 verlor</h2>
-<p>Ein reales Gast-iPhone hatte IPv4 und IPv6, aber nach Anmeldung erlaubte das Portal nur IPv6 in seiner PF-Tabelle. Ich verfolgte dies bis zum OPNsense-Client-Roaming-Adressfilter und spielte den Upstream-Fix für Issue #11214 ein. Die bestehende Sitzung erhielt IPv4 ohne erneute Anmeldung, behielt alle neun IPv6-Einträge und bestand einen IPv6-Readiness-Check mit 10/10. <a href="/de/pages/notes.html#portal-dualstack">Dual-Stack-Portal-Untersuchung →</a></p>
+<p>Ein reales Gast-iPhone hatte IPv4 und IPv6, aber nach Anmeldung erlaubte das Portal nur IPv6 in seiner PF-Tabelle. Ich verfolgte dies bis zum OPNsense-Client-Roaming-Adressfilter und spielte die Korrektur aus dem Hauptprojekt zu Issue #11214 ein. Die bestehende Sitzung erhielt IPv4 ohne erneute Anmeldung, behielt alle neun IPv6-Einträge und bestand einen IPv6-Readiness-Check mit 10/10. <a href="/de/pages/notes.html#portal-dualstack">Dual-Stack-Portal-Untersuchung →</a></p>
 <h2>Eine IoT-Kamera das NAS finden lassen, ohne das ganze Netz zu öffnen</h2>
 <p>Nach dem Verschieben meiner Xiaomi-Kamera ins isolierte IoT-Netz funktionierte ihre NAS-Erkennung nicht mehr. Die Kamera sendete NetBIOS-Discovery-Broadcasts, die die VLAN-Grenze nicht passierten. Ich nutzte OPNsense UDP Broadcast Relay zur Erkennung und ergänzte eine eng begrenzte SMB-Regel von dieser Kamera zur vorgesehenen NAS-Schnittstelle.</p>
 <p>Ich prüfte aktive PF-Regeln und erfasste Discovery- und SMB-Verkehr. Bei deaktivierter Discovery-Regel fand die Kamera das NAS nicht; nach Aktivierung funktionierte die Erkennung wieder. Danach bestätigte ich, dass die Kameraaufnahmen tatsächlich auf das NAS importiert wurden. Die allgemeine IoT-zu-Core-Sperre blieb bestehen, statt allen IoT-Geräten Zugriff auf das Speichernetz zu geben.</p>

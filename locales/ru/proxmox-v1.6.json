@@ -1,6 +1,6 @@
 {
   "page": "pages/proxmox-v1.6.html",
-  "source_blob": "99de3f9ba8eab8ea37fcc8f0324c9068c2830095",
+  "source_blob": "6dd03cec33eca5a75c5f579928add72188ed1494",
   "translations": {
     "10": "10",
     "11": "11",
@@ -25,7 +25,6 @@
     "30": "30",
     "31": "31",
     "32": "32",
-    "The Proxmox working-notes index: host setup, virtual firewalls, storage recovery and Intel GPU experiments.": "Указатель рабочих заметок Proxmox: настройка хоста, виртуальные firewall, восстановление хранилища и эксперименты Intel GPU.",
     "Proxmox: Project Index · BiXCore": "Proxmox: указатель проектов · BiXCore",
     "BiXCore Lab": "BiXCore Lab",
     "Complete work index": "Полный указатель проектов",
@@ -124,7 +123,6 @@
     "The source's": "В источнике",
     "November 4 latest state": "последнее состояние от 4 ноября",
     "overrides earlier ideas about which VM number would be allocated to which firewall distribution.": "имеет приоритет над прежними идеями назначения номеров VM различным firewall.",
-    "The VMware-class test inventory is not a list of concurrently running guests.": "Инвентарь виртуальных тестовых машин не означает одновременного запуска всех гостей.",
     "A previous storage arrangement was replaced by a": "Прежняя конфигурация хранения заменена на",
     "single-disk": "однодисковый",
     "ZFS pool after documented health observations. Storage migration and snapshots are not high availability or a proved external recovery plan.": "ZFS-пул после документированных проверок состояния. Миграция и snapshots не являются высокой доступностью или доказанным внешним восстановлением.",
@@ -132,6 +130,8 @@
     "Additional IPv6-only upstreams, physical test AP clients and broad performance comparisons are": "Дополнительные IPv6-only upstream, физические клиенты тестовой AP и широкие сравнения производительности",
     "planned": "запланированы",
     ", not installed/finished merely because the source describes their intended architecture.": ", а не установлены или завершены лишь потому, что источник описывает их предполагаемую архитектуру.",
-    "← Complete work index": "← Полный указатель проектов"
+    "← Complete work index": "← Полный указатель проектов",
+    "Historical Proxmox project index: earlier host and firewall tests, storage recovery and Intel GPU experiments.": "Исторический указатель проектов Proxmox: ранние испытания хоста и межсетевых экранов, восстановление хранилища и эксперименты с Intel GPU.",
+    "The virtual-machine test inventory is not a list of concurrently running guests.": "Перечень тестовых виртуальных машин не является списком одновременно работающих гостевых систем."
   }
 }

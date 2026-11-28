@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="How I built a real IPv6-only VLAN with OPNsense, managed switches, Wi-Fi 7, DHCPv6, DNS64 and NAT64, and what the client tests actually proved.">
@@ -19,14 +21,15 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/ipv6-only-lab.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/ipv6-only-lab.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/ipv6-only-lab.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <a class="brand" href="/" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
     <nav class="top-nav" aria-label="Main navigation"><a href="/pages/work-index.html">Projects</a><a href="/pages/notes.html">Troubleshooting</a><a href="/pages/hardware.html">Hardware</a><a href="/pages/roadmap.html">Plans</a><a href="/pages/about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Language selection"><a href="/de/pages/ipv6-only-lab.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/ipv6-only-lab.html" hreflang="en" lang="en" aria-current="page">English</a><a href="/ru/pages/ipv6-only-lab.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/index.html">Home</a> / <a href="/pages/work-index.html">Projects</a> / IPv6-only lab</p>
+<p class="breadcrumb"><a href="/">Home</a> / <a href="/pages/work-index.html">Projects</a> / IPv6-only lab</p>
 <p class="kicker">OPNSENSE / NETWORK LAB / 9 NOVEMBER 2026</p>
 <h1>Building an IPv6-only Network That Can Still Reach IPv4</h1>
 <p class="lede">I wanted an isolated network where I could stop assuming that every device had IPv4. Rather than disabling IPv4 on a laptop and calling it done, I built a separate VLAN through my real switches and access points, with IPv6 routing, DHCPv6, DNS64 and NAT64 at the gateway.</p>
@@ -57,7 +60,7 @@
 </div>
 <p class="muted">Simplified public view of the tested network, not a physical port map.</p>
 <h2>How the IPv6 side works</h2>
-<div class="table-wrap"><table><thead><tr><th>Part</th><th>What I set up</th><th>What I checked</th></tr></thead><tbody>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Data table 1"><table><thead><tr><th scope="col">Part</th><th scope="col">What I set up</th><th scope="col">What I checked</th></tr></thead><tbody>
 <tr><td>OPNsense interface</td><td>Dynamic global IPv6 addressing from the ISP's delegated space, plus a separate local ULA prefix</td><td>Live addresses and the interface state</td></tr>
 <tr><td>Router Advertisements</td><td>Assisted mode, with both global and local on-link prefixes</td><td>Actual advertisements and default routing on clients</td></tr>
 <tr><td>Kea DHCPv6</td><td>Address assignment for supporting clients and a separate pool for future downstream prefix delegation</td><td>Windows received a stateful IPv6 address; router delegation is not tested</td></tr>

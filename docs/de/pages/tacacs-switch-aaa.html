@@ -2,6 +2,8 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="Mein TACACS+-Aufbau zur Switch-Administration, Active-Directory-Integration, Autorisierungsprüfungen und der ungelöste lokale Omada-Fallback.">
@@ -19,14 +21,15 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/tacacs-switch-aaa.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/tacacs-switch-aaa.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/tacacs-switch-aaa.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <a class="brand" href="/de/" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
     <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/tacacs-switch-aaa.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/tacacs-switch-aaa.html" hreflang="en" lang="en">English</a><a href="/ru/pages/tacacs-switch-aaa.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / TACACS+</p>
+<p class="breadcrumb"><a href="/de/">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / TACACS+</p>
 <p class="kicker">SWITCH-ADMINISTRATION / ACTIVE DIRECTORY / AAA</p>
 <h1>TACACS+ für die Switch-Administration</h1>
 <p class="lede">Ich wollte Verzeichniskonten für die Switch-Verwaltung nutzen und zugleich administrative Rechte und Recovery-Zugang kontrollieren. Besonders interessant wurde das Verhalten bei nicht verfügbarem TACACS+-Dienst.</p>

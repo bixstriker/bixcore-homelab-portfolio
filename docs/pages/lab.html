@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="My virtual firewall lab: Proxmox networking, Windows and Linux test clients, and the systems I&#x27;ve tried.">
@@ -19,14 +21,15 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/lab.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/lab.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/lab.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <a class="brand" href="/" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
     <nav class="top-nav" aria-label="Main navigation"><a href="/pages/work-index.html">Projects</a><a href="/pages/notes.html">Troubleshooting</a><a href="/pages/hardware.html">Hardware</a><a href="/pages/roadmap.html">Plans</a><a href="/pages/about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Language selection"><a href="/de/pages/lab.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/lab.html" hreflang="en" lang="en" aria-current="page">English</a><a href="/ru/pages/lab.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/index.html">Home</a> / <a href="/pages/work-index.html">Projects</a> / Virtualization</p>
+<p class="breadcrumb"><a href="/">Home</a> / <a href="/pages/work-index.html">Projects</a> / Virtualization</p>
 <p class="kicker">PROXMOX / FIREWALLS / CLIENT TESTS</p>
 <h1>My Virtual Firewall Lab</h1>
 <p class="lede">I use Proxmox to try different routers and firewalls without changing the gateway that runs my everyday network. Windows and Linux clients make it possible to check the results from the other end of a connection.</p>

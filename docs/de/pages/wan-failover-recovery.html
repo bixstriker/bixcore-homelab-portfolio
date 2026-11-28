@@ -2,6 +2,8 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="Meine physischen WAN-Failover-Tests, gezielte PF-Bereinigung, automatische VPN-Wiederherstellung und geprüfte Offline-Backups.">
@@ -19,14 +21,15 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/wan-failover-recovery.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/wan-failover-recovery.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/wan-failover-recovery.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <a class="brand" href="/de/" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
     <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/wan-failover-recovery.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/wan-failover-recovery.html" hreflang="en" lang="en">English</a><a href="/ru/pages/wan-failover-recovery.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / WAN-Wiederherstellung</p>
+<p class="breadcrumb"><a href="/de/">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / WAN-Wiederherstellung</p>
 <p class="kicker">OPNSENSE / PF / LTE / WIEDERHERSTELLUNG</p>
 <h1>Aufbau und Tests meines OPNsense-WAN-Failover- und Wiederherstellungssystems</h1>
 <p class="lede">Ein Ersatzanschluss ist nur dann nützlich, wenn sich das Netzwerk beim Ausfall des Hauptanschlusses tatsächlich erholt.</p>
@@ -45,7 +48,7 @@
 <p>Nach einem Offline-Backup startete ich das Gateway wieder und fand drei PF-States mit einer ungültigen Null-Gateway-Adresse. Die aktiven Firewall-Regeln enthielten bereits die richtige Route. Paketmitschnitte und die Prüfung des lokalen Netzwerk-Alias zeigten auch, dass Plex-Discovery-Broadcasts nach dem Hochfahren des Gateways die vorgesehene lokale Regel nutzten. Ein Verschieben der Firewall-Regeln hätte das beobachtete Problem nicht behoben.</p>
 <p>Ich ergänzte die bestehende periodische Bereinigung um eine separate Schutzprüfung für ungültige Start-States. Sie greift nur ein, wenn der reale WAN-Link, die Default-Route, das zwischengespeicherte Gateway und die aktiven PF-Regeln übereinstimmen, und prüft den betroffenen State erneut, bevor er anhand seiner ID entfernt wird.</p>
 <p>Beim zweiten physischen Neustart erschienen die Startwarnungen erneut. Die periodische Prüfung entfernte automatisch <strong>25 von 25 ungültigen States</strong>. Spätere Prüfungen zeigten keine verbleibenden ungültigen States und alle fünf Gateways online. Das ist eine getestete Abhilfemaßnahme für das Startproblem, keine Upstream-Korrektur der Reihenfolge, die diese States entstehen lässt.</p>
-<h2>Zwei unterschiedliche Recovery-Backups</h2>
+<h2>Zwei verschiedene Sicherungen für die Wiederherstellung</h2>
 <p>Ein Konfigurationsexport allein reicht für dieses Gateway nicht aus. Ich halte zusätzlich ein Archiv eigener Dateien, Hooks und Dienstkonfigurationen samt konsistentem FreeRADIUS-SQLite-Backup vor. Vor dem Abschalten der Firewall prüfte ich Archiv und Datenbank auf Integrität.</p>
 <p>Anschließend erstellte ich ein vollständiges Clonezilla-Abbild der System-NVMe. Clonezilla prüfte die gespeicherten Partitionsabbilder; USB-Original und NAS-Kopie stimmten per SHA-256 bei allen 32 Dateien überein. Beide Kopien blieben erhalten. Nach dem Start des ursprünglichen Gateways prüfte ich die eigenen Hooks, Dienststatus, Zertifikatsvalidierungskonfiguration und ausgewählte Verbindungen.</p>
 <p>Archiv und Abbild entstanden vor der späteren Start-State-Korrektur und den LTE-Management-Änderungen vom 27. November. Ich bewahre das separate PF-Recovery-Paket und die LTE-Management-Recovery-Notizen auf; keines der früheren Backups enthält diese Änderungen. Ein geprüftes Abbild ist noch keine erfolgreiche Wiederherstellung: Ich habe es weder auf eine Ersatzfestplatte zurückgespielt noch einen isolierten virtuellen Klon gestartet. Das bleibt eine künftige Recovery-Übung.</p>

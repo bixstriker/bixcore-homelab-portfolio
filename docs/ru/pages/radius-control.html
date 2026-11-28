@@ -2,6 +2,8 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="Мой собственный стабильный инструмент RADIUS Control для FreeRADIUS, UniFi и Omada с испытанным проводным Disconnect и исследованием ошибок Accounting.">
@@ -19,21 +21,22 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/radius-control.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/radius-control.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/radius-control.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Перейти к содержанию</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/ru/index.html" aria-label="BiXCore Lab, главная"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ИНЖЕНЕРНАЯ ЛАБОРАТОРИЯ</span></span></a>
+    <a class="brand" href="/ru/" aria-label="BiXCore Lab, главная"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ИНЖЕНЕРНАЯ ЛАБОРАТОРИЯ</span></span></a>
     <nav class="top-nav" aria-label="Основная навигация"><a href="/ru/pages/work-index.html">Проекты</a><a href="/ru/pages/notes.html">Диагностика</a><a href="/ru/pages/hardware.html">Оборудование</a><a href="/ru/pages/roadmap.html">Планы</a><a href="/ru/pages/about.html">Обо мне</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Выбор языка"><a href="/de/pages/radius-control.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/radius-control.html" hreflang="en" lang="en">English</a><a href="/ru/pages/radius-control.html" hreflang="ru" lang="ru" aria-current="page">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/ru/index.html">Главная</a> / <a href="/ru/pages/work-index.html">Проекты</a> / RADIUS Control</p>
+<p class="breadcrumb"><a href="/ru/">Главная</a> / <a href="/ru/pages/work-index.html">Проекты</a> / RADIUS Control</p>
 <p class="kicker">RADIUS / WI-FI / ПРОВОДНОЙ 802.1X / СОБСТВЕННЫЕ ИНСТРУМЕНТЫ</p>
 <h1>Создание собственного инструмента управления RADIUS-сессиями</h1>
 <p class="lede">Я хотел управлять отдельной сетевой сессией, не гадая, какое устройство подключено. Небольшой просмотрщик Accounting вырос в рабочий инструмент для Wi-Fi, проводного 802.1X и гостевого доступа.</p>
 <div class="article">
 <h2>От устаревшей сессии к стабильному релизу</h2>
 <p>Первая попытка отключить телефон после роуминга использовала старый RADIUS Session ID и завершилась ошибкой. Я переключался между контроллером UniFi, FreeRADIUS Accounting и OPNsense, чтобы понять, что действительно подключено. Это стало конкретным поводом создать <strong>BiXCore RADIUS Control</strong>.</p>
-<p>Стабильный релиз <strong>v1.0.0 от 19 ноября 2026</strong> я завершил и в тот же день развернул адаптивный веб-интерфейс v1.0.1. 21 ноября выпустил <strong>v1.0.2 для исходников и двух ограниченных UniFi helpers на OPNsense</strong>после адаптации управления сессиями к RadSec. Рабочие образы контейнеров NAS web, control и sync не менялись. Инструмент работает на NAS с существующим FreeRADIUS на OPNsense и не заменяет RADIUS-сервер.</p>
+<p>Стабильный релиз <strong>v1.0.0 от 19 ноября 2026</strong> я завершил и в тот же день развернул адаптивный веб-интерфейс v1.0.1. 21 ноября выпустил <strong>v1.0.2 для исходников и двух ограниченных UniFi helpers на OPNsense</strong> после адаптации управления сессиями к RadSec. Рабочие образы контейнеров NAS web, control и sync не менялись. Инструмент работает на NAS с существующим FreeRADIUS на OPNsense и не заменяет RADIUS-сервер.</p>
 <h2>Для чего я его использую</h2>
 <p>Интерфейс показывает актуальные, устаревшие и завершённые RADIUS Accounting-сессии, историю, локальные учётные записи FreeRADIUS и персональные сессии Captive Portal. Можно обновить данные и проверить текущую сессию перед действием.</p>
 <p>Я могу вручную включать и отключать <strong>локальные учётные записи FreeRADIUS</strong> и менять назначенный им VLAN. Изменения применяются к будущим аутентификациям и не переносят действующее Wi-Fi-соединение мгновенно. Также управляю персональным доступом к порталу и отдельной общей гостевой Wi-Fi-учётной записью, с явным подтверждением гостевого Disconnect.</p>
@@ -48,11 +51,11 @@
 <h2>Omada показал, почему одного ACK недостаточно</h2>
 <p>Проводной 802.1X на Omada потребовал отдельной реализации. Первоначальный запрос получил NAK. После ограничения полей RADIUS-пакета до принимаемых коммутатором был получен проверенный Disconnect-ACK.</p>
 <p>Но оказалась ещё одна ловушка: коммутатор не всегда отправлял Accounting-Stop для старой сессии. Однажды новый Accounting-Start пришёл сразу после первоначального таймаута. Закрытие старой строки только по ACK могло исказить историю или затронуть неверную запись.</p>
-<p>Изменил очистку так, что она выполняется <em>только</em> после проверенного ACK и однозначного нового Accounting-Start того же клиента и порта, пока старая строка базы не изменилась. Ожидание ограничено, автоматического повтора при неопределённом результате нет. Проверил на <strong>двух физических портах коммутатора</strong>с рабочей станцией и контроллером домена. Оба получили ожидаемую новую сессию и корректно закрытую старую запись.</p>
+<p>Изменил очистку так, что она выполняется <em>только</em> после проверенного ACK и однозначного нового Accounting-Start того же клиента и порта, пока старая строка базы не изменилась. Ожидание ограничено, автоматического повтора при неопределённом результате нет. Проверил на <strong>двух физических портах коммутатора</strong> с рабочей станцией и контроллером домена. Оба получили ожидаемую новую сессию и корректно закрытую старую запись.</p>
 <p>Действие ограничено подходящими индивидуальными проводными 802.1X-сессиями настроенного Omada. Это не массовое отключение портов. <a href="/ru/pages/notes.html#omada-accounting">Отказ Omada и исправление →</a></p>
 <h2>Wi-Fi-ключи, которые я решил не сбрасывать глобально</h2>
 <p>Обнаружил, что очистка PMKSA не удаляла отдельные <strong>ключи Fast Transition 802.11r</strong> на точках UniFi. Отключённая идентичность отклоняется при следующей полной EAP-TLS-аутентификации, однако существующий кэш FT может сохраняться. Для личной сети принял это ограничение вместо разрушительного глобального сброса кэшей.</p>
-<p>Также захватил TLS 1.2-клиента, предложившего старый session ID, при этом FreeRADIUS выполнил полный handshake. Полные аутентификации занимали около 0.16–0.27 секунды в этих измерениях. Постоянное кэширование TLS-сессий оставил отключённым: потенциальный выигрыш не стоил дополнительного исключительного случая авторизации.</p>
+<p>Также захватил TLS 1.2-клиента, предложившего старый идентификатор сессии, при этом FreeRADIUS выполнил полное TLS-рукопожатие. Полные аутентификации занимали около 0,16–0,27 секунды в этих измерениях. Постоянное кэширование TLS-сессий оставил отключённым: потенциальный выигрыш не стоил дополнительного исключительного случая авторизации.</p>
 <h2>Восстановление собственного инструмента после перехода на RadSec</h2>
 <p>После перехода двух UniFi AP на RadSec их EAP-TLS работал, но мои операции Disconnect перестали получать ACK. Изменились две вещи: Accounting Detail теперь мог храниться под отправителем прокси вместо AP, а точки больше не принимали прежние предположения о DAS secret.</p>
 <p>Обновил два ограниченных OPNsense helpers. Теперь они принимают только ожидаемые прямые или проксированные источники Accounting Detail и проверяют <em>исходную идентичность AP</em>, MAC клиента, session ID и уникальный идентификатор. Также проверяют точный активный RadSec TLS client перед использованием соответствующей подтверждённой настройки UniFi DAS. Неоднозначная или изменённая конфигурация приводит к отказу, а не слепому повтору.</p>

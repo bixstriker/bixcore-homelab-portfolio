@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="How I test virtual firewalls in Proxmox, from WAN and DHCP to NAT, isolation and recovery.">
@@ -19,14 +21,15 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/lab-operational-method.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/lab-operational-method.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/lab-operational-method.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <a class="brand" href="/" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
     <nav class="top-nav" aria-label="Main navigation"><a href="/pages/work-index.html">Projects</a><a href="/pages/notes.html">Troubleshooting</a><a href="/pages/hardware.html">Hardware</a><a href="/pages/roadmap.html">Plans</a><a href="/pages/about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Language selection"><a href="/de/pages/lab-operational-method.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/lab-operational-method.html" hreflang="en" lang="en" aria-current="page">English</a><a href="/ru/pages/lab-operational-method.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/index.html">Home</a> / <a href="/pages/work-index.html">Projects</a> / Proxmox</p>
+<p class="breadcrumb"><a href="/">Home</a> / <a href="/pages/work-index.html">Projects</a> / Proxmox</p>
 <p class="kicker">TESTING / TROUBLESHOOTING / RECOVERY</p>
 <h1>How I Test Firewalls in Proxmox</h1>
 <p class="lede">When I install a new firewall, I don't try every feature at once. I start with a working WAN and LAN connection, test it from a client and build on that. Repeating the same steps makes it easier to spot what is different between products.</p>
@@ -45,7 +48,7 @@
 <p>One lesson has been to distinguish basic network separation from full security isolation. Different Linux bridges make a useful lab layout, but I still need to test IPv4 and IPv6 paths toward all protected services.</p>
 <p>My November 2026 DD-WRT test added another important check: successful NAT is not enough if the guest cannot reboot cleanly. I traced a kernel panic to stale GRUB parameters regenerated from a binary template; a corrected UEFI reboot path passed two guest restarts. The guest still fails to shut down normally, and future firmware updates may overwrite the repair. <a href="/pages/notes.html#ddwrt-uefi">Read the DD-WRT case →</a></p>
 <h2>The comparison I want to build</h2>
-<div class="table-wrap"><table><thead><tr><th>Area</th><th>What I want to check</th></tr></thead><tbody>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Data table 1"><table><thead><tr><th scope="col">Area</th><th scope="col">What I want to check</th></tr></thead><tbody>
 <tr><td>Connectivity</td><td>WAN and client address assignment, DNS, IPv4/IPv6, routing and NAT</td></tr>
 <tr><td>Firewall behavior</td><td>Allowed and denied connections, state handling and logging</td></tr>
 <tr><td>Identity</td><td>RADIUS/802.1X where supported, certificates and management authentication</td></tr>

@@ -2,6 +2,8 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="Лаборатория гостевой регистрации PacketFence 15.2: ошибка формата IPSet, петля DNS forwarding и проверенное автоматическое управление доступом.">
@@ -19,14 +21,15 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/packetfence-nac.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/packetfence-nac.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/packetfence-nac.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Перейти к содержанию</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/ru/index.html" aria-label="BiXCore Lab, главная"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ИНЖЕНЕРНАЯ ЛАБОРАТОРИЯ</span></span></a>
+    <a class="brand" href="/ru/" aria-label="BiXCore Lab, главная"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ИНЖЕНЕРНАЯ ЛАБОРАТОРИЯ</span></span></a>
     <nav class="top-nav" aria-label="Основная навигация"><a href="/ru/pages/work-index.html">Проекты</a><a href="/ru/pages/notes.html">Диагностика</a><a href="/ru/pages/hardware.html">Оборудование</a><a href="/ru/pages/roadmap.html">Планы</a><a href="/ru/pages/about.html">Обо мне</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Выбор языка"><a href="/de/pages/packetfence-nac.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/packetfence-nac.html" hreflang="en" lang="en">English</a><a href="/ru/pages/packetfence-nac.html" hreflang="ru" lang="ru" aria-current="page">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/ru/index.html">Главная</a> / <a href="/ru/pages/work-index.html">Проекты</a> / PacketFence: моя первая лаборатория NAC</p>
+<p class="breadcrumb"><a href="/ru/">Главная</a> / <a href="/ru/pages/work-index.html">Проекты</a> / PacketFence: моя первая лаборатория NAC</p>
 <p class="kicker">ЛИЧНАЯ ЛАБОРАТОРИЯ / 6 НОЯБРЯ 2026</p><h1>PacketFence: моя первая лаборатория NAC</h1><p class="lede">Я хотел увидеть, что делает NAC при регистрации клиента через портал и при отзыве его доступа. Зарегистрировать Windows VM оказалось проще, чем добиться работы политики.</p>
 <div class="article"><h2>Конфигурация</h2>
 <p>Установил PacketFence 15.2 на Debian 12 в отдельной VM Proxmox. Она имеет изолированный IPv4 upstream и собственную виртуальную клиентскую сеть с DHCP, DNS proxy, inline-фильтрацией, NAT и Captive Portal. Начал с гостевой регистрации через Null source, а не сразу с корпоративного 802.1X.</p>
@@ -38,7 +41,7 @@
 <p>После восстановления IPSet TCP-соединения с внешними адресами работали, но имена сайтов по-прежнему разрешались в Captive Portal. DNS proxy пересылал запросы на собственный адрес прослушивания. Изменил upstream на шлюз лаборатории, сохранив PacketFence резолвером клиентов.</p>
 <p>После обоих исправлений Windows разрешал публичные имена и выполнил HTTPS-запрос с нормальной проверкой сертификатов.</p>
 <h2>Что проверил</h2>
-<div class="table-wrap"><table><thead><tr><th>Действие</th><th>Результат</th></tr></thead><tbody>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Таблица данных 1"><table><thead><tr><th scope="col">Действие</th><th scope="col">Результат</th></tr></thead><tbody>
 <tr><td>Гость зарегистрирован</td><td>Внешний TCP/443 и HTTPS работали.</td></tr>
 <tr><td>Регистрация отозвана</td><td>Новое внешнее соединение заблокировано, портал появился снова.</td></tr>
 <tr><td>Гость зарегистрирован повторно</td><td>Доступ вернулся автоматически без ручной правки IPSet.</td></tr>

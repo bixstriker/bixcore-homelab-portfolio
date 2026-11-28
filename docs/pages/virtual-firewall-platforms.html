@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="Hands-on firewall and router tests: twelve distinct platforms across thirteen VMs, including OpenFW and two OPNsense instances.">
@@ -19,14 +21,15 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/virtual-firewall-platforms.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/virtual-firewall-platforms.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/virtual-firewall-platforms.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <a class="brand" href="/" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
     <nav class="top-nav" aria-label="Main navigation"><a href="/pages/work-index.html">Projects</a><a href="/pages/notes.html">Troubleshooting</a><a href="/pages/hardware.html">Hardware</a><a href="/pages/roadmap.html">Plans</a><a href="/pages/about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Language selection"><a href="/de/pages/virtual-firewall-platforms.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/virtual-firewall-platforms.html" hreflang="en" lang="en" aria-current="page">English</a><a href="/ru/pages/virtual-firewall-platforms.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/index.html">Home</a> / <a href="/pages/work-index.html">Projects</a> / Proxmox</p>
+<p class="breadcrumb"><a href="/">Home</a> / <a href="/pages/work-index.html">Projects</a> / Proxmox</p>
 <p class="kicker">ROUTERS / FIREWALLS / PROXMOX</p>
 <h1>Firewall and Router Systems I've Tried</h1>
 <p class="lede">I use the same virtual Windows and Linux clients to get a feel for different firewall systems. My first goal with each product is simple: set up the WAN and LAN correctly, make client traffic work, then find out how its firewall rules and administration behave.</p>
@@ -34,7 +37,7 @@
 <h2>The common lab setup</h2>
 <p>Each firewall VM has a dedicated test upstream and its own virtual client network. I normally run one firewall with one or two clients, rather than all the products together. None of these experiments replaces my everyday OPNsense gateway.</p>
 <h2>What I have installed and tested</h2>
-<div class="table-wrap"><table><thead><tr><th>Platform</th><th>Work completed</th><th>Next things to try</th></tr></thead><tbody>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Data table 1"><table><thead><tr><th scope="col">Platform</th><th scope="col">Work completed</th><th scope="col">Next things to try</th></tr></thead><tbody>
 <tr><td><strong>MikroTik CHR / RouterOS</strong></td><td>Set up the virtual interfaces, initial RouterOS configuration, LAN addressing and selected NAT/client access.</td><td>More firewall rules, routing protocols and VPN testing.</td></tr>
 <tr><td><strong>pfSense CE</strong></td><td>Configured WAN/LAN, DHCP, management access and NAT, then checked selected RDP forwards to the client VMs.</td><td>IPv6, IPS and a fuller inter-zone policy test.</td></tr>
 <tr><td><strong>Sophos Firewall Home</strong></td><td>Completed the initial setup and checked management and basic guest connectivity, including a working checkpoint.</td><td>Its security controls, authentication and policies.</td></tr>

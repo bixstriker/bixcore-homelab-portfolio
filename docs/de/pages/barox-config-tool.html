@@ -2,6 +2,8 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#07101b">
 <meta name="description" content="Wie ich BiX Barox Config Tool für industrielle Switch-CLI, Konfigurationsexporte und Vergleiche von Netzwerkeinstellungen mit sorgfältiger Hardware-Validierung entwickelt habe.">
@@ -25,15 +27,16 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/barox-config-tool.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/barox-config-tool.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/barox-config-tool.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Zum Inhalt springen</a>
 <header class="site-header"><div class="wrap header-inner">
-<a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+<a class="brand" href="/de/" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
 <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/barox-config-tool.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/barox-config-tool.html" hreflang="en" lang="en">English</a><a href="/ru/pages/barox-config-tool.html" hreflang="ru" lang="ru">Русский</a></nav>
 </div></header>
 <main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Barox Config Tool</p>
+<p class="breadcrumb"><a href="/de/">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Barox Config Tool</p>
 <p class="kicker">EIGENES SOFTWAREPROJEKT / INDUSTRIELLES SWITCHING</p>
 <h1>BiX Barox Config Tool</h1>
 <p class="lede">Die Arbeit mit Managed Switches weckte den Wunsch nach etwas Nützlicherem als einer Sammlung kopierter CLI-Befehle. Ich begann mit einem Werkzeug, das Konfigurationsexporte liest, die Einstellungen verständlich macht und dokumentierte Recovery-Schritte vorbereitet. Daraus entstanden ein Parser, eine Analyse-Engine, eine Windows-GUI und ein eigener CLI-Forschungsbereich.</p>
@@ -58,8 +61,8 @@
 </figure>
 
 <h2>Was tatsächlich umgesetzt ist</h2>
-<div class="table-wrap"><table class="status-table">
-<thead><tr><th>Komponente</th><th>Status</th><th>Was ich belegen kann</th></tr></thead>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Datentabelle 1"><table class="status-table">
+<thead><tr><th scope="col">Komponente</th><th scope="col">Status</th><th scope="col">Was ich belegen kann</th></tr></thead>
 <tbody>
 <tr><td><strong>Ziel 1</strong></td><td>Für dokumentierte Testdaten umgesetzt</td><td>Offline-Export-zu-CLI-Konvertierung, erzeugte Erläuterungen und Recovery-Plan. Vor Anwendung müssen die Ergebnisse manuell geprüft werden.</td></tr>
 <tr><td><strong>Ziel 2</strong></td><td>Umgesetzt, eingefrorene Analyse-Baseline</td><td>Einzelgeräteprüfungen und Mehrgerätevergleiche von Konfigurationen eines realen Systems sowie mehrsprachige verständliche Berichte.</td></tr>
@@ -68,7 +71,7 @@
 </tbody></table></div>
 
 <h2>Die interessanteren technischen Probleme</h2>
-<p><strong>CLI-Grammatik ist nicht dasselbe wie ein getesteter Befehl.</strong> Für das wichtigste Barox-Referenzmodell enthält mein Forschungskatalog 6,644 Kontext- und Syntaxdatensätze in acht CLI-Kontexten. Einige stammen aus Live-Hilfe, andere nur aus Firmware- oder kombinierten Befunden. Diese Zahl bedeutet <em>nicht</em> , dass 6,644 Befehle erfolgreich auf einem physischen Switch ausgeführt wurden.</p>
+<p><strong>CLI-Grammatik ist nicht dasselbe wie ein getesteter Befehl.</strong> Für das wichtigste Barox-Referenzmodell enthält mein Forschungskatalog 6.644 Kontext- und Syntaxdatensätze in acht CLI-Kontexten. Einige stammen aus Live-Hilfe, andere nur aus Firmware- oder kombinierten Befunden. Diese Zahl bedeutet <em>nicht</em> , dass 6.644 Befehle erfolgreich auf einem physischen Switch ausgeführt wurden.</p>
 <p><strong>Switch-Vergleiche benötigen Kontext.</strong> Identische IP-Adressen bedeuten beispielsweise in verschiedenen VLANs nicht dasselbe. Ein unbekannter Uplink beweist nicht, dass kein Kabel existiert. Beobachtete Tatsachen, konfigurierte Zustände, abgeleitete Beziehungen und anlagenspezifische Richtlinien müssen getrennt werden.</p>
 <p><strong>Sichere Wiederherstellung erfordert mehr als Befehlsgenerierung.</strong> Eine serielle Sitzung hat Prompts, Modi, fragmentierte Antworten und mögliche Befehlsfehler. Ausgewählte Übergänge, Timeouts und Prompt-Verarbeitung habe ich auf Hardware getestet; automatische Anwendung, Verifizierung und Fehler-Recovery sind separate offene Arbeiten.</p>
 

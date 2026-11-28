@@ -2,9 +2,11 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
-  <meta name="description" content="Wie es bei BiXCore weitergeht: Firewall-Plattformen, TLS Inspection, reine IPv6-Netze, WLAN, RADIUS und Recovery-Tests.">
+  <meta name="description" content="Wie es bei BiXCore weitergeht: Firewall-Plattformen, TLS Inspection, reine IPv6-Netze, WLAN, RADIUS und Wiederherstellungstests.">
   <title>Ausblick · BiXCore</title>
   <link rel="stylesheet" href="/styles.css">
   <link rel="canonical" href="https://lab.bixcore.de/de/pages/roadmap.html">
@@ -12,21 +14,22 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BiXCore">
   <meta property="og:title" content="Ausblick · BiXCore">
-  <meta property="og:description" content="Wie es bei BiXCore weitergeht: Firewall-Plattformen, TLS Inspection, reine IPv6-Netze, WLAN, RADIUS und Recovery-Tests.">
+  <meta property="og:description" content="Wie es bei BiXCore weitergeht: Firewall-Plattformen, TLS Inspection, reine IPv6-Netze, WLAN, RADIUS und Wiederherstellungstests.">
   <meta property="og:url" content="https://lab.bixcore.de/de/pages/roadmap.html">
   <meta name="twitter:card" content="summary">
 <link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/roadmap.html">
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/roadmap.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/roadmap.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/roadmap.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <a class="brand" href="/de/" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
     <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/roadmap.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/roadmap.html" hreflang="en" lang="en">English</a><a href="/ru/pages/roadmap.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / Ausblick</p>
+<p class="breadcrumb"><a href="/de/">Startseite</a> / Ausblick</p>
 <p class="kicker">WIE ES WEITERGEHT</p>
 <h1>Meine geplanten Projekte</h1>
 <p class="lede">Manche Ideen entstehen aus Verbesserungen, die ich am laufenden Netz vornehmen möchte. Andere betreffen Technologien, die mich schon länger interessieren. Auf diese Liste greife ich zurück, wenn Zeit für das Labor ist.</p>
@@ -34,7 +37,7 @@
 <section id="network-followups"><h2>Den bestehenden Aufbau weiterentwickeln</h2>
 <div class="two-col">
 <article class="mini-card"><h3>IPv6 nach einem realen Präfixwechsel</h3><p>NPTv6 und die aus Schnittstellen abgeleiteten IPv6-Isolationsaliase funktionieren mit dem aktuellen delegierten Präfix. Bei einem realen Provider-Präfixwechsel muss ich prüfen, ob Aliase ohne Eingriff aktualisiert werden und DNS, VPN und Clients sich sauber erholen.</p><p><a href="/de/pages/opnsense-ipv6.html">Aktueller IPv6-Aufbau →</a></p></article>
-<article class="mini-card"><h3>Dienste aus Backups wiederherstellen</h3><p>Ich habe OPNsense-Clonezilla-Abbild und eigenes Recovery-Archiv einschließlich des späteren PF-Hotfix-Pakets geprüft, das Abbild aber noch nicht wiederhergestellt. Auch einzelne NAS-Anwendungen, Proxmox-Gastdaten und Windows-Zertifikatdienste möchte ich kontrolliert wiederherstellen.</p><p><a href="/de/pages/nas-services-operations.html">NAS-Arbeiten →</a></p></article>
+<article class="mini-card"><h3>Dienste aus Backups wiederherstellen</h3><p>Ich habe OPNsense-Clonezilla-Abbild und eigenes Wiederherstellungsarchiv einschließlich des späteren PF-Hotfix-Pakets geprüft, das Abbild aber noch nicht wiederhergestellt. Auch einzelne NAS-Anwendungen, Proxmox-Gastdaten und Windows-Zertifikatdienste möchte ich kontrolliert wiederherstellen.</p><p><a href="/de/pages/nas-services-operations.html">NAS-Arbeiten →</a></p></article>
 <article class="mini-card"><h3>Zu sperrende Pfade testen</h3><p>Die Labornetze sind durch Bridges und Firewall-Regeln getrennt. Ich möchte mögliche IPv4- und IPv6-Pfade systematisch prüfen, einschließlich Managementzugang, VPNs und Verbindungen zwischen virtuellen Firewalls.</p><p><a href="/de/pages/lab-operational-method.html">Bisherige Firewall-Tests →</a></p></article>
 <article class="mini-card"><h3>Zertifikatserneuerungen und alte Geräteidentitäten</h3><p>Windows, Kubuntu und verwaltete Android-Geräte können sich mit Zertifikaten authentifizieren. Automatischen Ersatz und Widerruf möchte ich verbessern, insbesondere wenn Android beim Empfang eines WLAN-Profils eine weitere SCEP-Identität anfordert.</p><p><a href="/de/pages/linux-mobile-identity.html">Arbeiten zu Clientzertifikaten →</a></p></article>
 </div></section>
@@ -53,16 +56,16 @@
 <div class="two-col">
 <article class="mini-card"><h3>Reines IPv6-WAN hinter einem virtuellen Router</h3><p>Das neue <a href="/de/pages/ipv6-only-lab.html">reine IPv6-VLAN</a> funktioniert bereits mit Windows- und Android-WLAN-Clients. Als Nächstes möchte ich eine separate virtuelle Firewall anschließen, die tatsächliche WAN-Zuordnung prüfen, ein delegiertes /64 anfordern und natives IPv6 und NAT64 hinter ihrem LAN testen.</p></article>
 <article class="mini-card"><h3>Ein physisches WLAN-Testnetz</h3><p>Ich habe bereits eine funktionierende reine IPv6-Test-SSID auf UniFi mit Windows- und Android-Clients; PhyLan1 ermöglicht Laptop-Tests mit elf Firewall-VMs. Ein dedizierter Cudy-AP ist weiterhin für isolierte Captive-Portal-, 802.1X- und NAC-Tests ohne Beteiligung des normalen WLANs vorgesehen.</p></article>
-<article class="mini-card"><h3>PacketFence über das Captive Portal hinaus</h3><p>Ich habe <a href="/de/pages/packetfence-nac.html">PacketFence 15.2</a> mit einem virtuellen Gastclient in Betrieb: Registrierung, Zugangsverlust und erneute Registrierung sind getestet. Als Nächstes folgen RADIUS/802.1X, EAP-TLS, VLAN-Zuweisung und physische LAN-/WLAN-Clients. Außerdem muss ich prüfen, ob ein künftiges Release den Upstream-Code von PR #9350 statt meines lokalen Backports enthält.</p></article>
+<article class="mini-card"><h3>PacketFence über das Captive Portal hinaus</h3><p>Ich habe <a href="/de/pages/packetfence-nac.html">PacketFence 15.2</a> mit einem virtuellen Gastclient in Betrieb: Registrierung, Zugangsverlust und erneute Registrierung sind getestet. Als Nächstes folgen RADIUS/802.1X, EAP-TLS, VLAN-Zuweisung und physische LAN-/WLAN-Endgeräte. Außerdem muss ich prüfen, ob ein künftiges Release den Upstream-Code von PR #9350 statt meines lokalen Backports enthält.</p></article>
 <article class="mini-card"><h3>BGP und FRR</h3><p>Ich möchte ein kleines Routing-Labor aufbauen und beobachten, wie sich Präfixe und Routen ändern, wenn ein Link oder Neighbor verschwindet.</p></article>
 </div></section>
 <section id="zenarmor-plans"><h2>Weitere Zenarmor-Experimente</h2>
 <p>Zenarmor läuft bereits am OPNsense-Gateway; richtlinienbasierte Sperren wurden getestet. Weiter untersuchen möchte ich insbesondere das Inspection-Verhalten bei verschlüsseltem Verkehr und den Informationsgehalt der Berichte.</p>
 <div class="two-col">
-<article class="mini-card"><h3>TLS Inspection</h3><p>Der erste Full-TLS-Inspection-Pilotversuch für zwei Domains war erfolgreich. Nun möchte ich den DNS-Enrichment-Bypass verstehen, Clientvertrauen und Application Pinning kontrolliert prüfen und QUIC sowie Ausnahmen testen, ohne Inspection auf den gesamten Verkehr auszuweiten.</p></article>
+<article class="mini-card"><h3>TLS Inspection</h3><p>Der erste Full-TLS-Inspection-Pilotversuch für zwei Domains war erfolgreich. Nun möchte ich verstehen, weshalb fehlende DNS-Anreicherung zur Umgehung der Inspektion führt, Clientvertrauen und Application Pinning kontrolliert prüfen und QUIC sowie Ausnahmen testen, ohne Inspection auf den gesamten Verkehr auszuweiten.</p></article>
 <article class="mini-card"><h3>Filterrichtlinien und Berichte</h3><p>Verschiedene Anwendungs- und Webkategorierichtlinien auf Testclients ausprobieren, Ausnahmen und False Positives prüfen und Live Sessions sowie Berichte mit dem Clientverhalten vergleichen.</p></article>
 <article class="mini-card"><h3>Zusammenspiel mit Suricata</h3><p>Zenarmors Richtlinienentscheidungen und Suricata-IPS-Ereignisse für denselben kontrollierten Verkehr vergleichen, ohne beide Engines als funktionsgleich zu betrachten.</p></article>
 <article class="mini-card"><h3>Inspection-Leistung</h3><p>Multi-Core- und Native-Netmap-Experimente führten zu Abstürzen. Ich kehrte zu Routed Mode mit Emulated Netmap ohne Multi-Core zurück. Weitere Vergleiche benötigen eine sichere Testumgebung und stabile Engine; ein gültiger vergleichender Durchsatzwert liegt nicht vor.</p></article>
 </div>
 <p><a class="source-link" href="/de/pages/zenarmor.html">Zenarmor-Arbeiten und Testideen →</a>   <a class="source-link" href="/de/pages/zenarmor-multicore.html">Netmap-Untersuchung →</a></p></section>
-</div><hr class="rule"><p><a class="button secondary" href="/de/index.html">← Startseite</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>
+</div><hr class="rule"><p><a class="button secondary" href="/de/">← Startseite</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

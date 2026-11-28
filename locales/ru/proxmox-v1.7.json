@@ -1,6 +1,6 @@
 {
   "page": "pages/proxmox-v1.7.html",
-  "source_blob": "b223fa8fb20684449298275781cc7f293054577c",
+  "source_blob": "90814659f154d732166077d1d62625e2755b5139",
   "translations": {
     "10": "10",
     "11": "11",
@@ -36,7 +36,6 @@
     "41": "41",
     "42": "42",
     "43": "43",
-    "The Proxmox working-notes index: host setup, virtual firewalls, storage recovery and Intel GPU experiments.": "Указатель рабочих заметок Proxmox: настройка хоста, виртуальные firewall, восстановление хранилища и эксперименты Intel GPU.",
     "Proxmox Master v1.15: Project Index · BiXCore": "Proxmox Master v1.15: указатель проектов · BiXCore",
     "BiXCore Lab": "BiXCore Lab",
     "Complete work index": "Полный указатель проектов",
@@ -177,6 +176,7 @@
     "ZFS pool after documented health observations. Storage migration and snapshots are not high availability or a proved external recovery plan.": "ZFS-пул после документированных проверок состояния. Миграция и snapshots не являются высокой доступностью или доказанным внешним восстановлением.",
     "Earlier virtual graphics paths are superseded by a later passthrough/EDID/KRDP solution. The final result does not prove all remote frames are hardware-encoded.": "Ранние варианты виртуальной графики заменены решением passthrough/EDID/KRDP. Итог не доказывает аппаратное кодирование каждого удалённого кадра.",
     "The physical Wi-Fi clients now use the new IPv6-only VLAN; the eleven original firewall VMs have passed external Ethernet tests. PacketFence's guest access works with a tested backport. The virtual-router IPv6 WAN/PD experiment, physical PacketFence clients, 802.1X and broader isolation/recovery tests remain open.": "Физические Wi-Fi-клиенты используют новый IPv6-only VLAN; исходные одиннадцать firewall VM прошли внешние Ethernet-тесты. Гостевой доступ PacketFence работает с испытанным backport. Тест виртуального маршрутизатора IPv6 WAN/PD, физические клиенты PacketFence, 802.1X и более широкие тесты изоляции/восстановления остаются открытыми.",
-    "← Complete work index": "← Полный указатель проектов"
+    "← Complete work index": "← Полный указатель проектов",
+    "Current Proxmox project index: host operations, virtual firewall testing, storage recovery and Intel GPU experiments.": "Актуальный указатель проектов Proxmox: эксплуатация хоста, испытания виртуальных межсетевых экранов, восстановление хранилища и эксперименты с Intel GPU."
   }
 }

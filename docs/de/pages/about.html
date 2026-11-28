@@ -2,6 +2,8 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="Ich bin Felix Bistriker. Hier geht es um meine Arbeit mit Sicherheitssystemen, IP-Videoüberwachung und Netzwerken sowie die privaten Projekte hinter BiXCore.">
@@ -19,14 +21,15 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/about.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/about.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/about.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <a class="brand" href="/de/" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
     <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/about.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/about.html" hreflang="en" lang="en">English</a><a href="/ru/pages/about.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-  <p class="breadcrumb"><a href="/de/index.html">Startseite</a> / Über mich</p>
+  <p class="breadcrumb"><a href="/de/">Startseite</a> / Über mich</p>
   <div class="about-person">
     <img class="about-portrait" src="/assets/felix-portrait.webp" alt="Porträt von Felix Bistriker" width="200" height="300" loading="eager">
     <div>
@@ -40,7 +43,7 @@
     <section>
       <h2>Von Ingenieurprojekten zur Netzwerktechnik</h2>
       <p>Meine berufliche Arbeit konzentriert sich auf elektronische Sicherheitssysteme: Brandmeldeanlagen, Einbruchmeldeanlagen, Videoüberwachung und Zutrittskontrolle. Seit mehr als zehn Jahren beschäftige ich mich mit Installation, Inbetriebnahme, Wartung, Fehlersuche und Projektkoordination. Ich habe auch technische Teams geleitet und an der Inbetriebnahme komplexer Anlagen mitgewirkt.</p>
-      <p>Netzwerktechnik gehört zu meinem beruflichen Alltag, insbesondere in der Videoüberwachung. Ich integriere Systeme in Active Directory, konfiguriere Managed Switches, Firewalls, Router und GSM-Modems und kümmere mich um die Anbindung und Konfiguration von Axis-IP-Kameras und Videoservern. Bei Störungen einer Kameraanlage muss ich häufig die gesamte Kette aus Netzwerkadressierung, Routing, Zugriffsregeln und Serverdiensten betrachten, nicht nur die Videoanwendung.</p>
+      <p>Netzwerktechnik gehört zu meinem beruflichen Alltag, insbesondere in der Videoüberwachung. Ich integriere Systeme in Active Directory, konfiguriere verwaltbare Switches, Firewalls, Router und GSM-Modems und kümmere mich um die Anbindung und Konfiguration von Axis-IP-Kameras und Videoservern. Bei Störungen einer Kameraanlage muss ich häufig die gesamte Kette aus Netzwerkadressierung, Routing, Zugriffsregeln und Serverdiensten betrachten, nicht nur die Videoanwendung.</p>
       <p>Durch diese praktische Erfahrung wollte ich genauer verstehen, was hinter den Geräten passiert: Switching, Routing, Authentifizierung, Zertifikate und die Infrastruktur, die alles miteinander verbindet.</p>
       <p>Mit BiXCore kann ich diese Technologien vertiefen. Ich kann eine vollständige Umgebung aufbauen, gezielt einen Ausfall testen, Logs und Pakete auswerten und sowohl die Lösung als auch offene Fragen dokumentieren.</p>
     </section>
@@ -61,7 +64,7 @@
     <section>
       <h2>Womit ich in BiXCore arbeite</h2>
       <div class="two-col">
-        <article class="mini-card"><h3>Netzwerke und IT-Sicherheit</h3><p>OPNsense, IPv4/IPv6, VLANs, Managed Switches, WLAN, WireGuard, Suricata, Zenarmor und FreeRADIUS mit EAP-TLS.</p></article>
+        <article class="mini-card"><h3>Netzwerke und IT-Sicherheit</h3><p>OPNsense, IPv4/IPv6, VLANs, verwaltbare Switches, WLAN, WireGuard, Suricata, Zenarmor und FreeRADIUS mit EAP-TLS.</p></article>
         <article class="mini-card"><h3>Identitäten und Zertifikate</h3><p>Windows Server, Active Directory, AD CS, NDES/SCEP, LDAPS, Gruppenrichtlinien und zertifikatsbasierte Clientregistrierung.</p></article>
         <article class="mini-card"><h3>Linux und Virtualisierung</h3><p>Debian, Kubuntu, Proxmox VE, ZFS, Docker, Systemdienste und virtuelle Firewall-Tests mit Windows- und Linux-Clients.</p></article>
         <article class="mini-card"><h3>Monitoring und Fehleranalyse</h3><p>Prometheus, Grafana, Logs, Paketmitschnitte, Protokolltests und das Erstellen von Wiederherstellungsverfahren auf Grundlage tatsächlich beobachteten Verhaltens.</p></article>
@@ -82,5 +85,5 @@
       <p><a class="source-link" href="/de/pages/work-index.html">Projekte ansehen →</a>   <a class="source-link" href="/de/pages/roadmap.html">Zum Ausblick →</a></p>
     </section>
   </div>
-  <hr class="rule"><p><a class="button secondary" href="/de/index.html">← Startseite</a></p>
+  <hr class="rule"><p><a class="button secondary" href="/de/">← Startseite</a></p>
 </main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

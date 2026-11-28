@@ -2,6 +2,8 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="Wie ich virtuelle Firewalls in Proxmox teste, von WAN und DHCP bis NAT, Isolation und Wiederherstellung.">
@@ -19,14 +21,15 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/lab-operational-method.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/lab-operational-method.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/lab-operational-method.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <a class="brand" href="/de/" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
     <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/lab-operational-method.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/lab-operational-method.html" hreflang="en" lang="en">English</a><a href="/ru/pages/lab-operational-method.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Proxmox</p>
+<p class="breadcrumb"><a href="/de/">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Proxmox</p>
 <p class="kicker">TESTS / FEHLERANALYSE / WIEDERHERSTELLUNG</p>
 <h1>Wie ich Firewalls in Proxmox teste</h1>
 <p class="lede">Bei einer neuen Firewall probiere ich nicht alle Funktionen gleichzeitig aus. Ich beginne mit einer funktionierenden WAN- und LAN-Verbindung, teste sie von einem Client aus und baue darauf auf. Durch wiederkehrende Schritte lassen sich Unterschiede zwischen Produkten leichter erkennen.</p>
@@ -41,11 +44,11 @@
 <li><strong>Wiederherstellung:</strong> Dokumentieren, was sich nach Firewall-Neustart oder Snapshot-Wiederherstellung ändert, statt den Laufzeitzustand für dauerhaft zu halten.</li>
 </ol>
 <h2>Was Schwierigkeiten verursachte</h2>
-<p>Ein frühes <a href="/de/pages/notes.html#lab">DHCP-Problem am Labor-WAN</a> erforderte Prüfungen an Switch, Gateway, Linux-Bridge und Gast-NIC. Beim <a href="/de/pages/notes.html#ipfire">IPFire-Aufbau</a>war das WAN zunächst mit der falschen virtuellen Bridge verbunden. Speicherzustand und <a href="/de/pages/notes.html#gpu">KDE-Grafikprobleme</a> wurden ebenfalls zu eigenen Untersuchungen.</p>
+<p>Ein frühes <a href="/de/pages/notes.html#lab">DHCP-Problem am Labor-WAN</a> erforderte Prüfungen an Switch, Gateway, Linux-Bridge und Gast-NIC. Beim <a href="/de/pages/notes.html#ipfire">IPFire-Aufbau</a> war das WAN zunächst mit der falschen virtuellen Bridge verbunden. Speicherzustand und <a href="/de/pages/notes.html#gpu">KDE-Grafikprobleme</a> wurden ebenfalls zu eigenen Untersuchungen.</p>
 <p>Eine Erkenntnis war die Unterscheidung zwischen grundlegender Netztrennung und vollständiger Sicherheitsisolation. Unterschiedliche Linux-Bridges ergeben einen sinnvollen Laboraufbau, doch IPv4- und IPv6-Pfade zu allen geschützten Diensten müssen noch getestet werden.</p>
 <p>Mein DD-WRT-Test im November 2026 ergänzte eine weitere wichtige Prüfung: Erfolgreiches NAT reicht nicht, wenn der Gast nicht sauber neu startet. Ich führte einen Kernel Panic auf alte GRUB-Parameter zurück, die aus einer binären Vorlage regeneriert wurden. Der korrigierte UEFI-Neustartpfad bestand zwei Gastneustarts. Das reguläre Herunterfahren schlägt weiterhin fehl; künftige Firmwareupdates könnten die Korrektur überschreiben. <a href="/de/pages/notes.html#ddwrt-uefi">Zum DD-WRT-Fall →</a></p>
 <h2>Der geplante Vergleich</h2>
-<div class="table-wrap"><table><thead><tr><th>Bereich</th><th>Was ich prüfen möchte</th></tr></thead><tbody>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Datentabelle 1"><table><thead><tr><th scope="col">Bereich</th><th scope="col">Was ich prüfen möchte</th></tr></thead><tbody>
 <tr><td>Konnektivität</td><td>WAN- und Clientadressvergabe, DNS, IPv4/IPv6, Routing und NAT</td></tr>
 <tr><td>Firewall-Verhalten</td><td>Erlaubte und verweigerte Verbindungen, State-Verarbeitung und Protokollierung</td></tr>
 <tr><td>Identitäten</td><td>RADIUS/802.1X, soweit unterstützt, Zertifikate und Managementauthentifizierung</td></tr>

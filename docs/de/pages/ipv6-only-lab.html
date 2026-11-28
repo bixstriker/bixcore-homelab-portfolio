@@ -2,6 +2,8 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="Wie ich ein reales reines IPv6-VLAN mit OPNsense, Managed Switches, Wi-Fi 7, DHCPv6, DNS64 und NAT64 aufgebaut habe und was die Clienttests belegen.">
@@ -19,14 +21,15 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/ipv6-only-lab.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/ipv6-only-lab.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/ipv6-only-lab.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <a class="brand" href="/de/" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
     <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/ipv6-only-lab.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/ipv6-only-lab.html" hreflang="en" lang="en">English</a><a href="/ru/pages/ipv6-only-lab.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Reines IPv6-Labor</p>
+<p class="breadcrumb"><a href="/de/">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Reines IPv6-Labor</p>
 <p class="kicker">OPNSENSE / NETZWERKLABOR / 9. NOVEMBER 2026</p>
 <h1>Ein reines IPv6-Netz aufbauen, das weiterhin IPv4 erreicht</h1>
 <p class="lede">Ich wollte ein isoliertes Netz, in dem nicht jedes Gerät IPv4 voraussetzt. Statt IPv4 nur auf einem Laptop zu deaktivieren, richtete ich ein separates VLAN über reale Switches und APs ein, mit IPv6-Routing, DHCPv6, DNS64 und NAT64 am Gateway.</p>
@@ -57,7 +60,7 @@
 </div>
 <p class="muted">Vereinfachte öffentliche Darstellung des getesteten Netzes, keine physische Portkarte.</p>
 <h2>Wie IPv6 funktioniert</h2>
-<div class="table-wrap"><table><thead><tr><th>Komponente</th><th>Was ich eingerichtet habe</th><th>Was ich geprüft habe</th></tr></thead><tbody>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Datentabelle 1"><table><thead><tr><th scope="col">Komponente</th><th scope="col">Was ich eingerichtet habe</th><th scope="col">Was ich geprüft habe</th></tr></thead><tbody>
 <tr><td>OPNsense-Schnittstelle</td><td>Dynamische globale IPv6-Adressierung aus dem delegierten Provider-Adressraum plus separates lokales ULA-Präfix</td><td>Aktuelle Adressen und Schnittstellenstatus</td></tr>
 <tr><td>Router Advertisements</td><td>Assisted Mode mit globalen und lokalen On-Link-Präfixen</td><td>Tatsächliche Advertisements und Default-Routing der Clients</td></tr>
 <tr><td>Kea DHCPv6</td><td>Adressvergabe für unterstützende Clients und separater Pool für künftige nachgelagerte Präfixdelegation</td><td>Windows erhielt eine zustandsbehaftete IPv6-Adresse; Router-Delegation ist noch nicht getestet</td></tr>

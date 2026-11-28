@@ -2,16 +2,18 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="Как я создал сетевой доступ по сертификатам с Active Directory, FreeRADIUS, SCEP и EAP-TLS.">
-  <title>Сетевой доступ по сертификатам · BiXCore</title>
+  <title>PKI и жизненный цикл сертификатов сетевого доступа · BiXCore</title>
   <link rel="stylesheet" href="/styles.css">
   <link rel="canonical" href="https://lab.bixcore.de/ru/pages/identity-pki.html">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BiXCore">
-  <meta property="og:title" content="Сетевой доступ по сертификатам · BiXCore">
+  <meta property="og:title" content="PKI и жизненный цикл сертификатов сетевого доступа · BiXCore">
   <meta property="og:description" content="Как я создал сетевой доступ по сертификатам с Active Directory, FreeRADIUS, SCEP и EAP-TLS.">
   <meta property="og:url" content="https://lab.bixcore.de/ru/pages/identity-pki.html">
   <meta name="twitter:card" content="summary">
@@ -19,16 +21,17 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/identity-pki.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/identity-pki.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/identity-pki.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Перейти к содержанию</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/ru/index.html" aria-label="BiXCore Lab, главная"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ИНЖЕНЕРНАЯ ЛАБОРАТОРИЯ</span></span></a>
+    <a class="brand" href="/ru/" aria-label="BiXCore Lab, главная"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ИНЖЕНЕРНАЯ ЛАБОРАТОРИЯ</span></span></a>
     <nav class="top-nav" aria-label="Основная навигация"><a href="/ru/pages/work-index.html">Проекты</a><a href="/ru/pages/notes.html">Диагностика</a><a href="/ru/pages/hardware.html">Оборудование</a><a href="/ru/pages/roadmap.html">Планы</a><a href="/ru/pages/about.html">Обо мне</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Выбор языка"><a href="/de/pages/identity-pki.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/identity-pki.html" hreflang="en" lang="en">English</a><a href="/ru/pages/identity-pki.html" hreflang="ru" lang="ru" aria-current="page">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/ru/index.html">Главная</a> / <a href="/ru/pages/work-index.html">Проекты</a> / Идентификация</p>
+<p class="breadcrumb"><a href="/ru/">Главная</a> / <a href="/ru/pages/work-index.html">Проекты</a> / Идентификация</p>
 <p class="kicker">PKI / EAP-TLS / РЕГИСТРАЦИЯ КЛИЕНТОВ</p>
-<h1>Сетевой доступ по сертификатам</h1>
+<h1>PKI и сертификаты сетевого доступа</h1>
 <p class="lede">Я хотел, чтобы проводные и Wi-Fi-клиенты использовали индивидуальные сертификаты вместо общего сетевого пароля. Для этого нужно было объединить регистрацию, доверенные CA, отзыв и авторизацию через каталог.</p>
 <div class="article">
 <h2>Как взаимодействуют компоненты</h2>

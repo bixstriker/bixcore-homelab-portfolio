@@ -2,6 +2,8 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="Praktische Firewall- und Routertests: zwölf Plattformen in dreizehn VMs, einschließlich OpenFW und zwei OPNsense-Instanzen.">
@@ -19,14 +21,15 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/virtual-firewall-platforms.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/virtual-firewall-platforms.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/virtual-firewall-platforms.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <a class="brand" href="/de/" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
     <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/virtual-firewall-platforms.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/virtual-firewall-platforms.html" hreflang="en" lang="en">English</a><a href="/ru/pages/virtual-firewall-platforms.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Proxmox</p>
+<p class="breadcrumb"><a href="/de/">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Proxmox</p>
 <p class="kicker">ROUTER / FIREWALLS / PROXMOX</p>
 <h1>Getestete Firewall- und Router-Systeme</h1>
 <p class="lede">Ich verwende dieselben virtuellen Windows- und Linux-Clients, um unterschiedliche Firewall-Systeme kennenzulernen. Mein erstes Ziel je Produkt: WAN und LAN richtig einrichten, Clientverkehr ermöglichen und das Verhalten von Firewall-Regeln und Administration verstehen.</p>
@@ -34,19 +37,19 @@
 <h2>Der gemeinsame Laboraufbau</h2>
 <p>Jede Firewall-VM hat einen dedizierten Test-Upstream und ein eigenes virtuelles Clientnetz. Normalerweise läuft eine Firewall mit einem oder zwei Clients, nicht alle Produkte gleichzeitig. Keines dieser Experimente ersetzt mein alltägliches OPNsense-Gateway.</p>
 <h2>Was ich installiert und getestet habe</h2>
-<div class="table-wrap"><table><thead><tr><th>Plattform</th><th>Abgeschlossene Arbeiten</th><th>Nächste Tests</th></tr></thead><tbody>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Datentabelle 1"><table><thead><tr><th scope="col">Plattform</th><th scope="col">Abgeschlossene Arbeiten</th><th scope="col">Nächste Tests</th></tr></thead><tbody>
 <tr><td><strong>MikroTik CHR / RouterOS</strong></td><td>Virtuelle Schnittstellen, RouterOS-Grundkonfiguration, LAN-Adressierung und ausgewählte NAT-/Clientzugriffe eingerichtet.</td><td>Weitere Firewall-Regeln, Routingprotokolle und VPN-Tests.</td></tr>
 <tr><td><strong>pfSense CE</strong></td><td>WAN/LAN, DHCP, Managementzugang und NAT konfiguriert; ausgewählte RDP-Weiterleitungen zu Client-VMs geprüft.</td><td>IPv6, IPS und umfassendere Inter-Zonen-Richtlinientests.</td></tr>
 <tr><td><strong>Sophos Firewall Home</strong></td><td>Ersteinrichtung abgeschlossen, Management und grundlegende Gastkonnektivität einschließlich funktionierendem Checkpoint geprüft.</td><td>Sicherheitsfunktionen, Authentifizierung und Richtlinien.</td></tr>
 <tr><td><strong>VyOS Stream</strong></td><td>CLI, Client-DHCP mit festen Leases, Outbound NAT und ausgewählte Destination-NAT-Regeln erarbeitet.</td><td>Erweitertes Routing, IPv6 und Firewall-Richtlinien.</td></tr>
 <tr><td><strong>FortiGate VM</strong></td><td>Eingeschränkte Gratisversion für Grundschnittstellen, Management, Zeitsynchronisation, virtuelle IPs und kontrollierten Clientzugriff genutzt.</td><td>Umfangreichere Evaluierung bei verfügbarer Lizenz, einschließlich Inspection, VPN und VDOMs.</td></tr>
 <tr><td><strong>OpenWrt x86-64</strong></td><td>VM installiert, Root-Dateisystem erweitert und DHCP, NAT sowie ausgewählten Management-/Weiterleitungszugriff getestet.</td><td>Weitere Routing- und Gastnetzfunktionen.</td></tr>
-<tr><td><strong>IPFire</strong></td><td>RED-/GREEN-Schnittstellen konfiguriert, anfänglichen WAN-Bridge-Fehler korrigiert und DHCP, Weboberfläche und ausgewählte RDP-Weiterleitung geprüft.</td><td>Weitere Richtlinien-, VPN- und Recovery-Tests.</td></tr>
+<tr><td><strong>IPFire</strong></td><td>RED-/GREEN-Schnittstellen konfiguriert, anfänglichen WAN-Bridge-Fehler korrigiert und DHCP, Weboberfläche und ausgewählte RDP-Weiterleitung geprüft.</td><td>Weitere Richtlinien-, VPN- und Wiederherstellungstests.</td></tr>
 <tr><td><strong>NethSecurity 8.8.1</strong></td><td>Im eigenen virtuellen LAN installiert, DHCP eingerichtet, ausgehenden Internetzugang/NAT, Managementzugriff und zwei Windows-/Linux-RDP-Weiterleitungen getestet.</td><td>Richtlinienprüfung, Authentifizierung und Recovery.</td></tr>
 <tr><td><strong>FreeSense 1.1.12</strong></td><td>Mit ZFS installiert, Mountroot-Panic des Installationsmediums behoben, Kea DHCP eingerichtet und Internetzugang sowie zwei Client-RDP-Weiterleitungen validiert.</td><td>IPv6, engere Management-Regeln und weitere Diensttests.</td></tr>
 <tr><td><strong>DD-WRT r66445 (x86-64)</strong></td><td>DHCP, NAT und zwei RDP-Weiterleitungen konfiguriert. UEFI-Root-Dateisystem-Panic diagnostiziert, GRUB und persistente binäre Vorlage korrigiert, zwei Gastneustarts verifiziert.</td><td>Normales Herunterfahren des Gasts bleibt defekt; Patch-Persistenz nach Änderungen prüfen.</td></tr>
 <tr><td><strong>OPNsense Community 26.7 (Labor-VM)</strong></td><td>Eine zweite, virtuelle OPNsense isoliert vom physischen Produktivgateway installiert. IPv4-Clientinternet/NAT und zwei RDP-Weiterleitungen verifiziert.</td><td>IPv6, Filterrichtlinien und formale Isolationsmatrix.</td></tr>
-<tr><td><strong>OpenFW UTM Community 4.5.1</strong> (ursprüngliche Tests: 4.2.1)</td><td>Test-WAN und -LAN eingerichtet, DHCP und WebGUI bestätigt und reale RDP-Verbindung per eingehender Weiterleitung zur Windows-VM hergestellt.</td><td>SSH-Administration, engerer Managementzugriff und weitere Firewall-Richtlinien-/Recovery-Tests.</td></tr>
+<tr><td><strong>OpenFW UTM Community 4.5.1</strong> (ursprüngliche Tests: 4.2.1)</td><td>Test-WAN und -LAN eingerichtet, DHCP und WebGUI bestätigt und reale RDP-Verbindung per eingehender Weiterleitung zur Windows-VM hergestellt.</td><td>SSH-Administration, engerer Managementzugriff und weitere Firewall-Richtlinien-/Wiederherstellungstests.</td></tr>
 </tbody></table></div>
 <p><a href="/de/pages/notes.html#freesense-boot">FreeSense-Boot-Fehlerfall →</a></p>
 <p>Meine Updates am 6. November umfassten MikroTik CHR mit RouterOS 7.25.1, Sophos Firewall Home mit SFOS 23.0 GA und IPFire Core Update 205. DD-WRT blieb auf dem getesteten Build, da lokale Boot-Korrekturen Firmwarewechsel möglicherweise nicht überstehen. Eine GUI-Anzeige „keine Updates verfügbar“ ist kein Beweis für eine exakte Buildnummer.</p>

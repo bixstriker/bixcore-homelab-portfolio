@@ -2,6 +2,8 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="Wie ich eine Intel-GPU an eine KDE-VM durchgereicht, Full HD eingerichtet und H.264-Encoding sowie KRDP getestet habe.">
@@ -19,14 +21,15 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/gpu-remote-desktop.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/gpu-remote-desktop.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/gpu-remote-desktop.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <a class="brand" href="/de/" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
     <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/gpu-remote-desktop.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/gpu-remote-desktop.html" hreflang="en" lang="en">English</a><a href="/ru/pages/gpu-remote-desktop.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Proxmox</p>
+<p class="breadcrumb"><a href="/de/">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Proxmox</p>
 <p class="kicker">INTEL-GRAFIK / KDE / REMOTE DESKTOP</p>
 <h1>Intel-GPU-Passthrough und KRDP</h1>
 <p class="lede">Ich wollte eine KDE-VM, die die Intel-Grafikhardware des Hosts nutzt und einen brauchbaren Full-HD-Remote-Desktop bereitstellt. Bis GPU, Anzeigemodus und Desktop-Sitzung zusammenspielten, waren mehrere Versuche nötig.</p>

@@ -2,6 +2,8 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="Managed Switches, UniFi-WLAN, VLANs, EAP-TLS und meine Untersuchungen zu IPv6 Neighbor Discovery.">
@@ -19,14 +21,15 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/switching-wireless.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/switching-wireless.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/switching-wireless.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <a class="brand" href="/de/" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
     <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/switching-wireless.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/switching-wireless.html" hreflang="en" lang="en">English</a><a href="/ru/pages/switching-wireless.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Netzwerk</p>
+<p class="breadcrumb"><a href="/de/">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Netzwerk</p>
 <p class="kicker">SWITCHING / WLAN / 802.1X</p>
 <h1>Switching, WLAN und 802.1X</h1>
 <p class="lede">Die Switching- und WLAN-Seite von BiXCore eignet sich gut, um dasselbe Netz aus drei Perspektiven zu verstehen: Client, Access Point oder Switch und RADIUS-Server.</p>
@@ -35,7 +38,7 @@
 <p>Ich verwende Managed Switches von Omada und Grandstream, um Client-, Gast-, Infrastruktur- und Laborverkehr zu trennen. Getaggte und ungetaggte VLAN-Mitgliedschaften, Port-PVIDs und Trunk-Verhalten habe ich an den realen Switch-Oberflächen geprüft. Konfigurationsexporte halfen beim Abgleich, ersetzten jedoch nicht die Prüfung der aktiven Einstellungen.</p>
 <p>Die Switches ermöglichten mir außerdem, herstellerspezifische Konfigurationsformate zu untersuchen und zwei Geräte zu vergleichen, ohne identische Portrollen vorauszusetzen.</p>
 <h2>Switch-Administration über TACACS+</h2>
-<p>Ich ergänzte einen separaten TACACS+-Dienst für die Administratoranmeldung auf Omada und Barox. Er verwendet AD über LDAPS und unterscheidet Volladministratoren von eingeschränkten Konten. Der Ausfalltest war besonders aufschlussreich: Barox wechselte zum lokalen Recovery-Konto, Omada dagegen nicht im getesteten TACACS+-danach-lokal-Aufbau, obwohl die explizite lokale Anmeldung funktionierte. Ich meldete das Verhalten an TP-Link; die Ursache ist noch unbekannt.</p>
+<p>Ich ergänzte einen separaten TACACS+-Dienst für die Administratoranmeldung auf Omada und Barox. Er verwendet AD über LDAPS und unterscheidet Volladministratoren von eingeschränkten Konten. Der Ausfalltest war besonders aufschlussreich: Barox wechselte zum lokalen Notfallkonto, Omada dagegen nicht im getesteten TACACS+-danach-lokal-Aufbau, obwohl die explizite lokale Anmeldung funktionierte. Ich meldete das Verhalten an TP-Link; die Ursache ist noch unbekannt.</p>
 <p><a href="/de/pages/tacacs-switch-aaa.html">TACACS+-Aufbau und Fallback-Untersuchung →</a></p>
 <h2>Enterprise-WLAN und Netzwerkzugang</h2>
 <p>Das WLAN nutzt verwaltete UniFi-APs und einen lokal betriebenen Controller. Unterstützte Clients authentifizieren sich über EAP-TLS-Zertifikate mit FreeRADIUS statt mit einem gemeinsamen Passwort. Kabelgebundenes 802.1X bringt weitere Anforderungen: Geräte wie Domänencontroller müssen so behandelt werden, dass die Netzwerkauthentifizierung nicht von noch unerreichbaren Diensten abhängt.</p>

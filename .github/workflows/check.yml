@@ -1,14 +1,20 @@
 name: Check public portfolio
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
 permissions:
   contents: read
 jobs:
   safety-and-links:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read
+    outputs:
+      pages_mode: ${{ steps.pages-mode.outputs.mode }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - name: Check canonical content, privacy, links and Git history
         run: python3 security/release_check.py
       - name: Require complete localization and identical published output
@@ -17,6 +23,12 @@ jobs:
           test "$(find "$RUNNER_TEMP/bixcore-release" -name '*.html' | wc -l)" -eq 117
           test "$(cat "$RUNNER_TEMP/bixcore-release/CNAME")" = lab.bixcore.de
           diff -qr "$RUNNER_TEMP/bixcore-release" docs
+      - name: Install browser test dependencies
+        run: |
+          python3 -m pip install playwright
+          python3 -m playwright install --with-deps chromium
+      - name: Browser regressions across all languages
+        run: python3 tools/browser_check.py "$RUNNER_TEMP/bixcore-release"
       - name: Save verified multilingual site
         uses: actions/upload-artifact@v4
         with:
@@ -24,3 +36,42 @@ jobs:
           path: ${{ runner.temp }}/bixcore-release
           retention-days: 7
           include-hidden-files: true
+      - name: Check Pages publishing source
+        id: pages-mode
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mode=$(gh api "repos/$GITHUB_REPOSITORY/pages" --jq .build_type)
+          echo "mode=$mode" >> "$GITHUB_OUTPUT"
+          if [ "$mode" != workflow ]; then echo "::warning::Pages still uses branch publishing; switch Pages source to GitHub Actions to enforce the gate."; fi
+  publish:
+    needs: safety-and-links
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && needs.safety-and-links.outputs.pages_mode == 'workflow'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+    steps:
+      - name: Reject stale release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          current=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq .object.sha)
+          test "$current" = "$GITHUB_SHA"
+      - uses: actions/download-artifact@v4
+        with:
+          name: bixcore-localization-release
+          path: release
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: release
+      - uses: actions/deploy-pages@v4
+        id: deployment

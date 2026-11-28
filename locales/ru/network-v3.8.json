@@ -146,7 +146,7 @@
     "Read-only checks; reboot and fresh login untested": "Read-only проверки; перезагрузка и новый вход не испытаны",
     "Q": "Q",
     "TLS 1.2 resumption and 802.11r FT cache": "TLS 1.2 resumption и кэш 802.11r FT",
-    "Full handshake seen; per-device FT invalidation not verified": "Наблюдался полный handshake; отзыв FT отдельного устройства не проверен",
+    "Full handshake seen; per-device FT invalidation not verified": "Наблюдалось полное TLS-рукопожатие; отзыв FT отдельного устройства не проверен",
     "R": "R",
     "Plex moved to Vodafone WAN with Suricata IPS": "Plex перенесён на Vodafone WAN с Suricata IPS",
     "Measured speed, 4K Direct Play and controlled IPS drop": "Измерена скорость, проверены 4K Direct Play и контролируемая блокировка IPS",

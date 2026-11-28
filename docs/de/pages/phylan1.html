@@ -2,6 +2,8 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="Ein Proxmox-Hookscript verbindet genau eine laufende virtuelle Firewall mit einem externen Laptop und trennt den Testport bei mehreren aktiven Firewall-VMs.">
@@ -19,20 +21,21 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/phylan1.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/phylan1.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/phylan1.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <a class="brand" href="/de/" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
     <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/phylan1.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/phylan1.html" hreflang="en" lang="en">English</a><a href="/ru/pages/phylan1.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / PhyLan1: Ein physischer Client für das Firewall-Labor</p>
+<p class="breadcrumb"><a href="/de/">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / PhyLan1: Ein physischer Client für das Firewall-Labor</p>
 <p class="kicker">PRIVATES LABOR / 6. NOVEMBER 2026</p><h1>PhyLan1: Ein physischer Client für das Firewall-Labor</h1><p class="lede">Ich wollte jede virtuelle Firewall mit einem realen Ethernet-Laptop testen, ohne jeder VM eine physische NIC hinzuzufügen oder ihre Netzwerkkonfiguration zu ändern. Der Proxmox-Host schaltet einen dedizierten Testport zwischen vorhandenen virtuellen LANs um.</p>
 <div class="article"><h2>Wie es funktioniert</h2>
 <p>Die dedizierte Test-NIC des Hosts gehört zu einer Linux-Bridge ohne Host-IP oder Gateway. Ein temporäres virtuelles Ethernet-Paar verbindet diese Bridge mit der LAN-Bridge der ausgewählten Firewall. Der Upstream der Firewall bleibt auf dem isolierten Labor-VLAN hinter meinem OPNsense-Hauptgateway.</p>
 <p>Der Laptop erhält seine Netzwerkeinstellungen von der jeweils aktiven Firewall. In keiner Firewall-VM wird eine zusätzliche NIC oder Bridge installiert.</p>
 <h2>Immer nur eine Firewall</h2>
-<div class="table-wrap"><table><thead><tr><th>Laufende Firewall-VMs</th><th>Physischer Testport</th></tr></thead><tbody>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Datentabelle 1"><table><thead><tr><th scope="col">Laufende Firewall-VMs</th><th scope="col">Physischer Testport</th></tr></thead><tbody>
 <tr><td>Null</td><td>Keine Verbindung zu einem Gast-LAN</td></tr>
 <tr><td>Genau eine</td><td>Mit der vorhandenen LAN-Bridge dieser Firewall verbunden</td></tr>
 <tr><td>Zwei oder drei</td><td>Von allen Gast-LANs getrennt</td></tr>

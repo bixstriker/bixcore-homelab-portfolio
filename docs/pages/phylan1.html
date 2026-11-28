@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="A Proxmox hookscript gives one running virtual firewall an external laptop, disconnecting the test port when multiple firewall VMs are active.">
@@ -19,20 +21,21 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/phylan1.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/phylan1.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/phylan1.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <a class="brand" href="/" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
     <nav class="top-nav" aria-label="Main navigation"><a href="/pages/work-index.html">Projects</a><a href="/pages/notes.html">Troubleshooting</a><a href="/pages/hardware.html">Hardware</a><a href="/pages/roadmap.html">Plans</a><a href="/pages/about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Language selection"><a href="/de/pages/phylan1.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/phylan1.html" hreflang="en" lang="en" aria-current="page">English</a><a href="/ru/pages/phylan1.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/index.html">Home</a> / <a href="/pages/work-index.html">Projects</a> / PhyLan1: A Physical Client for the Firewall Lab</p>
+<p class="breadcrumb"><a href="/">Home</a> / <a href="/pages/work-index.html">Projects</a> / PhyLan1: A Physical Client for the Firewall Lab</p>
 <p class="kicker">PERSONAL LAB / 6 NOVEMBER 2026</p><h1>PhyLan1: A Physical Client for the Firewall Lab</h1><p class="lede">I wanted to test each virtual firewall with a real laptop over Ethernet, without adding a physical NIC to every VM or changing each guest's network setup. I made the Proxmox host switch one dedicated test port between the existing virtual LANs.</p>
 <div class="article"><h2>How it works</h2>
 <p>The host's dedicated test NIC belongs to a Linux bridge with no host IP address or gateway. A temporary virtual Ethernet pair joins that bridge to the LAN bridge of the selected firewall. The firewall's upstream remains on the isolated lab VLAN behind my main OPNsense gateway.</p>
 <p>The laptop receives its network settings from whichever firewall is active. No extra NIC or bridge is installed inside any firewall VM.</p>
 <h2>One firewall at a time</h2>
-<div class="table-wrap"><table><thead><tr><th>Running firewall VMs</th><th>Physical test port</th></tr></thead><tbody>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Data table 1"><table><thead><tr><th scope="col">Running firewall VMs</th><th scope="col">Physical test port</th></tr></thead><tbody>
 <tr><td>Zero</td><td>No connection to a guest LAN</td></tr>
 <tr><td>Exactly one</td><td>Connected to that firewall's existing LAN bridge</td></tr>
 <tr><td>Two or three</td><td>Disconnected from all guest LANs</td></tr>

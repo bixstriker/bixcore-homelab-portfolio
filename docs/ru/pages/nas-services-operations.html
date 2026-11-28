@@ -2,6 +2,8 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="Что работает на моём NAS и как я исправлял восстановление IPv6, Docker-маршрутизацию и перезапуск сервисов.">
@@ -19,14 +21,15 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/nas-services-operations.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/nas-services-operations.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/nas-services-operations.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Перейти к содержанию</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/ru/index.html" aria-label="BiXCore Lab, главная"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ИНЖЕНЕРНАЯ ЛАБОРАТОРИЯ</span></span></a>
+    <a class="brand" href="/ru/" aria-label="BiXCore Lab, главная"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ИНЖЕНЕРНАЯ ЛАБОРАТОРИЯ</span></span></a>
     <nav class="top-nav" aria-label="Основная навигация"><a href="/ru/pages/work-index.html">Проекты</a><a href="/ru/pages/notes.html">Диагностика</a><a href="/ru/pages/hardware.html">Оборудование</a><a href="/ru/pages/roadmap.html">Планы</a><a href="/ru/pages/about.html">Обо мне</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Выбор языка"><a href="/de/pages/nas-services-operations.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/nas-services-operations.html" hreflang="en" lang="en">English</a><a href="/ru/pages/nas-services-operations.html" hreflang="ru" lang="ru" aria-current="page">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/ru/index.html">Главная</a> / <a href="/ru/pages/work-index.html">Проекты</a> / Сервисы</p>
+<p class="breadcrumb"><a href="/ru/">Главная</a> / <a href="/ru/pages/work-index.html">Проекты</a> / Сервисы</p>
 <p class="kicker">NAS / DOCKER / IPV6 / ВОССТАНОВЛЕНИЕ</p>
 <h1>Сервисы NAS и сети Docker</h1>
 <p class="lede">NAS не только хранит файлы. На нём работают сервисы, от которых зависит сеть, поэтому пропавший IPv6-адрес или неверный маршрут контейнера могут вызвать проблемы далеко за пределами NAS.</p>
@@ -35,7 +38,7 @@
 <p>NAS размещает Docker-инфраструктуру: AdGuard, reverse proxy, контроллер UniFi, удалённую поддержку, менеджер паролей, PXE/ISO-загрузку и мониторинг. Есть и другие приложения, но здесь речь об их сетевых подключениях и восстановлении после обслуживания.</p>
 <h2>Инвентаризация контейнеров и аутентификация коммутаторов</h2>
 <p>В ноябре проверил все <strong>36 записей Docker</strong> на NAS, включая остановленные контейнеры, их сети, порты, mounts и restart policies. Это полезнее для восстановления, чем снимок списка работающих контейнеров, однако реальные восстановления приложений ещё нужно испытать.</p>
-<p>Развернул TACACS-NG-UI для управления коммутаторами через Active Directory. FastAPI оставил с одним Uvicorn worker; backend, frontend и база вместе использовали около 122 MiB при кратком измерении. Проверил также swap NAS, не считая одно измерение тестом ёмкости.</p>
+<p>Развернул TACACS-NG-UI для управления коммутаторами через Active Directory. FastAPI оставил с одним Uvicorn worker; backend, frontend и база вместе использовали около 122 МиБ при кратком измерении. Проверил также swap NAS, не считая одно измерение тестом ёмкости.</p>
 <p><a href="/ru/pages/tacacs-switch-aaa.html">Настройка TACACS+ и тесты отказа →</a></p>
 <h2>Две сетевые проблемы, которые пришлось исправить</h2>
 <p><strong>Пропавший IPv6 ULA.</strong> Клиенты полагались на стабильный внутренний IPv6-адрес DNS, который мог исчезать после изменения интерфейсов. Старый hook был недостаточно надёжен. Заменил его идемпотентным скриптом восстановления, systemd oneshot service и timer, затем проверил адрес после соответствующих событий.</p>
@@ -54,8 +57,8 @@
 <h2>Два сетевых интерфейса без конфликтов маршрутизации</h2>
 <p>После краткого исчезновения линка основного интерфейса NAS линк и адрес вернулись, но новые локальные подключения могли уходить через другой интерфейс. Оба в одной подсети. Маршрут по умолчанию был правильным; конкурирующие connected routes всё же выбирали неверный исходный адрес, после чего ограниченное SSH-подключение к шлюзу отклонялось.</p>
 <p>Добавил правило policy routing по назначению после существующих source-based rules и защищённый systemd service с timer. Правило устанавливается только при готовности основного линка, адреса и таблицы маршрутизации и удаляется при провале проверок. Оно не заменяет маршрутизацию производителя или существующие SMB-пути по исходному адресу.</p>
-<p>При тестах 19 ноября оба пути Windows SMB Multichannel оставались выбранными. С более ранней временной версией правила копирование файла 8.22 GB показало примерно 504 MB/s чтения и 324 MB/s записи, трафик через оба интерфейса и совпадение SHA-256. Постоянное правило затем проверено через route lookups, выбор SMB-каналов и healthchecks контейнеров. Полный тест копирования с итоговым правилом не повторял; перезагрузка, DHCP renewal и новый физический link flap требуют отдельной проверки.</p>
-<p>25 ноября повторно проверил постоянную маршрутизацию при реальном failover Vodafone–O2 и возврате. Обычный исходящий трафик NAS и явная маршрутизация по исходному адресу второго SMB-интерфейса продолжали использовать нужные пути. Это дополнительные реальные данные, не новый тест перезагрузки NAS, DHCP renewal или физического link flap.</p>
+<p>При тестах 19 ноября оба пути Windows SMB Multichannel оставались выбранными. С более ранней временной версией правила копирование файла 8,22 ГБ показало примерно 504 МБ/с чтения и 324 МБ/с записи, трафик через оба интерфейса и совпадение SHA-256. Затем проверил постоянное правило: запросил маршруты, проверил выбор SMB-каналов и работоспособность контейнеров. Полный тест копирования с итоговым правилом не повторял; перезагрузка, продление аренды DHCP и повторный кратковременный обрыв физического соединения требуют отдельной проверки.</p>
+<p>25 ноября повторно проверил постоянную маршрутизацию при реальном failover Vodafone–O2 и возврате. Обычный исходящий трафик NAS и явная маршрутизация по исходному адресу второго SMB-интерфейса продолжали использовать нужные пути. Это дополнительные реальные данные, но не новый тест перезагрузки NAS, продления аренды DHCP или кратковременного обрыва физического соединения.</p>
 <p><a href="/ru/pages/notes.html#nas-egress">Исследование маршрутизации →</a></p>
 <h2>Приём событий коммутаторов вместо постоянного опроса</h2>
 <p>22 ноября перенёс уведомления коммутаторов в собственный небольшой Docker-приёмник. Два Grandstream отправляют SNMPv2c traps, Omada — аутентифицированные и зашифрованные SNMPv3 traps. Net-SNMP принимает сообщения, Python-обработчик пишет их в SQLite. Отдельная очередь доставки отправляет выбранные Telegram-уведомления с повторами, поэтому медленная доставка не блокирует обработчик traps.</p>

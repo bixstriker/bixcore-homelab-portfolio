@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="I&#x27;m Felix Bistriker. My work with security systems, IP video surveillance and networking, and the personal projects behind BiXCore.">
@@ -19,14 +21,15 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/about.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/about.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/about.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <a class="brand" href="/" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
     <nav class="top-nav" aria-label="Main navigation"><a href="/pages/work-index.html">Projects</a><a href="/pages/notes.html">Troubleshooting</a><a href="/pages/hardware.html">Hardware</a><a href="/pages/roadmap.html">Plans</a><a href="/pages/about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Language selection"><a href="/de/pages/about.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/about.html" hreflang="en" lang="en" aria-current="page">English</a><a href="/ru/pages/about.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-  <p class="breadcrumb"><a href="/index.html">Home</a> / About me</p>
+  <p class="breadcrumb"><a href="/">Home</a> / About me</p>
   <div class="about-person">
     <img class="about-portrait" src="/assets/felix-portrait.webp" alt="Portrait of Felix Bistriker" width="200" height="300" loading="eager">
     <div>
@@ -82,5 +85,5 @@
       <p><a class="source-link" href="/pages/work-index.html">See the projects →</a> &nbsp; <a class="source-link" href="/pages/roadmap.html">See what's next →</a></p>
     </section>
   </div>
-  <hr class="rule"><p><a class="button secondary" href="/index.html">← Home</a></p>
+  <hr class="rule"><p><a class="button secondary" href="/">← Home</a></p>
 </main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

@@ -2,6 +2,8 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="Was auf meinem NAS läuft und wie ich IPv6-Wiederherstellung, Docker-Routing und Dienstneustarts korrigierte.">
@@ -19,14 +21,15 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/nas-services-operations.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/nas-services-operations.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/nas-services-operations.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <a class="brand" href="/de/" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
     <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/nas-services-operations.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/nas-services-operations.html" hreflang="en" lang="en">English</a><a href="/ru/pages/nas-services-operations.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Dienste</p>
+<p class="breadcrumb"><a href="/de/">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Dienste</p>
 <p class="kicker">NAS / DOCKER / IPV6 / WIEDERHERSTELLUNG</p>
 <h1>NAS-Dienste und Docker-Netzwerke</h1>
 <p class="lede">Das NAS speichert nicht nur Dateien. Es betreibt Dienste, von denen mein Netzwerk abhängt. Eine fehlende IPv6-Adresse oder eine falsche Container-Route kann deshalb weit über das NAS hinaus Probleme verursachen.</p>
@@ -54,7 +57,7 @@
 <h2>Zwei Netzwerkschnittstellen ohne Routing-Konflikte</h2>
 <p>Nach einem kurzen Linkverlust der primären NAS-Schnittstelle kehrten Link und Adresse zurück, neue lokale Verbindungen konnten jedoch die andere Schnittstelle nutzen. Beide lagen im selben Subnetz. Die Default-Route war korrekt; konkurrierende direkt verbundene Routen konnten trotzdem die falsche Quelladresse wählen, worauf ein eingeschränkter SSH-Zugang zum Gateway die Anfrage verweigerte.</p>
 <p>Ich ergänzte nach den bestehenden quellbasierten Regeln eine zielbasierte Policy-Routing-Regel mit abgesichertem systemd-Dienst und Timer. Die Regel wird nur eingerichtet, wenn primärer Link, Adresse und Routingtabelle bereit sind, und bei fehlgeschlagenen Prüfungen entfernt. Sie ersetzt weder die Hersteller-Routingkonfiguration noch die bestehenden quellgebundenen SMB-Pfade.</p>
-<p>Bei den Tests am 19. November blieben beide Windows-SMB-Multichannel-Pfade ausgewählt. Mit einer früheren temporären Regelversion erreichte eine 8.22-GB-Dateikopie ungefähr 504 MB/s lesend und 324 MB/s schreibend, mit Verkehr auf beiden Schnittstellen und übereinstimmenden SHA-256-Hashes. Die permanente Regel prüfte ich anschließend mit Routenabfragen, SMB-Kanalauswahl und Container-Healthchecks. Den vollständigen Kopierbenchmark wiederholte ich mit der finalen Regel nicht; Neustart, DHCP-Erneuerung und erneuter physischer Link-Flap müssen gezielt getestet werden.</p>
+<p>Bei den Tests am 19. November blieben beide Windows-SMB-Multichannel-Pfade ausgewählt. Mit einer früheren temporären Regelversion erreichte eine 8,22-GB-Dateikopie ungefähr 504 MB/s lesend und 324 MB/s schreibend, mit Verkehr auf beiden Schnittstellen und übereinstimmenden SHA-256-Hashes. Die permanente Regel prüfte ich anschließend mit Routenabfragen, SMB-Kanalauswahl und Container-Healthchecks. Den vollständigen Kopierbenchmark wiederholte ich mit der finalen Regel nicht; Neustart, DHCP-Erneuerung und erneuter physischer Link-Flap müssen gezielt getestet werden.</p>
 <p>Am 25. November prüfte ich die permanente Routing-Konfiguration erneut bei realem Vodafone-O2-Failover und Failback. Normaler NAS-Egress und explizit quellgebundenes Routing für die zweite SMB-Schnittstelle nutzten weiterhin die vorgesehenen Pfade. Das ist zusätzliche Live-Evidenz, kein neuer NAS-Neustart-, DHCP-Erneuerungs- oder physischer NAS-Link-Flap-Test.</p>
 <p><a href="/de/pages/notes.html#nas-egress">Routing-Untersuchung →</a></p>
 <h2>Switch-Ereignisse empfangen statt ständig abfragen</h2>

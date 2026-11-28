@@ -2,6 +2,8 @@
 <html lang="de">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="PacketFence-15.2-Labor für Gastregistrierung: IPSet-Formatfehler, DNS-Weiterleitungsschleife und getestete automatische Zugangskontrolle.">
@@ -19,26 +21,27 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/packetfence-nac.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/packetfence-nac.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/packetfence-nac.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Zum Inhalt springen</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <a class="brand" href="/de/" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
     <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/packetfence-nac.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/packetfence-nac.html" hreflang="en" lang="en">English</a><a href="/ru/pages/packetfence-nac.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / PacketFence: Mein erstes NAC-Labor</p>
+<p class="breadcrumb"><a href="/de/">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / PacketFence: Mein erstes NAC-Labor</p>
 <p class="kicker">PRIVATES LABOR / 6. NOVEMBER 2026</p><h1>PacketFence: Mein erstes NAC-Labor</h1><p class="lede">Ich wollte sehen, was NAC bei Registrierung eines Clients über ein Portal tatsächlich macht und was beim Entzug seines Zugangs passiert. Die Registrierung einer Windows-VM war einfacher als die Durchsetzung der Richtlinie.</p>
 <div class="article"><h2>Der Aufbau</h2>
 <p>Ich installierte PacketFence 15.2 auf Debian 12 in einer separaten Proxmox-VM. Sie hat einen isolierten IPv4-Upstream und ein eigenes virtuelles Clientnetz mit DHCP, DNS-Proxy, Inline-Filterung, NAT und Captive Portal. Ich begann mit Gastregistrierung über eine Null-Quelle statt sofort mit Enterprise-802.1X.</p>
 <p>Testclient war eine weitere Windows-VM. Ein physisches Kabel oder AP wurde noch nicht mit diesem PacketFence-Netz verbunden.</p>
 <h2>Der Gast war registriert, konnte aber nicht surfen</h2>
 <p>Windows fand das Portal und registrierte sich, externes HTTPS scheiterte weiterhin. PacketFences IPSet-Dienst lehnte einen erzeugten Eintrag ab: Die Menge registrierter Clients erwartete eine IP-Adresse, die Regel enthielt jedoch ein IP-MAC-Paar.</p>
-<p>Ich untersuchte die Regelerzeugung mit Codex und setzte einen eng begrenzten lokalen Hotfix um. Der ursprüngliche Deny-by-default-Ansatz blieb erhalten, statt eine Bypass-Regel hinzuzufügen. Das Formatproblem wird auch im Upstream <a href="https://github.com/inverse-inc/packetfence/issues/9339" rel="noopener noreferrer">Issue #9339</a>diskutiert. Ich ging nicht davon aus, dass mein installiertes Build den Upstream-Fix bereits enthielt.</p>
+<p>Ich untersuchte die Regelerzeugung mit Codex und setzte einen eng begrenzten lokalen Hotfix um. Der ursprüngliche Deny-by-default-Ansatz blieb erhalten, statt eine Bypass-Regel hinzuzufügen. Das Formatproblem wird auch im Upstream <a href="https://github.com/inverse-inc/packetfence/issues/9339" rel="noopener noreferrer">Issue #9339</a> diskutiert. Ich ging nicht davon aus, dass mein installiertes Build den Upstream-Fix bereits enthielt.</p>
 <h2>Dann verwies DNS alles zurück auf das Portal</h2>
 <p>Nach Korrektur des IPSet-Dienstes gelangen TCP-Verbindungen zu externen Adressen, normale Websitenamen lösten aber weiterhin zum Captive Portal auf. Der DNS-Proxy leitete Abfragen an seine eigene Listener-Adresse zurück. Ich änderte den Upstream zum Labor-Gateway und behielt PacketFence als Clientresolver bei.</p>
 <p>Nach beiden Korrekturen löste der Windows-Gast öffentliche Namen auf und führte eine HTTPS-Anfrage mit normaler Zertifikatsvalidierung aus.</p>
 <h2>Was ich getestet habe</h2>
-<div class="table-wrap"><table><thead><tr><th>Aktion</th><th>Ergebnis</th></tr></thead><tbody>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Datentabelle 1"><table><thead><tr><th scope="col">Aktion</th><th scope="col">Ergebnis</th></tr></thead><tbody>
 <tr><td>Gast registriert</td><td>Externes TCP/443 und HTTPS-Surfen funktionierten.</td></tr>
 <tr><td>Registrierung widerrufen</td><td>Neue externe Verbindung wurde gesperrt und das Portal erschien erneut.</td></tr>
 <tr><td>Gast erneut registriert</td><td>Zugang kehrte automatisch zurück, ohne IPSet manuell zu bearbeiten.</td></tr>

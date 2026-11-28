@@ -1,6 +1,6 @@
 {
   "page": "pages/proxmox-v1.7.html",
-  "source_blob": "b223fa8fb20684449298275781cc7f293054577c",
+  "source_blob": "90814659f154d732166077d1d62625e2755b5139",
   "translations": {
     "10": "10",
     "11": "11",
@@ -36,7 +36,6 @@
     "41": "41",
     "42": "42",
     "43": "43",
-    "The Proxmox working-notes index: host setup, virtual firewalls, storage recovery and Intel GPU experiments.": "Index der Proxmox-Arbeitsnotizen: Hostaufbau, virtuelle Firewalls, Speicherwiederherstellung und Intel-GPU-Experimente.",
     "Proxmox Master v1.15: Project Index · BiXCore": "Proxmox Master v1.15: Projektindex · BiXCore",
     "BiXCore Lab": "BiXCore Lab",
     "Complete work index": "Vollständige Projektübersicht",
@@ -176,7 +175,8 @@
     "single-disk": "Einzelfestplatten-",
     "ZFS pool after documented health observations. Storage migration and snapshots are not high availability or a proved external recovery plan.": "ZFS-Pool nach dokumentierten Zustandsbefunden ersetzt. Speichermigration und Snapshots sind weder Hochverfügbarkeit noch ein nachgewiesener externer Recovery-Plan.",
     "Earlier virtual graphics paths are superseded by a later passthrough/EDID/KRDP solution. The final result does not prove all remote frames are hardware-encoded.": "Frühere virtuelle Grafikpfade wurden durch die spätere Passthrough-/EDID-/KRDP-Lösung ersetzt. Das Endergebnis belegt nicht, dass alle Remote-Frames hardwarekodiert werden.",
-    "The physical Wi-Fi clients now use the new IPv6-only VLAN; the eleven original firewall VMs have passed external Ethernet tests. PacketFence's guest access works with a tested backport. The virtual-router IPv6 WAN/PD experiment, physical PacketFence clients, 802.1X and broader isolation/recovery tests remain open.": "Physische WLAN-Clients nutzen nun das neue reine IPv6-VLAN; die elf ursprünglichen Firewall-VMs bestanden externe Ethernet-Tests. PacketFence-Gastzugang funktioniert mit einem getesteten Backport. Virtueller IPv6-Router-WAN-/PD-Test, physische PacketFence-Clients, 802.1X und umfassendere Isolations-/Recovery-Tests bleiben offen.",
-    "← Complete work index": "← Vollständige Projektübersicht"
+    "The physical Wi-Fi clients now use the new IPv6-only VLAN; the eleven original firewall VMs have passed external Ethernet tests. PacketFence's guest access works with a tested backport. The virtual-router IPv6 WAN/PD experiment, physical PacketFence clients, 802.1X and broader isolation/recovery tests remain open.": "Physische WLAN-Clients nutzen nun das neue reine IPv6-VLAN; die elf ursprünglichen Firewall-VMs bestanden externe Ethernet-Tests. PacketFence-Gastzugang funktioniert mit einem getesteten Backport. Virtueller IPv6-Router-WAN-/PD-Test, physische PacketFence-Clients, 802.1X und umfassendere Isolations-/Wiederherstellungstests bleiben offen.",
+    "← Complete work index": "← Vollständige Projektübersicht",
+    "Current Proxmox project index: host operations, virtual firewall testing, storage recovery and Intel GPU experiments.": "Aktueller Proxmox-Projektindex: Hostbetrieb, Tests virtueller Firewalls, Speicherwiederherstellung und Versuche mit der Intel-GPU."
   }
 }

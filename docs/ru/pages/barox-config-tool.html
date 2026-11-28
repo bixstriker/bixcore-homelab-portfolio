@@ -2,6 +2,8 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#07101b">
 <meta name="description" content="Как я создал BiX Barox Config Tool для изучения CLI промышленных коммутаторов, преобразования экспортов конфигураций и сравнения сетевых настроек с тщательной проверкой на оборудовании.">
@@ -25,15 +27,16 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/barox-config-tool.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/barox-config-tool.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/barox-config-tool.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Перейти к содержанию</a>
 <header class="site-header"><div class="wrap header-inner">
-<a class="brand" href="/ru/index.html" aria-label="BiXCore Lab, главная"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ИНЖЕНЕРНАЯ ЛАБОРАТОРИЯ</span></span></a>
+<a class="brand" href="/ru/" aria-label="BiXCore Lab, главная"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ИНЖЕНЕРНАЯ ЛАБОРАТОРИЯ</span></span></a>
 <nav class="top-nav" aria-label="Основная навигация"><a href="/ru/pages/work-index.html">Проекты</a><a href="/ru/pages/notes.html">Диагностика</a><a href="/ru/pages/hardware.html">Оборудование</a><a href="/ru/pages/roadmap.html">Планы</a><a href="/ru/pages/about.html">Обо мне</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Выбор языка"><a href="/de/pages/barox-config-tool.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/barox-config-tool.html" hreflang="en" lang="en">English</a><a href="/ru/pages/barox-config-tool.html" hreflang="ru" lang="ru" aria-current="page">Русский</a></nav>
 </div></header>
 <main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/ru/index.html">Главная</a> / <a href="/ru/pages/work-index.html">Проекты</a> / Barox Config Tool</p>
+<p class="breadcrumb"><a href="/ru/">Главная</a> / <a href="/ru/pages/work-index.html">Проекты</a> / Barox Config Tool</p>
 <p class="kicker">СОБСТВЕННЫЙ ПРОГРАММНЫЙ ПРОЕКТ / ПРОМЫШЛЕННАЯ КОММУТАЦИЯ</p>
 <h1>BiX Barox Config Tool</h1>
 <p class="lede">Работая с управляемыми коммутаторами, захотел иметь нечто полезнее коллекции скопированных CLI-команд. Начал создавать инструмент, читающий экспорты конфигураций, помогающий понять настройки и подготовить документированную процедуру восстановления. Постепенно появились парсер, аналитическое ядро, Windows GUI и отдельное направление исследований CLI.</p>
@@ -58,8 +61,8 @@
 </figure>
 
 <h2>Что фактически реализовано</h2>
-<div class="table-wrap"><table class="status-table">
-<thead><tr><th>Компонент</th><th>Статус</th><th>Что могу подтвердить</th></tr></thead>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Таблица данных 1"><table class="status-table">
+<thead><tr><th scope="col">Компонент</th><th scope="col">Статус</th><th scope="col">Что могу подтвердить</th></tr></thead>
 <tbody>
 <tr><td><strong>Цель 1</strong></td><td>Реализовано для документированных тестовых данных</td><td>Офлайн-конвертация экспорта в CLI, пояснения и план восстановления. Результаты требуют ручной проверки перед применением.</td></tr>
 <tr><td><strong>Цель 2</strong></td><td>Реализовано, аналитическая базовая версия зафиксирована</td><td>Проверки отдельных устройств и сравнение нескольких конфигураций одной реальной системы, многоязычные понятные отчёты.</td></tr>
@@ -68,7 +71,7 @@
 </tbody></table></div>
 
 <h2>Более интересные инженерные задачи</h2>
-<p><strong>Грамматика CLI — не то же самое, что испытанная команда.</strong> Для основного референсного Barox каталог исследования содержит 6,644 записей контекста и синтаксиса в восьми CLI-контекстах. Часть получена из встроенной справки, часть только из прошивки или сочетания источников. Это <em>не</em> означает, что 6,644 команд успешно выполнены на физическом коммутаторе.</p>
+<p><strong>Грамматика CLI — не то же самое, что испытанная команда.</strong> Для основного референсного Barox каталог исследования содержит 6 644 записей контекста и синтаксиса в восьми CLI-контекстах. Часть получена из встроенной справки, часть только из прошивки или сочетания источников. Это <em>не</em> означает, что 6 644 команд успешно выполнены на физическом коммутаторе.</p>
 <p><strong>Сравнение коммутаторов требует контекста.</strong> Например, одинаковые IP-адреса имеют разный смысл в разных VLAN, а неизвестный uplink не доказывает отсутствия кабеля. Пришлось разделить наблюдаемые факты, настроенное состояние, предполагаемые связи и политики конкретной установки.</p>
 <p><strong>Безопасное восстановление требует большего, чем генерация команд.</strong> У последовательной сессии есть prompts, режимы, фрагментированные ответы и ошибки команд. Испытал отдельные переходы, таймауты и обработку prompts на оборудовании, но автоматическое применение, проверка и восстановление после ошибок остаются незавершёнными.</p>
 

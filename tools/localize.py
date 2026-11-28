@@ -72,6 +72,9 @@ def url_for(lang, page):
 def local_path(lang,page):
     return page if lang=='en' else lang+'/'+page
 
+def public_path(lang,page):
+    return urlsplit(url_for(lang,page)).path
+
 def route_for(current,ref):
     # English source links are relative to the original page.
     u=urlsplit(html.unescape(ref))
@@ -104,7 +107,7 @@ def render(source,page,lang,mapping,available,preview):
                 target=lang if dest in available[lang] else 'en'
                 if target!=lang and not preview:
                     raise ValueError(f'Missing {lang} target: {dest}')
-                new='/' + local_path(target,dest)
+                new=public_path(target,dest)
             else:
                 new='/'+dest
             if u.query:
@@ -133,9 +136,28 @@ def render(source,page,lang,mapping,available,preview):
     source=source.replace('</head>',tags+'</head>',1)
     labels={'de':'Sprachauswahl','en':'Language selection','ru':'Выбор языка'}
     names={'de':'Deutsch','en':'English','ru':'Русский'}
-    links=''.join(f'<a href="/{local_path(l,page)}" hreflang="{l}" lang="{l}"'+(' aria-current="page"' if l==lang else '')+f'>{names[l]}</a>' for l in alternates)
+    links=''.join(f'<a href="{public_path(l,page)}" hreflang="{l}" lang="{l}"'+(' aria-current="page"' if l==lang else '')+f'>{names[l]}</a>' for l in alternates)
     switch=f'<nav class="language-switch" aria-label="{labels[lang]}">{links}</nav>'
     source=source.replace('</nav>','</nav>'+switch,1)
+    if lang!='en':
+        def fix_prose(m):
+            block=m[0]
+            block=re.sub(r'(?<=[^\W_])(</(?:a|em|strong|code|b|i)>)(?=[^\W_])',r'\1 ',block)
+            block=re.sub(r'(?<=[^\W_])(<(?:a|em|strong|code|b|i)\b[^>]*>)(?=[^\W_])',r' \1',block)
+            return block
+        source=re.sub(r'<(?:p|li)\b[^>]*>.*?</(?:p|li)>',fix_prose,source,flags=re.S)
+    # Give scrollable table regions a keyboard focus target and localized name.
+    table_names={'de':'Datentabelle','en':'Data table','ru':'Таблица данных'}
+    table_count=0
+    def table_region(m):
+        nonlocal table_count
+        table_count+=1
+        return f'<div class="table-wrap" tabindex="0" role="region" aria-label="{table_names[lang]} {table_count}">'
+    source=re.sub(r'<div class="table-wrap">',table_region,source)
+    source=re.sub(r'<thead>.*?</thead>',lambda m:m[0].replace('<th>','<th scope="col">'),source,flags=re.S)
+    policy="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
+    source=source.replace('<meta charset="utf-8">','<meta charset="utf-8">\n  <meta http-equiv="Content-Security-Policy" content="'+policy+'">\n  <meta name="referrer" content="strict-origin-when-cross-origin">',1)
+    source=source.replace('</head>','<script src="/language.js" defer></script>\n</head>',1)
     if preview and lang!='en':
         note={'de':'Vorschau: Noch nicht übersetzte Artikel verlinken auf die englische Originalfassung.',
               'ru':'Предпросмотр: ссылки на ещё не переведённые статьи ведут к английскому оригиналу.'}[lang]
@@ -223,7 +245,7 @@ def validate_rendered(rendered,available):
             expected['x-default']=url_for('en',page)
             if p.lang!=lang or p.canonical!=url_for(lang,page) or p.alternates!=expected:
                 raise ValueError(f'Generated language metadata mismatch: {path}')
-            switches=[(l,'/'+local_path(l,page),'page' if l==lang else None) for l in LANGS if page in available[l]]
+            switches=[(l,public_path(l,page),'page' if l==lang else None) for l in LANGS if page in available[l]]
             if p.switch!=switches:
                 raise ValueError(f'Generated language selector mismatch: {path}')
             for ref in p.refs:
@@ -237,6 +259,8 @@ def validate_rendered(rendered,available):
                     target=posixpath.normpath(posixpath.join(posixpath.dirname(path),target))
                 else:
                     target=path
+                if not target or target.endswith('/'):
+                    target+='index.html'
                 if target in parsed:
                     if u.fragment and unquote(u.fragment) not in parsed[target].ids:
                         raise ValueError(f'Broken generated anchor: {path} -> {ref}')

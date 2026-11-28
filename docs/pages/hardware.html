@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="The network equipment, servers, NAS and test clients I use to build and explore my BiXCore homelab.">
@@ -19,14 +21,15 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/hardware.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/hardware.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/hardware.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <a class="brand" href="/" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
     <nav class="top-nav" aria-label="Main navigation"><a href="/pages/work-index.html">Projects</a><a href="/pages/notes.html">Troubleshooting</a><a href="/pages/hardware.html">Hardware</a><a href="/pages/roadmap.html">Plans</a><a href="/pages/about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Language selection"><a href="/de/pages/hardware.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/hardware.html" hreflang="en" lang="en" aria-current="page">English</a><a href="/ru/pages/hardware.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/index.html">Home</a> / <a href="/pages/work-index.html">Projects</a> / Hardware</p>
+<p class="breadcrumb"><a href="/">Home</a> / <a href="/pages/work-index.html">Projects</a> / Hardware</p>
 <p class="kicker">THE LAB</p>
 <h1>Hardware and lab setup</h1>
 <p class="lede">I built BiXCore gradually, reusing existing computers where I could and adding network equipment when I had a specific problem to solve. These are the systems behind the projects on this site.</p>
@@ -46,4 +49,4 @@
 <section><h2>Test clients</h2><p>Windows and Linux virtual machines are my main test clients for DHCP, NAT, port forwarding, VPNs and remote desktop. I also use real wired and Android Wi-Fi clients when a feature needs physical hardware to validate it.</p>
 <p>This is the equipment relevant to the projects, rather than a complete list of every device in the house. The pages describe what each part was used for and link to the related tests.</p></section>
 <p><a class="source-link" href="/pages/roadmap.html">What I plan to test next →</a> &nbsp; <a class="source-link" href="/pages/work-index.html">Browse the projects →</a></p>
-</div><hr class="rule"><p><a class="button secondary" href="/index.html">← Home</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>
+</div><hr class="rule"><p><a class="button secondary" href="/">← Home</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

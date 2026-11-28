@@ -2,6 +2,8 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="Практические тесты firewall и маршрутизаторов: двенадцать платформ в тринадцати VM, включая OpenFW и два OPNsense.">
@@ -19,14 +21,15 @@
 <link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/virtual-firewall-platforms.html">
 <link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/virtual-firewall-platforms.html">
 <link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/virtual-firewall-platforms.html">
+<script src="/language.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Перейти к содержанию</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="/ru/index.html" aria-label="BiXCore Lab, главная"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ИНЖЕНЕРНАЯ ЛАБОРАТОРИЯ</span></span></a>
+    <a class="brand" href="/ru/" aria-label="BiXCore Lab, главная"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ИНЖЕНЕРНАЯ ЛАБОРАТОРИЯ</span></span></a>
     <nav class="top-nav" aria-label="Основная навигация"><a href="/ru/pages/work-index.html">Проекты</a><a href="/ru/pages/notes.html">Диагностика</a><a href="/ru/pages/hardware.html">Оборудование</a><a href="/ru/pages/roadmap.html">Планы</a><a href="/ru/pages/about.html">Обо мне</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Выбор языка"><a href="/de/pages/virtual-firewall-platforms.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/virtual-firewall-platforms.html" hreflang="en" lang="en">English</a><a href="/ru/pages/virtual-firewall-platforms.html" hreflang="ru" lang="ru" aria-current="page">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="/ru/index.html">Главная</a> / <a href="/ru/pages/work-index.html">Проекты</a> / Proxmox</p>
+<p class="breadcrumb"><a href="/ru/">Главная</a> / <a href="/ru/pages/work-index.html">Проекты</a> / Proxmox</p>
 <p class="kicker">МАРШРУТИЗАТОРЫ / FIREWALL / PROXMOX</p>
 <h1>Испытанные firewall и маршрутизаторы</h1>
 <p class="lede">Использую одних и тех же виртуальных Windows и Linux-клиентов для знакомства с различными firewall. Первоначальная цель проста: правильно настроить WAN и LAN, добиться прохождения трафика клиента и понять правила и управление.</p>
@@ -34,7 +37,7 @@
 <h2>Общая конфигурация лаборатории</h2>
 <p>Каждая firewall VM имеет выделенный тестовый upstream и собственную виртуальную клиентскую сеть. Обычно запускаю одну firewall с одним или двумя клиентами, а не все продукты вместе. Ни один эксперимент не заменяет повседневный шлюз OPNsense.</p>
 <h2>Что установлено и испытано</h2>
-<div class="table-wrap"><table><thead><tr><th>Платформа</th><th>Выполненные работы</th><th>Следующие тесты</th></tr></thead><tbody>
+<div class="table-wrap" tabindex="0" role="region" aria-label="Таблица данных 1"><table><thead><tr><th scope="col">Платформа</th><th scope="col">Выполненные работы</th><th scope="col">Следующие тесты</th></tr></thead><tbody>
 <tr><td><strong>MikroTik CHR / RouterOS</strong></td><td>Виртуальные интерфейсы, начальная конфигурация RouterOS, LAN-адресация и отдельные NAT/клиентские подключения.</td><td>Дополнительные firewall-правила, протоколы маршрутизации и VPN.</td></tr>
 <tr><td><strong>pfSense CE</strong></td><td>WAN/LAN, DHCP, доступ управления и NAT, отдельные пробросы RDP к клиентским VM.</td><td>IPv6, IPS и более полные межзонные тесты.</td></tr>
 <tr><td><strong>Sophos Firewall Home</strong></td><td>Первоначальная настройка, управление и базовая связность гостя, включая рабочий checkpoint.</td><td>Защитные функции, аутентификация и политики.</td></tr>
