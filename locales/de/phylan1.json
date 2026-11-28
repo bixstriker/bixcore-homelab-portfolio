@@ -1,0 +1,33 @@
+{
+  "page": "pages/phylan1.html",
+  "source_blob": "1f14cb52ff4251c5077a8d57105d9e1e767f2c70",
+  "translations": {
+    "A Proxmox hookscript gives one running virtual firewall an external laptop, disconnecting the test port when multiple firewall VMs are active.": "Ein Proxmox-Hookscript verbindet genau eine laufende virtuelle Firewall mit einem externen Laptop und trennt den Testport bei mehreren aktiven Firewall-VMs.",
+    "PhyLan1: A Physical Client for the Firewall Lab · BiXCore": "PhyLan1: Ein physischer Client für das Firewall-Labor · BiXCore",
+    "/ PhyLan1: A Physical Client for the Firewall Lab": "/ PhyLan1: Ein physischer Client für das Firewall-Labor",
+    "PERSONAL LAB / 6 NOVEMBER 2026": "PRIVATES LABOR / 6. NOVEMBER 2026",
+    "PhyLan1: A Physical Client for the Firewall Lab": "PhyLan1: Ein physischer Client für das Firewall-Labor",
+    "I wanted to test each virtual firewall with a real laptop over Ethernet, without adding a physical NIC to every VM or changing each guest's network setup. I made the Proxmox host switch one dedicated test port between the existing virtual LANs.": "Ich wollte jede virtuelle Firewall mit einem realen Ethernet-Laptop testen, ohne jeder VM eine physische NIC hinzuzufügen oder ihre Netzwerkkonfiguration zu ändern. Der Proxmox-Host schaltet einen dedizierten Testport zwischen vorhandenen virtuellen LANs um.",
+    "How it works": "Wie es funktioniert",
+    "The host's dedicated test NIC belongs to a Linux bridge with no host IP address or gateway. A temporary virtual Ethernet pair joins that bridge to the LAN bridge of the selected firewall. The firewall's upstream remains on the isolated lab VLAN behind my main OPNsense gateway.": "Die dedizierte Test-NIC des Hosts gehört zu einer Linux-Bridge ohne Host-IP oder Gateway. Ein temporäres virtuelles Ethernet-Paar verbindet diese Bridge mit der LAN-Bridge der ausgewählten Firewall. Der Upstream der Firewall bleibt auf dem isolierten Labor-VLAN hinter meinem OPNsense-Hauptgateway.",
+    "The laptop receives its network settings from whichever firewall is active. No extra NIC or bridge is installed inside any firewall VM.": "Der Laptop erhält seine Netzwerkeinstellungen von der jeweils aktiven Firewall. In keiner Firewall-VM wird eine zusätzliche NIC oder Bridge installiert.",
+    "One firewall at a time": "Immer nur eine Firewall",
+    "Running firewall VMs": "Laufende Firewall-VMs",
+    "Physical test port": "Physischer Testport",
+    "Zero": "Null",
+    "No connection to a guest LAN": "Keine Verbindung zu einem Gast-LAN",
+    "Exactly one": "Genau eine",
+    "Connected to that firewall's existing LAN bridge": "Mit der vorhandenen LAN-Bridge dieser Firewall verbunden",
+    "Two or three": "Zwei oder drei",
+    "Disconnected from all guest LANs": "Von allen Gast-LANs getrennt",
+    "The Proxmox hookscript reacts to normal VM start and stop events and uses a lock so two events cannot rearrange the bridge at the same time. I didn't need to modify MikroTik, pfSense, Sophos or any of the other guests for this.": "Das Proxmox-Hookscript reagiert auf reguläre VM-Start- und Stop-Ereignisse und nutzt eine Sperre, damit zwei Ereignisse die Bridge nicht gleichzeitig umkonfigurieren. MikroTik, pfSense, Sophos und die übrigen Gäste mussten dafür nicht verändert werden.",
+    "What I checked on 6 November": "Was ich am 6. November geprüft habe",
+    "I tested the external Ethernet laptop with all eleven firewall/router platforms, and confirmed internet access and RDP forwarding to the reusable Windows and Linux clients in the same round of tests. These were functional client tests that I observed, not a new packet capture for each firewall. The OPNsense full clone and OpenFW added on 9 November were not part of this tested set, and I haven't added them to the host switching hook.": "Ich testete den externen Ethernet-Laptop mit allen elf Firewall-/Router-Plattformen und bestätigte Internetzugang und RDP-Weiterleitung zu wiederverwendbaren Windows- und Linux-Clients in derselben Testrunde. Das waren beobachtete funktionale Clienttests, kein neuer Paketmitschnitt für jede Firewall. Der am 9. November hinzugefügte vollständige OPNsense-Klon und OpenFW gehörten nicht zu dieser Testgruppe und wurden nicht in den Host-Umschalt-Hook aufgenommen.",
+    "I also checked a changeover between two guests, the start of a second guest, and three firewall VMs running together. The port disconnected when more than one firewall was active and reconnected after only one remained.": "Ich prüfte auch den Wechsel zwischen zwei Gästen, den Start eines zweiten Gasts und drei gleichzeitig laufende Firewall-VMs. Sobald mehr als eine Firewall aktiv war, trennte sich der Port; bei nur einer verbleibenden Firewall wurde er wieder verbunden.",
+    "Limits I haven't solved yet": "Noch nicht gelöste Grenzen",
+    "This protects the physical port during normal Proxmox events; it isn't a complete network-isolation audit. There is no watchdog yet for a VM process that exits without its normal stop hook. The port should only be connected directly to the test laptop or to a dedicated, isolated access point — never to my regular home switch, where guest DHCP servers would cause trouble.": "Das schützt den physischen Port bei regulären Proxmox-Ereignissen, ist aber keine vollständige Isolationsprüfung. Für einen VM-Prozess, der ohne regulären Stop-Hook endet, gibt es noch keinen Watchdog. Der Port darf nur direkt mit dem Test-Laptop oder einem dedizierten isolierten AP verbunden werden, niemals mit meinem normalen Heimswitch, wo Gast-DHCP-Server Probleme verursachen würden.",
+    "The virtual firewall lab →": "Das virtuelle Firewall-Labor →",
+    "Test methods →": "Testmethoden →",
+    "Remaining work →": "Offene Arbeiten →"
+  }
+}
