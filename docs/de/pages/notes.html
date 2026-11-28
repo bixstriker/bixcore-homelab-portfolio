@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Dreiundvierzig Fehlerfälle zu OPNsense, IPv6, Windows-Identitäten, Switching, NAS und Proxmox.">
+  <title>Probleme und Lösungen · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/de/pages/notes.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Probleme und Lösungen · BiXCore">
+  <meta property="og:description" content="Dreiundvierzig Fehlerfälle zu OPNsense, IPv6, Windows-Identitäten, Switching, NAS und Proxmox.">
+  <meta property="og:url" content="https://lab.bixcore.de/de/pages/notes.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/notes.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/notes.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/notes.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/notes.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/notes.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/notes.html" hreflang="en" lang="en">English</a><a href="/ru/pages/notes.html" hreflang="ru" lang="ru">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / Fehleranalyse</p>
+<p class="kicker">WAS ICH BEIM AUFBAU VON BIXCORE GELERNT HABE</p>
+<h1>Aufgetretene Probleme</h1>
+<p class="lede">Viele Teile von BiXCore erforderten mehrere Versuche. Manche Fehler lagen an einem kleinen Konfigurationsdetail, andere erforderten Paketmitschnitte, Dienstlogs und Tests von beiden Seiten der Verbindung. Diese Fälle sind es wert, dokumentiert zu werden.</p>
+<div class="article">
+<section id="network-incidents">
+<h2>OPNsense, WAN und IPv6</h2>
+<div class="two-col">
+<article class="mini-card" id="pf-bootzero"><h3>Automatische Bereinigung ungültiger PF-States nach Boot</h3><p>Meine frühere manuelle PF-Bereinigung stoppte die Warnungen, verhinderte aber nicht die Rückkehr des Problems. Am 26. November fand ich nach Neustart dieselben ungültigen Gateway-States, obwohl aktive Regeln und lokale Broadcast-Regel korrekt waren.</p><p>Ich erweiterte die periodische Prüfung um die Verifizierung des funktionierenden Gateways und eine erneute Prüfung jedes passenden States vor Entfernung. Ein zweiter realer Neustart reproduzierte die Warnungen; danach entfernte die Prüfung automatisch alle 25 ungültigen States. Damit wird die Start-Race-Condition ohne Flush unbeteiligter States abgefangen, nicht ihre Upstream-Ursache behoben.</p><p><a href="/de/pages/wan-failover-recovery.html">Physische Neustart- und Recovery-Tests →</a></p></article>
+
+<article class="mini-card" id="zenarmor-dns-enrichment"><h3>Warum meine TLS Inspection immer wieder umgangen wurde</h3><p>Trotz seitenspezifischer Inspection-Regel präsentierte der Browser zeitweise das öffentliche Zertifikat. Bei aktiviertem Ausschluss für Flows ohne DNS Enrichment umgingen ausgewählte HTTPS-Verbindungen die Inspection. Nach Deaktivierung erschienen wieder der lokale Aussteller und TLS-Inspected.</p><p>Ein direkter DNS-Test gegen Unbound, einschließlich Abfrage und TLS-Verbindung mit derselben Quelladresse, behob den Bypass nicht. Fehlende Enrichment-Daten bleiben ungeklärt; der Befund belegt nicht AdGuard Home als Ursache.</p><p><a href="/de/pages/zenarmor.html">TLS-Pilotversuch →</a></p></article>
+
+<article class="mini-card" id="zenarmor-netmap"><h3>Meine Zenarmor-Multi-Core-Tests zeigten Kernel Panics</h3><p>Ich testete Native und Emulated Netmap mit verschiedenen Worker-Konfigurationen zum Leistungsvergleich. Stattdessen erfasste ich sieben Crash-Dumps und zwei weitere Ausfälle ohne neuen Dump. Wiederkehrender FreeBSD-mbuf-/iflib-Stack und Netmap-Meldungen belegten ein Stabilitätsproblem, nicht die verantwortliche Komponente.</p><p>Ich kehrte zu Routed Mode mit Emulated Netmap ohne Multi-Core zurück. Das Gateway nahm den Betrieb wieder auf; vollständiger Stresstest und belastbarer Leistungsvergleich stehen aus.</p><p><a href="/de/pages/zenarmor-multicore.html">Stabilitätsuntersuchung →</a></p></article>
+
+<article class="mini-card" id="portal-dualstack"><h3>Das Gastportal erlaubte IPv6, vergaß aber IPv4</h3>
+<p>Mein iPhone hatte eine IPv4-Adresse, doch die IPv6-zuerst-Captive-Portal-Anmeldung trug sie nicht in die PF-Allow-Tabelle der Sitzung ein. Ursache war die Portal-Adressfilterung bei aktiviertem Client Roaming, nicht DHCP.</p>
+<p>Ich prüfte und spielte den OPNsense-Upstream-Fix für Issue #11214 ein. Ohne erneute Anmeldung erhielt die bestehende Sitzung IPv4-Zugang und behielt ihre neun IPv6-Einträge. Das Telefon bestand den IPv6-Readiness-Check mit 10/10. Nach künftigen Gateway-Updates muss der Patch erneut geprüft werden.</p><p><a href="/de/pages/network-services.html">Gastzugang und Dual-Stack-Verhalten →</a></p></article>
+
+<article class="mini-card" id="dynamic-ipv6-alias"><h3>Mein neuer IPv6-Alias hatte eine leere PF-Tabelle</h3>
+<p>Ich ersetzte ein statisches Provider-Präfix durch eine aus realen lokalen Schnittstellen abgeleitete Menge. Die Schnittstellengruppe erschien korrekt, ihr PF-Alias war nach dem ersten Apply jedoch leer.</p>
+<p>Regeneration der normalen Filtervorlagen und Alias-Refresh füllten die Tabelle. Gastclients erreichten weiterhin IPv6-Internet, aber keine internen Dienste; ein Core-Client konnte sie erreichen. Ein realer Provider-Präfixwechsel ist seit der Umstellung nicht erfolgt.</p><p><a href="/de/pages/opnsense-ipv6.html">Die neue IPv6-Isolation →</a></p></article><article class="mini-card" id="lte-recovery"><h3>Der LTE-Ersatzlink blieb nach Gateway-Neustart inaktiv</h3>
+<p>Bei den neuen IPv6-Laborarbeiten stellte mein früheres USB-LTE-Modem nach OPNsense-Neustart den PPP-Uplink nicht wieder her. Ein erster Geräte-Reset und eine Schnittstellen-Neukonfiguration reichten nicht. Ein weiterer Reset stellte LTE in der beobachteten Sitzung wieder her.</p>
+<p>Dieser historische USB-Modem-Fehler erforderte manuelle Recovery; seine Ursache konnte ich nicht ermitteln. Ende November ersetzte ich das USB-Modem durch das per Ethernet angeschlossene Zyxel. Haupt-WAN-LTE-Failover und VPN-Wiederherstellung hatten bereits separate reale Tests bestanden und sind vom Modem-Startfehler zu unterscheiden.</p><p><a href="/de/pages/security-operations.html">Notizen zur Gateway-Ausfallsicherheit →</a></p></article>
+<article class="mini-card" id="ipv6"><h3>Die falsche IPv6-Quelladresse</h3>
+<p>Mein WAN hatte mehrere globale IPv6-Adressen, doch ausgehende Verbindungen verhielten sich je nach Quelle unterschiedlich. Tests mit expliziten Adressen zeigten, dass die Provider-SLAAC-Adresse dasselbe Ziel nicht erreichte, das von der DHCPv6-IA_NA-Adresse funktionierte.</p>
+<p>Für den beobachteten Quelladresswahlfehler ergänzte ich einen Recovery-Mechanismus. Provider-Neuverbindungen und künftige Präfixwechsel müssen weiter beobachtet werden.</p><p><a href="/de/pages/opnsense-ipv6.html">OPNsense und IPv6 →</a></p></article>
+<article class="mini-card" id="ddns"><h3>Dynamisches DNS aktualisierte nach Neustart nicht mehr</h3>
+<p>Der DNS-Update-Dienst lief, erreichte aber die Provider-API über IPv6 nicht. Ich verfolgte dies zum selben WAN-Quelladressproblem, statt fehlerhafte DNS-Einträge oder API-Zugangsdaten anzunehmen.</p>
+<p>Die Verbindung wurde in der dokumentierten Sitzung wiederhergestellt. Eine Folgeprüfung für künftige WAN-Erneuerungen blieb offen.</p><p><a href="/de/pages/network-services.html">DNS und dynamische Einträge →</a></p></article>
+<article class="mini-card" id="pf-state"><h3>Firewall-States mit ungültigem Gateway</h3>
+<p>Nach Neustart führten wiederholte ARP-Fehler zu PF-States mit einer route-to-Adresse 0.0.0.0. Die aktiven Firewall-Regeln verwiesen bereits auf das reale Gateway; eine Änderung gespeicherter Regeln war daher nicht die Lösung.</p>
+<p>Ich entfernte betroffene States einzeln und bestätigte das Ende der Fehler. Das zugrunde liegende Startreihenfolgeproblem ist upstream nicht behoben. Später ergänzte ich eine getestete <a href="/de/pages/notes.html#pf-bootzero">automatische Abhilfe</a>.</p><p><a href="/de/pages/security-operations.html">Gateway-Betrieb →</a></p></article>
+<article class="mini-card" id="wireguard"><h3>WireGuard: IPv4 funktionierte, IPv6 brauchte einen anderen Ansatz</h3>
+<p>Ein mobiler Client sollte IPv4- und IPv6-Verkehr über das Heimnetz senden. Eine statische IPv6-Übersetzung passte nicht zu wechselnden Provider-Präfixen; ich wechselte zu NPTv6 mit nachgeführtem delegiertem Präfix.</p>
+<p>Ich prüfte effektive Firewall-Übersetzung, externe Clientadressen, DNS und erlaubten lokalen Zugriff. Ein realer Upstream-Präfixwechsel bleibt offen.</p><p><a href="/de/pages/opnsense.html">WireGuard-Testergebnisse →</a></p></article>
+<article class="mini-card" id="portal"><h3>Gastportal über IPv6 erreichbar halten</h3>
+<p>Die IPv6-Adresse des Gastportals hängt vom Provider-Präfix ab. Ich ergänzte einen Update-Pfad für seinen DNS-AAAA-Eintrag und verglich den erzeugten Eintrag mit der aktiven Adresse.</p>
+<p>Damit war der Update-Mechanismus nachgewiesen, nicht ein künftiger realer Präfixwechsel.</p><p><a href="/de/pages/network-services.html">Gastnetzdienste →</a></p></article>
+<article class="mini-card" id="lldp"><h3>Eine LLDP-Management-Adresse, die Updates überstehen musste</h3>
+<p>LLDP-Nachbarn waren sichtbar, aber die vorgesehene Management-Adressankündigung sollte Dienstneustarts und Konfigurationsregeneration überstehen. Ich ergänzte einen Start-/Persistenz-Hook und prüfte den angekündigten Wert.</p>
+<p>Die Unterscheidung zwischen laufenden und persistenten Einstellungen hat sich auch in anderen Gateway-Bereichen bewährt.</p><p><a href="/de/pages/switching-wireless.html">Switching und LLDP →</a></p></article>
+</div></section>
+<section id="client-incidents">
+<h2>Switching, Zertifikate und Clients</h2>
+<div class="two-col">
+<article class="mini-card" id="radsec-omada-certificate"><h3>Omada lehnte meine eigenen RadSec-CA-Zertifikate ab</h3><p>Am kabelgebundenen Switch sollte die Zertifikatsprüfung aktiv bleiben. Eigene Test-Root- und Intermediate-Ketten bestanden OpenSSL-Prüfungen; Omada lehnte das Serverzertifikat weiterhin ab, ohne einen aussagekräftigen X.509-Fehlercode zu liefern.</p><p>Ein öffentliches Let's-Encrypt-Serverzertifikat löste diese TLS-Seite. Ein weiterer Proxy-Fehler zeigte einen falschen Aussteller für das Omada- <em>Client</em> zertifikat. Nach Wiederherstellung der richtigen Client-CA funktionierten TLS 1.3 und Access-Accept bei aktiver Prüfung. Warum Omada die experimentellen internen Serverketten ablehnte, bleibt unbekannt.</p><p><a href="/de/pages/radsec-mtls.html">Vollständige RadSec-Untersuchung →</a></p></article>
+<article class="mini-card" id="radsec-unifi-das"><h3>RadSec funktionierte, UniFi Disconnect nicht mehr</h3><p>EAP-TLS und Accounting überstanden die RadSec-Umstellung, doch gezielte Disconnect-Anfragen erhielten keine ACKs mehr. Der Proxy speicherte Accounting Detail unter einem anderen Absender, und UniFi-DAS lehnte frühere Einstellungen ab.</p><p>Die eingeschränkten Helper prüfen nun Proxy und ursprüngliche AP-Identität, Sitzung und aktiven TLS-Client vor Auswahl des richtigen DAS-Pfades. Live-Tests von Disconnect/PMKSA und separater EAPOL-Reauthentifizierung ergaben die erwarteten neuen Sitzungen. Diese Prüfungen lagen vor der abschließenden abendlichen Zertifikatsbereinigung.</p><p><a href="/de/pages/radius-control.html">RADIUS Control v1.0.2 →</a></p></article>
+<article class="mini-card" id="omada-accounting"><h3>Omada bestätigte Disconnect, ließ aber die alte Sitzung offen</h3>
+<p>Ich ergänzte kabelgebundenen 802.1X-Disconnect in RADIUS Control. Zunächst lieferte der Switch ein NAK. Nach Paketkorrektur kam ein ACK, doch der alte Accounting-Eintrag konnte auch nach neuer Clientauthentifizierung offen bleiben.</p>
+<p>Eine neue Sitzung traf erst kurz nach meinem ursprünglichen Timeout ein. Die Bereinigung wartet nun auf verifiziertes ACK und eindeutig passendes neues Accounting-Start, bevor der unveränderte alte Eintrag geschlossen wird. Arbeitsplatz- und Domänencontroller-Port bestanden den abschließenden Live-Test; unklare Ergebnisse werden nie automatisch wiederholt.</p><p><a href="/de/pages/radius-control.html">RADIUS-Control-Projekt →</a></p></article>
+
+<article class="mini-card" id="tacacs-fallback"><h3>TACACS+ wechselte auf Omada nicht zur lokalen Anmeldung</h3>
+<p>Ich testete TACACS+-Ausfall auf Omada und Barox. Barox akzeptierte sein lokales Recovery-Konto; Omada lehnte bei TACACS+-danach-lokal ein funktionierendes lokales Konto ab. Paketmitschnitte zeigten unbeantwortete Verbindungsversuche; ein gezielter Netzwerk-Drop reproduzierte das Ergebnis.</p>
+<p>Die interne Ursache im Switch bleibt unbekannt. Ich meldete den Befund dem Hersteller.</p><p><a href="/de/pages/tacacs-switch-aaa.html">TACACS+-Switch-Untersuchung →</a></p></article>
+<article class="mini-card" id="pki-publish-race"><h3>Zwei PKI-Veröffentlichungsjobs kollidierten</h3>
+<p>Zwei geplante Jobs nutzten bei Zertifikatswiderruf denselben temporären NAS-Dateinamen. Einer scheiterte, nachdem der andere die Datei verschoben hatte; eine weitere Veröffentlichung war erfolgreich.</p>
+<p>Ich ergänzte einen benannten Mutex und eindeutige Transferdateinamen. Normale Veröffentlichung und kontrollierter Lock-Wait-Test bestanden. Gleichzeitige Veröffentlichung geänderter Dateien bleibt offen.</p><p><a href="/de/pages/windows-ad-pki.html">PKI-Veröffentlichungskorrektur →</a></p></article>
+<article class="mini-card" id="rustdesk-upgrade"><h3>RustDesk wurde aktualisiert, aber der Bereitstellungsjob hing</h3>
+<p>Ein MSI-Upgrade lieferte Fehler 1603 auf einem Arbeitsplatz. Das EXE installierte den neuen Client, doch mein Skript wartete auf Kindprozesse und endete nicht. Ich änderte die Wartelogik und prüfte die installierte Version; der nächste manuelle Lauf endete erfolgreich.</p><p><a href="/de/pages/windows-policy-deployment.html">Gruppenrichtlinienbereitstellung →</a></p></article>
+<article class="mini-card" id="krdp-credentials"><h3>KRDP verband sich, zeigte dann einen schwarzen Bildschirm</h3>
+<p>Windows erreichte Kubuntus RDP-Dienst über TLS, die Sitzung schloss jedoch bei Anmeldung. Der vollständige Linux-UPN im korrekten Windows-Kontokontext löste die getestete Verbindung. Die interne Ursache des früheren Fehlers ist damit nicht bewiesen.</p><p><a href="/de/pages/linux-mobile-identity.html">Kubuntu-Fernzugriff →</a></p></article>
+<article class="mini-card" id="radius-coa"><h3>UniFi lehnte RADIUS Disconnect nach WLAN-Roaming ab</h3>
+<p>Ich aktivierte RADIUS Accounting für UniFi-APs und bestätigte Sitzungsupdates in der vorhandenen FreeRADIUS-Datenbank. Der erste gezielte Disconnect-Request lieferte NAK, da die Session-ID zu einer beim Roaming beendeten Verbindung gehörte.</p>
+<p>Nach Prüfung der aktuellen Accounting-Sitzung lieferte die nächste Anfrage Disconnect-ACK. Das Telefon trennte sichtbar WLAN und authentifizierte sich erneut per EAP-TLS. Das belegt Disconnect und Reauthentifizierung, <strong>nicht</strong> die Live-VLAN-Neuzuweisung über CoA.</p><p><a href="/de/pages/identity-pki.html">Zertifikatsbasierter Netzwerkzugang →</a></p></article>
+<article class="mini-card" id="identity"><h3>Den zweiten LDAPS-Server tatsächlich testen</h3>
+<p>FreeRADIUS hatte zwei Verzeichnisendpunkte konfiguriert. Ich machte den primären Controller unerreichbar und wiederholte Authentifizierungsprüfungen, statt Failover allein aufgrund eines zweiten Konfigurationseintrags anzunehmen.</p>
+<p>Verzeichnisabfragen liefen über den zweiten Controller weiter. CA und Registrierungsdienst sind separate Abhängigkeiten mit eigenen Recovery-Anforderungen.</p><p><a href="/de/pages/windows-ad-pki.html">AD CS und FreeRADIUS →</a></p></article>
+<article class="mini-card" id="dc-eap"><h3>Kabelgebundenes EAP-TLS auf Domänencontrollern</h3>
+<p>Ein Domänencontroller kann Netzzugang benötigen, bevor er die bei normaler Autorisierung beteiligten Verzeichnis- und Zertifikatdienste erreicht. Seine Bootstrap-Identität musste von gewöhnlicher Computerautorisierung getrennt werden.</p>
+<p>Nach Anpassung der Zertifikatauswahl und relevanter Richtlinien prüfte ich das LAN-Authentifizierungsverhalten an Switch und FreeRADIUS.</p><p><a href="/de/pages/windows-ad-pki.html">Domänencontroller-EAP-TLS →</a></p></article>
+<article class="mini-card" id="omada-nd"><h3>IPv6-Adressen waren per DNS auflösbar, aber nicht erreichbar</h3>
+<p>Ein Domänencontroller antwortete über eine IPv6-Adresse, nicht über die manuell konfigurierte Adresse. Paket- und Switchprüfungen deuteten auf Omadas IPv6 Neighbor Discovery Inspection.</p>
+<p>Gezielte Neighbor-Bindings stellten die getesteten Verbindungen wieder her. Automatisches Lernen neuer Adressen nach Präfixwechsel bleibt ein separates Problem.</p><p><a href="/de/pages/switching-wireless.html">Switch- und IPv6-Untersuchung →</a></p></article>
+<article class="mini-card" id="android-scep"><h3>Android forderte ein weiteres Zertifikat an</h3>
+<p>Registrierung über das MDM-SCEP-Profil funktionierte, doch das Anwenden des Enterprise-WLAN-Profils konnte eine zweite Anfrage auslösen. Ich untersuchte das Zusammenspiel von Zertifikats- und WLAN-Profilen und prüfte dabei realen EAP-TLS-Zugang.</p>
+<p>Die Clients verbanden sich erfolgreich. Bereinigung inzwischen ersetzter Zertifikate steht weiterhin auf meiner Liste.</p><p><a href="/de/pages/linux-mobile-identity.html">Android- und Linux-Clients →</a></p></article>
+<article class="mini-card" id="profile-migration"><h3>Windows nutzte nach Domänenmigration ein temporäres Profil</h3>
+<p>Bei der Aufnahme einer bestehenden Windows-Installation in Active Directory hinterließ das Profilmigrationswerkzeug einen veralteten Registry-Profileintrag und ein Zugriffsproblem bei Benutzerdaten. Windows startete einen temporären statt des ursprünglichen Desktops.</p>
+<p>Ich prüfte Profildienstereignisse, korrigierte Registry-Zuordnung und Berechtigungen und bestätigte das Laden des normalen Desktops. Wichtig war, das alte Profil zu erhalten und die Zuordnung vor Erstellung eines neuen zu untersuchen.</p><p><a href="/de/pages/windows-policy-deployment.html#profile-migration">Windows-Domänenmigration →</a></p></article>
+<article class="mini-card" id="dc-logonui"><h3>Tastaturlayouts fehlten am Windows-Anmeldebildschirm</h3>
+<p>Auf dem zweiten Domänencontroller waren erwartete Tastaturlayouts in Teilen von Windows eingerichtet, erschienen aber nicht alle am Anmeldebildschirm. Der Vergleich der Spracheinstellungen mit dem ersten Controller zeigte ein abweichendes interaktives Administratorprofil.</p>
+<p>Nach Aktualisierung der Sprachliste dieses Profils und Abmeldung erschienen die fehlenden Layouts. Die geplante Konfigurationsaufgabe lieferte weiter einen Status ungleich null; die Persistenz nach Neustart blieb offen, statt den Taskstatus als Beweis für Erfolg oder Fehler zu werten.</p><p><a href="/de/pages/windows-policy-deployment.html">Windows-Richtlinien und Administration →</a></p></article>
+<article class="mini-card" id="wac"><h3>Windows Admin Center und HTTPS-Bindung</h3>
+<p>Als der HTTPS-Endpunkt nicht wie erwartet funktionierte, prüfte ich Zertifikat und HTTP.sys-Listener/-Binding statt eines allgemeinen Browserfehlers. Die korrigierte Bindung war Teil der Windows-Administrationsumgebung.</p>
+<p>Das erinnerte auch daran, dass ein vertrauenswürdiges Zertifikat zu installieren und es tatsächlich auszuliefern zwei unterschiedliche Schritte sind.</p><p><a href="/de/pages/windows-policy-deployment.html">Windows-Administrationswerkzeuge →</a></p></article>
+</div></section>
+<section id="services-incidents">
+<h2>NAS und Infrastrukturdienste</h2>
+<div class="two-col">
+<article class="mini-card" id="nas-egress"><h3>Mein NAS wählte die falsche Netzwerkschnittstelle</h3><p>Nach kurzem Linkverlust und Recovery hatte das NAS zwei direkt verbundene Routen zum selben Subnetz. Neue Verbindungen konnten die sekundäre Schnittstelle nutzen, obwohl die primäre Default-Route zurück war. Dadurch scheiterte die vorgesehene Quelladressbeschränkung des Gateway-Managementzugangs.</p><p>Ich ergänzte eine abgesicherte Policy-Routing-Regel nach den bestehenden quellbasierten Regeln sowie einen systemd-Timer. Routenprüfungen und SMB Multichannel bestanden, beide SMB-Pfade blieben ausgewählt. Ein neuer NAS-Neustart-, DHCP-Erneuerungs- und physischer Link-Flap-Test stand noch aus.</p><p><a href="/de/pages/nas-services-operations.html">NAS-Routing- und SMB-Tests →</a></p></article>
+
+<article class="mini-card" id="dc-backup-nic"><h3>Ein Domänencontroller verlor SMB während seines System-State-Backups</h3>
+<p>Ein geplanter Backup-Job scheiterte nach einem Realtek-Netzwerkadapter-Reset; Windows- und SMB-Ereignislogs zeigten Unterbrechung und fehlgeschlagenen Schreibvorgang. Ich aktualisierte Realtek-Treiber auf beiden Controllern und beobachtete die nächsten wöchentlichen System-State-Jobs als erfolgreich.</p>
+<p>Das beweist nicht, dass der Hardwarefehler nie wieder auftritt. Backup-Rotation muss erfolgreiche Jobs berücksichtigen; Wiederherstellung von Active Directory und CA aus unabhängigen Backups bleibt ungetestet.</p><p><a href="/de/pages/windows-monitoring-backup.html">Windows-Backup und Recovery →</a></p></article>
+<article class="mini-card" id="nas-ula"><h3>Das NAS verlor seine IPv6-ULA</h3>
+<p>Nach Netzereignissen konnte das NAS die stabile interne IPv6-Adresse für Client-DNS verlieren. Ein alter Interface-Up-Hook stellte sie nicht zuverlässig wieder her.</p>
+<p>Ich ersetzte den Ansatz durch idempotentes Recovery-Skript, systemd-Oneshot-Dienst und periodischen Timer und prüfte die Rückkehr der vorgesehenen Adresse.</p><p><a href="/de/pages/nas-services-operations.html">NAS-Netzwerk →</a></p></article>
+<article class="mini-card" id="docker-route"><h3>Ein Container wählte die falsche Netzwerkroute</h3>
+<p>Ein Reverse-Proxy-Container in mehreren Docker-Netzen erhielt eine ungeeignete Route und IPv6-Adresse. Ich korrigierte die gewünschten Compose-Netzwerkeinstellungen statt temporärer Änderungen im laufenden Container.</p>
+<p>Das war sowohl für Erreichbarkeit als auch vorhersehbares Verhalten nach Neuerstellung wichtig.</p><p><a href="/de/pages/nas-services-operations.html">Docker und Reverse Proxy →</a></p></article>
+<article class="mini-card" id="ups"><h3>USV-Monitoring startete nicht</h3>
+<p>Network UPS Tools erkannte zunächst die angeschlossene USB-USV nicht. USB-Geräteberechtigungen verhinderten den Zugriff; nach Korrektur der Gerätebehandlung verband sich der Dienst mit der USV.</p>
+<p>Eine weitere Konfigurationsänderung band den Dienst versehentlich an am Gateway nicht vorhandene Adressen. Korrektur der Listener-Adressen stellte Zugriff her. Keiner der Tests belegt Batterieversorgung aller Geräte.</p><p><a href="/de/pages/security-operations.html">Monitoring und Stromversorgung →</a></p></article>
+</div></section>
+<section id="virtualization-incidents">
+<h2>Proxmox und virtuelle Firewalls</h2>
+<div class="two-col">
+<article class="mini-card" id="packetfence-ipset"><h3>PacketFence registrierte den Gast, aber IPSet scheiterte</h3>
+<p>Windows schloss Captive-Portal-Registrierung ab, externes HTTPS blieb gesperrt. Der PacketFence-Regelgenerator lieferte ein IP-MAC-Paar an eine reine IP-Menge; dadurch scheiterte IPSet-Restore.</p>
+<p>Nach Untersuchung mit Codex spielte ich einen kleinen lokalen Fix ein und testete Gastzugang ohne Bypass-Regel. Nach künftigen Upgrades muss der Patch geprüft werden.</p><p><a href="/de/pages/packetfence-nac.html">PacketFence-Untersuchung →</a></p></article>
+<article class="mini-card" id="packetfence-dns"><h3>PacketFences DNS-Proxy leitete an sich selbst weiter</h3>
+<p>Nach IPSet-Reparatur funktionierte externes TCP/443, normale Webnamen lösten aber weiterhin zum Captive Portal auf. Der konfigurierte DNS-Forwarder zeigte auf die eigene Listener-Adresse des Proxys.</p>
+<p>Ich änderte den Upstream-Resolver und behielt PacketFence als Client-DNS. Normales DNS und verifiziertes HTTPS funktionierten; Widerruf und Wiederherstellung der Gastregistrierung sperrten bzw. erlaubten externe Verbindungen wie vorgesehen.</p><p><a href="/de/pages/packetfence-nac.html">DNS- und Zugangskontrolltests →</a></p></article><article class="mini-card" id="lab"><h3>Labor-WAN und VLAN-Pfad</h3>
+<p>Ein frühes DHCP-Problem erforderte Prüfungen an virtueller NIC, Proxmox-Bridge, getaggtem Switch-Port und Gateway statt wiederholter Änderungen an der Gastfirewall. Auch DNS-Berechtigungen für das Laborsegment mussten korrigiert werden.</p>
+<p>Der relevante L2-Pfad und ausgewählte Gateway-Dienste wurden geprüft. Eine separate Testmatrix umfasst zu verweigernden Verkehr.</p><p><a href="/de/pages/lab-operational-method.html">Wie ich das Labor teste →</a></p></article>
+<article class="mini-card" id="pve-ipv6"><h3>Proxmox verlor IPv6 Router Advertisements</h3>
+<p>Nach Umstellung des Hosts auf Linux-Bridges erforderte IPv6-Adressierung Aufmerksamkeit: Normale Forwarding-/RA-Standards ergaben nicht das gewünschte Verhalten der Management-Bridge.</p>
+<p>Ich passte Host-Schnittstelleneinstellungen an und prüfte den aktiven IPv6-Pfad. Persistenz bei künftigen Netzänderungen blieb offen.</p><p><a href="/de/pages/proxmox-host-storage.html">Proxmox-Host-Netzwerk →</a></p></article>
+<article class="mini-card" id="zfs"><h3>VM-Speicher ersetzen</h3>
+<p>Zustandsprüfungen alter VM-Laufwerke zeigten ein Speicherproblem, das ich nicht ignorieren wollte. Ich prüfte SMART und ZFS, migrierte VM-Daten auf eine Ersatzfestplatte und startete die Gäste wieder.</p>
+<p>Der Ersatz ist ein ZFS-Pool auf einer einzigen Festplatte. Wiederherstellung der Gäste ist also weder Redundanz noch ein getesteter Restore außerhalb des Hosts.</p><p><a href="/de/pages/proxmox-host-storage.html">Speichermigration →</a></p></article>
+<article class="mini-card" id="gpu"><h3>Intel-Passthrough, fehlende EDID und fehlerhafte Desktopdarstellung</h3>
+<p>Durchgereichte Intel-GPU zusammen mit zusätzlichem virtuellem Grafikadapter führte zu KWin-Hängern und Page-Flip-Fehlern. Nach Entfernung des konkurrierenden Displays benötigte die KDE-VM noch eine brauchbare EDID für Full HD.</p>
+<p>Bereitstellung der fehlenden EDID löste das Auflösungsproblem. Eine separate KRDP-Bildqualitätseinstellung und eine KWallet-Interaktion erforderten weitere Korrekturen.</p><p><a href="/de/pages/gpu-remote-desktop.html">GPU- und KRDP-Tests →</a></p></article>
+<article class="mini-card" id="ipfire"><h3>IPFire war an der falschen Upstream-Bridge</h3>
+<p>Beim IPFire-Aufbau nutzte die WAN-seitige virtuelle NIC zunächst die falsche Proxmox-Bridge. Nach Korrektur erhielt die Firewall ihre Upstream-Adresse, und Labortests konnten fortgesetzt werden.</p>
+<p>Management, DHCP und ausgewählte RDP-Portweiterleitung wurden danach verifiziert.</p><p><a href="/de/pages/virtual-firewall-platforms.html">Firewall-Plattformvergleiche →</a></p></article>
+<article class="mini-card" id="freesense-boot"><h3>FreeSense startete den Installer statt des installierten Systems</h3>
+<p>Nach FreeSense-Installation mit ZFS endete der Gast in einem Mountroot-Panic. Das Installations-ISO war noch eingebunden; die VM startete nicht von der installierten Systemfestplatte.</p>
+<p>Ich entfernte das Installer-ISO aus dem Bootpfad und startete die VM von der installierten Festplatte. FreeSense bootete normal; Kea DHCP, Internetzugang und RDP-Weiterleitung zu beiden Testclients wurden geprüft.</p><p><a href="/de/pages/virtual-firewall-platforms.html">FreeSense-Aufbau und Tests →</a></p></article>
+<article class="mini-card" id="ddwrt-reboot"><h3>DD-WRT erreichte „machine restart“, startete aber nicht neu</h3>
+<p>Nach Reparatur des Kernel Panic hing ein normaler Neustart weiterhin bei „machine restart“. Die VM nutzte OVMF/UEFI, die Bootkonfiguration aber eine BIOS-Neustartmethode.</p>
+<p>Ich änderte das Neustartargument auf UEFI in aktiver GRUB-Konfiguration und eingebetteter Vorlage, aus der sie neu erzeugt werden kann. Zwei aufeinanderfolgende Gastneustarts funktionierten. Das konnte <em>nicht</em> das Herunterfahren beheben: Gast-Poweroff und Proxmox Shutdown schalteten die VM weiterhin nicht sauber aus.</p><p><a href="/de/pages/virtual-firewall-platforms.html">DD-WRT-Recovery und offene Arbeiten →</a></p></article>
+<article class="mini-card" id="ddwrt-uefi"><h3>DD-WRT: UEFI-Kernel-Panic kehrte immer wieder zurück</h3>
+<p>Nach Reset endete der Gast in einem Kernel Panic, weil GRUB falsches Root-Gerät und Dateisystem enthielt. Das installierte Image nutzte eine ext4-Root-Partition, Bootargumente wurden aber noch für ein älteres Plattenlayout erzeugt. Bearbeitung der aktuellen GRUB-Datei reichte nicht: Veraltete Werte standen auch in einer kompilierten Vorlage im DD-WRT-Dienstprogramm.</p>
+<p>Ich korrigierte Bootkonfiguration und nahm gleich lange Ersetzungen in der Offline-Binärvorlage vor, mit Backup und Snapshot für Recovery. Ein separates <a href="/de/pages/notes.html#ddwrt-reboot">Neustartproblem</a> benötigte die UEFI-Reboot-Einstellung. Zwei folgende Neustarts gelangen; aktive Kernelargumente entsprachen dem installierten Dateisystem. Normales ACPI-Herunterfahren ist <strong>weiterhin ungelöst</strong>, und ein Update kann diesen inoffiziellen Patch überschreiben.</p><p><a href="/de/pages/virtual-firewall-platforms.html">DD-WRT-Testergebnisse →</a></p></article>
+<article class="mini-card" id="ddwrt-access"><h3>DD-WRT-Management verschwand nach fehlgeschlagenen SSH-Versuchen</h3>
+<p>Bei Einrichtung wurden SSH und Weboberfläche vom Administrator-Arbeitsplatz unerreichbar. Statt die virtuelle Bridge verantwortlich zu machen, prüfte ich Blocklist und Paketfilterregeln. Zwei fehlgeschlagene SSH-Versuche hatten Brute-Force-Schutz ausgelöst und diese Managementquelle gesperrt.</p>
+<p>Entfernung der zugehörigen Laufzeitsperre stellte den Laborzugriff wieder her. Ein Blocklist-Eintrag könnte nach Neustart bis zu seinem Ablauf erneut angewendet werden; das war kein Grund, den Brute-Force-Schutz global zu deaktivieren. Zugriffs-Recovery und Management-Härtung bleiben getrennte Folgeaufgaben.</p><p><a href="/de/pages/virtual-firewall-platforms.html">Der DD-WRT-Gast →</a></p></article>
+</div></section>
+</div>
+<hr class="rule"><p><a class="button secondary" href="/de/pages/work-index.html">← Alle Projekte</a></p>
+</main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

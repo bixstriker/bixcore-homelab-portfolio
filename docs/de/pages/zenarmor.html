@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Mein Zenarmor-TLS-Inspection-Pilotversuch, die AD-CS-Inspection-CA und der ungeklärte Bypass bei DNS Enrichment.">
+  <title>Arbeit mit Zenarmor auf OPNsense · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/de/pages/zenarmor.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Arbeit mit Zenarmor auf OPNsense · BiXCore">
+  <meta property="og:description" content="Mein Zenarmor-TLS-Inspection-Pilotversuch, die AD-CS-Inspection-CA und der ungeklärte Bypass bei DNS Enrichment.">
+  <meta property="og:url" content="https://lab.bixcore.de/de/pages/zenarmor.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/zenarmor.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/zenarmor.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/zenarmor.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/zenarmor.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/zenarmor.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/zenarmor.html" hreflang="en" lang="en">English</a><a href="/ru/pages/zenarmor.html" hreflang="ru" lang="ru">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Netzwerksicherheit</p>
+<p class="kicker">OPNSENSE / TLS INSPECTION</p>
+<h1>Arbeit mit Zenarmor auf OPNsense</h1>
+<p class="lede">Ich wollte herausfinden, was die Inspection-Engine tatsächlich entschlüsseln kann und an welcher Stelle sich die Richtlinie anders verhält als erwartet.</p>
+<div class="article">
+<h2>Was ich bereits nutze</h2>
+<p>Ich nutze Zenarmor ergänzend zu OPNsense für die Filterung von Anwendungen und Webkategorien. Eine gezielte Kategoriesperre habe ich mit einem Client getestet. Suricata ist ein separates IPS, dessen kontrollierten Signature-Drop ich unabhängig bestätigt habe. Der aktuelle Inspection-Pfad nutzt PF divert-to und nicht die von Zenarmor verwendeten Netmap-Schnittstellen.</p>
+<h2>Full TLS Inspection mit eigener CA testen</h2>
+<p>Am 27. November erhielt ich Zugang zu den erweiterten Zenarmor-Funktionen und testete Full TLS Inspection für zwei ausgewählte Websites, nicht für den gesamten Verkehr. Aus meiner bestehenden Windows-AD-CS-Enterprise-Root-CA stellte ich eine eigene untergeordnete Inspection-CA aus. Der private Root-Schlüssel blieb auf dem CA-Server. Das untergeordnete Zertifikat hatte CA-Beschränkungen, eine Pfadlängenbeschränkung von null und die erweiterte Schlüsselverwendung Server Authentication. Ketten- und Widerrufsprüfungen waren unter Windows erfolgreich.</p>
+<p>Der erste Import schlug fehl, weil die Zertifikate in der falschen Reihenfolge standen. Nach der Korrektur wurden Root, Intermediate und der zugehörige Intermediate-Schlüssel akzeptiert. Ich prüfte, welche CA die Inspection-Engine tatsächlich nutzte, statt aus einem einzelnen GUI-Feld auf den aktiven Aussteller zu schließen.</p>
+<p>Im Testbrowser zeigten die ausgewählten HTTPS-Verbindungen von der BiXCore-Inspection-CA ausgestellte Zertifikate. Zenarmor Live Sessions meldete TLS-Inspected, auch bei IPv6-Verbindungen. Der Pilotversuch umfasste TCP-basiertes HTTPS; während des Tests blockierte ich QUIC über die Anwendungsrichtlinie, damit der Browser TCP statt HTTP/3 nutzte. Eine kategorieweite Inspection oder Inspection im Gastnetz aktivierte ich nicht.</p>
+<h2>Warum manche HTTPS-Verbindungen die Richtlinie umgingen</h2>
+<p>Die seitenspezifische Regel sah korrekt aus, dennoch erhielt der Browser zeitweise das ursprüngliche öffentliche Zertifikat statt eines Zertifikats des lokalen Ausstellers. Ich konnte einen reproduzierbaren Unterschied eingrenzen: War die Option zum Ausschluss von Flows ohne DNS-Enrichment-Daten aktiviert, umgingen die ausgewählten Verbindungen die Inspection; deaktivierte ich den Ausschluss, funktionierte sie wieder.</p>
+<p>Mein normaler DNS-Pfad verwendet AdGuard Home auf dem NAS und Unbound auf dem Gateway. Es wäre naheliegend gewesen, den separaten DNS-Server verantwortlich zu machen. Stattdessen stellte ich den Windows-Client vorübergehend direkt auf Unbound um und wiederholte den Versuch mit DNS-Abfrage und TLS-Verbindung, die an dieselbe Quelladresse gebunden waren. Bei aktivem Ausschluss erhielt der Browser weiterhin das öffentliche Zertifikat. Anschließend stellte ich die normale DNS-Konfiguration wieder her.</p>
+<p>Damit war die Wirkung der Richtlinienoption geklärt, nicht aber der Grund dafür, dass Zenarmor die Enrichment-Daten fehlten. Auch die Wirkung des separaten Ausschlusses für Certificate Pinning habe ich nicht isoliert untersucht. Die Ergebnisse des Pilotversuchs sind kein Nachweis dafür, dass sich jede Anwendung entschlüsseln lässt.</p>
+<h2>Leistung und Stabilität</h2>
+<p>Das N305-Gateway hat 10GbE-Schnittstellen, was aber nichts über den Inspection-Durchsatz aussagt. Die Multi-Core- und Netmap-Experimente am 27. November zeigten erhebliche Stabilitätsprobleme. Daher kehrte ich zu Routed Mode mit Emulated Netmap ohne Multi-Core zurück. In diesem Fallback-Modus war der TLS-Pilotversuch für zwei Domains erfolgreich. Belastbare vergleichende Durchsatzwerte oder Ergebnisse längerer Stresstests nach den letzten Änderungen liegen nicht vor.</p>
+<p><a href="/de/pages/zenarmor-multicore.html">Zur Multi-Core-Untersuchung →</a> · <a href="/de/pages/notes.html#zenarmor-dns-enrichment">Fall zu DNS Enrichment →</a> · <a href="/de/pages/roadmap.html#zenarmor-plans">Meine nächsten Tests →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/de/pages/work-index.html">← Alle Projekte</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

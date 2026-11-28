@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Моя виртуальная лаборатория firewall: сети Proxmox, тестовые клиенты Windows и Linux и испытанные системы.">
+  <title>Моя виртуальная лаборатория firewall · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/ru/pages/lab.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Моя виртуальная лаборатория firewall · BiXCore">
+  <meta property="og:description" content="Моя виртуальная лаборатория firewall: сети Proxmox, тестовые клиенты Windows и Linux и испытанные системы.">
+  <meta property="og:url" content="https://lab.bixcore.de/ru/pages/lab.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/lab.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/lab.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/lab.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/lab.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Перейти к содержанию</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/ru/index.html" aria-label="BiXCore Lab, главная"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ИНЖЕНЕРНАЯ ЛАБОРАТОРИЯ</span></span></a>
+    <nav class="top-nav" aria-label="Основная навигация"><a href="/ru/pages/work-index.html">Проекты</a><a href="/ru/pages/notes.html">Диагностика</a><a href="/ru/pages/hardware.html">Оборудование</a><a href="/ru/pages/roadmap.html">Планы</a><a href="/ru/pages/about.html">Обо мне</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Выбор языка"><a href="/de/pages/lab.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/lab.html" hreflang="en" lang="en">English</a><a href="/ru/pages/lab.html" hreflang="ru" lang="ru" aria-current="page">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/ru/index.html">Главная</a> / <a href="/ru/pages/work-index.html">Проекты</a> / Виртуализация</p>
+<p class="kicker">PROXMOX / FIREWALL / ТЕСТЫ КЛИЕНТОВ</p>
+<h1>Моя виртуальная лаборатория firewall</h1>
+<p class="lede">Я использую Proxmox для испытания разных маршрутизаторов и межсетевых экранов, не меняя шлюз своей повседневной сети. Клиенты Windows и Linux позволяют проверять результаты с другого конца соединения.</p>
+<div class="article">
+<h2>Как я её создал</h2>
+<p>На хосте установлены Debian 13.8 и Proxmox VE 9.3.1. У каждого активного firewall свой лабораторный uplink и виртуальная LAN, к которой при необходимости подключаются тестовые клиенты. Последняя проверенная инвентаризация включает 18 виртуальных машин: тринадцать экземпляров firewall и маршрутизаторов на двенадцати платформах, два клиента Windows/Linux, а также PacketFence, OpenWISP и Taranac. Обычно во время тестов работают только две или три VM.</p>
+<h2>Firewall в лаборатории</h2>
+<p>Я работал с MikroTik CHR, pfSense CE, Sophos Firewall Home, VyOS, FortiGate VM, OpenWrt, IPFire, NethSecurity, FreeSense, DD-WRT, OPNsense и OpenFW. Две независимые гостевые OPNsense служат для разных лабораторных задач. Базовые тесты установки, управления, DHCP, DNS, NAT и отдельных перенаправлений различаются по платформам. Первоначальный набор испытаний с физическим ноутбуком охватывал одиннадцать экземпляров firewall, а не все позднее добавленные VM. Единый перечень проверок безопасности и восстановления для всех двенадцати платформ ещё не завершён.</p>
+<p>Другие проекты Proxmox включают интеграцию со службой каталогов, доверенный HTTPS, восстановление хранилища и Intel iGPU passthrough для рабочего стола Linux. В последнем эксперименте с DD-WRT я диагностировал UEFI kernel panic и исправил постоянный шаблон GRUB. Перезагрузка теперь работает, но выключение ещё требует исследования.</p>
+<h2>Что предстоит сделать</h2>
+<ul>
+<li>Единообразное сравнение пропускной способности и задержек.</li>
+<li>Негативные тесты между всеми соответствующими зонами и домашней сетью.</li>
+<li>Полноценный тест восстановления текущего однодискового хранилища VM.</li>
+<li>Делегирование префикса DHCPv6 виртуальному маршрутизатору через существующий лабораторный uplink только с IPv6 и отдельная изолированная тестовая точка Wi-Fi. Сама сеть только с IPv6 уже проверена на реальных клиентах Windows и Android.</li>
+</ul>
+<p><a class="source-link" href="/ru/pages/virtual-firewall-platforms.html">Результаты по платформам firewall →</a>   <a class="source-link" href="/ru/pages/proxmox-host-storage.html">Создание хоста и миграция хранилища →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/ru/pages/work-index.html">← Все проекты</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Личная лаборатория сетей и IT-безопасности</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

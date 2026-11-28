@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Двойная загрузка Proxmox и Windows, исправление сети хоста и миграция хранилища VM.">
+  <title>Создание хоста Proxmox · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/ru/pages/proxmox-host-storage.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Создание хоста Proxmox · BiXCore">
+  <meta property="og:description" content="Двойная загрузка Proxmox и Windows, исправление сети хоста и миграция хранилища VM.">
+  <meta property="og:url" content="https://lab.bixcore.de/ru/pages/proxmox-host-storage.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/proxmox-host-storage.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/proxmox-host-storage.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/proxmox-host-storage.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/proxmox-host-storage.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Перейти к содержанию</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/ru/index.html" aria-label="BiXCore Lab, главная"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ИНЖЕНЕРНАЯ ЛАБОРАТОРИЯ</span></span></a>
+    <nav class="top-nav" aria-label="Основная навигация"><a href="/ru/pages/work-index.html">Проекты</a><a href="/ru/pages/notes.html">Диагностика</a><a href="/ru/pages/hardware.html">Оборудование</a><a href="/ru/pages/roadmap.html">Планы</a><a href="/ru/pages/about.html">Обо мне</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Выбор языка"><a href="/de/pages/proxmox-host-storage.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/proxmox-host-storage.html" hreflang="en" lang="en">English</a><a href="/ru/pages/proxmox-host-storage.html" hreflang="ru" lang="ru" aria-current="page">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/ru/index.html">Главная</a> / <a href="/ru/pages/work-index.html">Проекты</a> / Proxmox</p>
+<p class="kicker">ГИПЕРВИЗОР / ХРАНИЛИЩЕ / СЕТЬ</p>
+<h1>Создание хоста Proxmox</h1>
+<p class="lede">Я хотел полноценную лабораторию firewall, но не хотел выделять ещё один мощный компьютер на постоянной основе. Решением стал старый настольный ПК с сохранённой Windows и загрузкой Proxmox по необходимости.</p>
+<div class="article">
+<h2>Windows и Proxmox на одном ПК</h2>
+<p>Установил Debian 13 и Proxmox VE 9.2 рядом с существующей Windows 11. Windows остаётся обычным вариантом загрузки; для лаборатории одноразовый UEFI BootNext запускает Proxmox. Проверил переключение без клавиатуры и монитора.</p>
+<p>Позднее обновил CPU до Intel Core i7-4790K и подтвердил работу VT-d/IOMMU на хосте. Сетевую конфигурацию Linux перевёл с ориентированного на desktop NetworkManager на ifupdown2, лучше работающий с bridges Proxmox.</p>
+<h2>Сеть хоста и интеграция каталога</h2>
+<p>Сеть управления хоста и upstream виртуальных firewall имеют разные роли. У каждой firewall свой виртуальный LAN для тестовых Windows и Linux. Это позволяет переключать клиентов между системами без изменения повседневного домашнего шлюза.</p>
+<p>Включил хост Proxmox в Active Directory через realmd и SSSD и установил доверенный HTTPS-сертификат управления внутреннего CA. IPv6 на management bridge потребовал дополнительной настройки обработки Router Advertisements в Linux при включённых forwarding и bridges.</p>
+<p>Ранняя проблема VLAN/DHCP потребовала проверок физического коммутатора, тегированного uplink, bridge Proxmox и NIC гостя, а не только изменений виртуального маршрутизатора. <a href="/ru/pages/notes.html#lab">Сохранил последовательность диагностики</a> для последующих установок firewall.</p>
+<h2>Замена хранилища VM</h2>
+<p>Первый пул VM использовал два старых HDD без резервирования. После проверки SMART и ZFS решил перенести данные на другой диск вместо продолжения работы с проблемной конфигурацией.</p>
+<p>Перенёс данные ZFS, обновил ссылки хранилища Proxmox, запустил существующих гостей и вывел старый пул из эксплуатации. Сейчас используется один диск ZFS на 2 TB. Для лаборатории по требованию это подходит, но при отказе диска понадобится восстановление из отдельного бэкапа.</p>
+<h2>Проверка хоста после ноябрьских обновлений</h2>
+<p>К 26 ноября хост работал на Debian 13.8 и Proxmox VE 9.3.1. После обновлений проверил загрузку, ZFS-пул и сервисы. Отказ AppArmor в пути перезапуска CUPS задерживал ротацию журналов; исправил профиль и проверил успешный CUPS и следующий logrotate. Изменение AppArmor нужно перепроверять после обновлений пакетов.</p>
+<p>Проверил отдельный доступ SSH Ed25519 из Windows к учётной записи управления лабораторией. Root SSH по ключу не включал. Инвентарь 18 VM сохранён; snapshots не заменяют независимый бэкап однодискового пула.</p>
+<h2>Что хочу улучшить</h2>
+<p>Оставшиеся работы практические: восстановление вне хоста, дополнительные проверки перезагрузки и IPv6, полный тест путей, которые должны блокироваться. Обычно запускаю лишь две или три VM, поэтому надёжность и низкие расходы важнее постоянного кластера.</p>
+<p><a class="source-link" href="/ru/pages/notes.html#zfs">Случай хранилища →</a>   <a class="source-link" href="/ru/pages/virtual-firewall-platforms.html">Испытанные firewall →</a>   <a class="source-link" href="/ru/pages/gpu-remote-desktop.html">GPU passthrough →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/ru/pages/work-index.html">← Все проекты</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Личная лаборатория сетей и IT-безопасности</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

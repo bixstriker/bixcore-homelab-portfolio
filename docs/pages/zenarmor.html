@@ -6,23 +6,27 @@
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="My Zenarmor TLS inspection pilot, AD CS inspection CA and the unresolved DNS enrichment bypass.">
   <title>Working with Zenarmor on OPNsense · BiXCore</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="/styles.css">
   <link rel="canonical" href="https://lab.bixcore.de/pages/zenarmor.html">
-  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BiXCore">
   <meta property="og:title" content="Working with Zenarmor on OPNsense · BiXCore">
   <meta property="og:description" content="My Zenarmor TLS inspection pilot, AD CS inspection CA and the unresolved DNS enrichment bypass.">
   <meta property="og:url" content="https://lab.bixcore.de/pages/zenarmor.html">
   <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/zenarmor.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/zenarmor.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/zenarmor.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/zenarmor.html">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
-    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+    <a class="brand" href="/index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="/pages/work-index.html">Projects</a><a href="/pages/notes.html">Troubleshooting</a><a href="/pages/hardware.html">Hardware</a><a href="/pages/roadmap.html">Plans</a><a href="/pages/about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Language selection"><a href="/de/pages/zenarmor.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/zenarmor.html" hreflang="en" lang="en" aria-current="page">English</a><a href="/ru/pages/zenarmor.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Network security</p>
+<p class="breadcrumb"><a href="/index.html">Home</a> / <a href="/pages/work-index.html">Projects</a> / Network security</p>
 <p class="kicker">OPNSENSE / TLS INSPECTION</p>
 <h1>Working with Zenarmor on OPNsense</h1>
 <p class="lede">I wanted to see what the inspection engine could actually decrypt, and where the policy behaved differently from what I expected.</p>
@@ -39,5 +43,5 @@
 <p>This established the effect of the policy option, not the reason Zenarmor lacked the enrichment information. I have not isolated the effect of the separate certificate-pinning exclusion either. I am keeping the pilot results separate from any claim about decrypting every application.</p>
 <h2>Performance and stability</h2>
 <p>The N305 gateway has 10GbE interfaces, but that says nothing about inspection throughput. My multi-core and Netmap experiments on 27 November exposed serious stability problems, so I returned to routed Emulated Netmap without multi-core. The two-domain TLS pilot succeeded with that fallback. I have no reliable comparative throughput numbers or long-running stress-test result after the final changes.</p>
-<p><a href="zenarmor-multicore.html">The multi-core investigation →</a> · <a href="notes.html#zenarmor-dns-enrichment">DNS enrichment case →</a> · <a href="roadmap.html#zenarmor-plans">My next tests →</a></p>
-</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>
+<p><a href="/pages/zenarmor-multicore.html">The multi-core investigation →</a> · <a href="/pages/notes.html#zenarmor-dns-enrichment">DNS enrichment case →</a> · <a href="/pages/roadmap.html#zenarmor-plans">My next tests →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/pages/work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

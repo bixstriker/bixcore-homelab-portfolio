@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Wie ich ein reales reines IPv6-VLAN mit OPNsense, Managed Switches, Wi-Fi 7, DHCPv6, DNS64 und NAT64 aufgebaut habe und was die Clienttests belegen.">
+  <title>Reines IPv6-Netzwerklabor · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/de/pages/ipv6-only-lab.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Reines IPv6-Netzwerklabor · BiXCore">
+  <meta property="og:description" content="Wie ich ein reales reines IPv6-VLAN mit OPNsense, Managed Switches, Wi-Fi 7, DHCPv6, DNS64 und NAT64 aufgebaut habe und was die Clienttests belegen.">
+  <meta property="og:url" content="https://lab.bixcore.de/de/pages/ipv6-only-lab.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/ipv6-only-lab.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/ipv6-only-lab.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/ipv6-only-lab.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/ipv6-only-lab.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/ipv6-only-lab.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/ipv6-only-lab.html" hreflang="en" lang="en">English</a><a href="/ru/pages/ipv6-only-lab.html" hreflang="ru" lang="ru">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Reines IPv6-Labor</p>
+<p class="kicker">OPNSENSE / NETZWERKLABOR / 9. NOVEMBER 2026</p>
+<h1>Ein reines IPv6-Netz aufbauen, das weiterhin IPv4 erreicht</h1>
+<p class="lede">Ich wollte ein isoliertes Netz, in dem nicht jedes Gerät IPv4 voraussetzt. Statt IPv4 nur auf einem Laptop zu deaktivieren, richtete ich ein separates VLAN über reale Switches und APs ein, mit IPv6-Routing, DHCPv6, DNS64 und NAT64 am Gateway.</p>
+<div class="article">
+<h2>Mit einem separaten Netz beginnen</h2>
+<p>Das Gateway ist mein reguläres OPNsense-Gerät, VLAN41 jedoch ein dediziertes Laborsegment. Die bestehenden Heimnetze blieben unverändert. Das neue Tag führte ich über drei Managed Switches zu zwei UniFi Wi-Fi 7 APs und zum Proxmox-Uplink. Die Test-SSID nutzt das isolierte VLAN und nicht die Haupt-Enterprise-WLAN-Konfiguration.</p>
+<p>In diesem VLAN gibt es keine IPv4-Adresse, kein Gateway und keinen DHCPv4-Dienst. Ein Windows-Client kann sich dennoch eine linklokale IPv4-Adresse geben, erhält damit aber keine IPv4-Route ins Internet.</p>
+<h2>Das Labor im Überblick</h2>
+<div class="architecture-display" role="group" aria-label="Vereinfachte Topologie des reinen IPv6-Labors: OPNsense, drei Managed Switches, UniFi-WLAN-Clients und Proxmox-Test-Uplink">
+  <div class="arch-node focus">OPNsense-IPv6-only-Gateway
+    <small style="display:block;margin-top:6px">Router Advertisements · Kea DHCPv6 · DNS64 und Tayga NAT64</small>
+  </div>
+  <div class="arch-line" aria-hidden="true"></div>
+  <div class="arch-node">Managed VLAN41
+    <small style="display:block;margin-top:6px">Getaggt über drei Switches</small>
+  </div>
+  <div class="arch-line" aria-hidden="true"></div>
+  <div class="two-col" style="gap:12px">
+    <div class="mini-card">
+      <h3>UniFi Wi-Fi 7</h3>
+      <p>Zwei Test-APs. Windows- und Android-Clients wurden mit nativem IPv6 und NAT64 getestet.</p>
+    </div>
+    <div class="mini-card">
+      <h3>Proxmox-Uplink</h3>
+      <p>Das VLAN-Tag steht dem Labor zur Verfügung. Präfixdelegation und nachgelagerte Clients hinter einem virtuellen Router sind noch nicht getestet.</p>
+    </div>
+  </div>
+</div>
+<p class="muted">Vereinfachte öffentliche Darstellung des getesteten Netzes, keine physische Portkarte.</p>
+<h2>Wie IPv6 funktioniert</h2>
+<div class="table-wrap"><table><thead><tr><th>Komponente</th><th>Was ich eingerichtet habe</th><th>Was ich geprüft habe</th></tr></thead><tbody>
+<tr><td>OPNsense-Schnittstelle</td><td>Dynamische globale IPv6-Adressierung aus dem delegierten Provider-Adressraum plus separates lokales ULA-Präfix</td><td>Aktuelle Adressen und Schnittstellenstatus</td></tr>
+<tr><td>Router Advertisements</td><td>Assisted Mode mit globalen und lokalen On-Link-Präfixen</td><td>Tatsächliche Advertisements und Default-Routing der Clients</td></tr>
+<tr><td>Kea DHCPv6</td><td>Adressvergabe für unterstützende Clients und separater Pool für künftige nachgelagerte Präfixdelegation</td><td>Windows erhielt eine zustandsbehaftete IPv6-Adresse; Router-Delegation ist noch nicht getestet</td></tr>
+<tr><td>DNS64 und NAT64</td><td>Öffentliche DNS64-Resolver und Tayga-Übersetzung zum Erreichen von IPv4-Diensten</td><td>Übersetzte Verbindungen und reine IPv4-Websites von beiden Clienttypen</td></tr>
+<tr><td>Managed Switching und WLAN</td><td>VLAN41 zu beiden Test-APs und Proxmox-Uplink transportiert</td><td>Reale Windows- und Android-Verbindungen über die Test-SSID</td></tr>
+</tbody></table></div>
+<p>Android bot einen nützlichen Vergleich zu Windows. Es erhielt per SLAAC eine globale Adresse und benötigte keine zustandsbehaftete DHCPv6-Adresse wie Windows. Beide hatten nativen IPv6-Zugang. Reine IPv4-Websites waren per DNS64 und NAT64 erreichbar, ohne IPv4 im Clientnetz einzurichten.</p>
+<h2>Die entscheidenden Tests</h2>
+<p>Am Windows-Laptop prüfte ich Router Advertisements, zugewiesene IPv6-Adressen, nativen IPv6-Zugang und eine Adresse im NAT64-Übersetzungspräfix. Ein Android-Telefon im selben Test-WLAN erreichte ebenfalls native IPv6- und reine IPv4-Websites. Auch Zugriff aus dem regulären Core-Netz auf den Laptop im Labor wurde getestet, einschließlich erfolgreicher RDP-Sitzung nach einer eng begrenzten lokalen Windows-Firewall-Regel. Die Domänen-GPO änderte ich dafür nicht.</p>
+<p>Dabei traten auch irreführende Symptome auf. Eine zur IPv6-Prüfung verwendete Website hatte ein eigenes Zertifikatsproblem; das war kein Nachweis für ein defektes VLAN. Bei der frühen Fehlersuche startete ich das Gateway einmal neu, kann aber nicht behaupten, dass der Neustart das Problem löste. Verifiziertes Clientverhalten und Vermutungen zur ursprünglichen Störung bleiben getrennt.</p>
+<h2>Was ich noch nicht getestet habe</h2>
+<p>Der Proxmox-Uplink transportiert das VLAN-Tag, und Kea hat einen konfigurierten Präfixpool für künftige virtuelle Router. Ich habe <strong>noch nicht</strong> gezeigt, dass eine virtuelle Firewall ein delegiertes Präfix erhält, es zu einem separaten LAN routet und realen Clientverkehr dahinter überträgt. Das ist der nächste aussagekräftige Test.</p>
+<p>Die Firewall-Regeln zur Trennung von LAB und Core sowie Guest und LAB sind geladen, aber vollständige unabhängige Negativtests von beiden Seiten sind noch nicht dokumentiert. Eine temporäre WAN-Regel für einen eingehenden IPv6-Test bereitete ich vor, ließ sie aber <strong>deaktiviert</strong>. Ich habe weder eine Verbindung aus dem öffentlichen Internet versucht noch die endgültige laufende Regelreihenfolge nach dem Speichern der GUI-Änderungen geprüft.</p>
+<p>Auch das delegierte Provider-Präfix kann wechseln. Ich muss noch beobachten, wie sich das Labor dabei verhält, einschließlich der Aliase und Clients, die Aufmerksamkeit benötigen.</p>
+<h2>Was ich als Nächstes ausprobieren möchte</h2>
+<p>Eine separate OPNsense-VM steht für reine IPv6-Experimente bereit, doch ihre neue WAN-Verbindung und DHCPv6-Präfixdelegation benötigen eine erneute Konfigurationsprüfung. Bei diesem Test beginne ich mit delegiertem Präfix und nachgelagertem LAN und prüfe dann natives IPv6, DNS64/NAT64 und die weiterhin zu sperrenden Pfade. Bestehende produktive Netze sind nicht Teil des Experiments.</p>
+<p><a class="source-link" href="/de/pages/opnsense-ipv6.html">Hauptgateway und IPv6-Arbeiten →</a>   <a class="source-link" href="/de/pages/proxmox-firewall-lab.html">Proxmox-Firewall-Labor →</a>   <a class="source-link" href="/de/pages/roadmap.html">Ausstehende Tests →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/de/pages/work-index.html">← Alle Projekte</a></p>
+</main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Übersicht über den zertifikatsbasierten WLAN- und LAN-Zugang für Windows, Linux und Android in BiXCore.">
+  <title>Netzwerkzugang mit Zertifikaten · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/de/pages/identity.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Netzwerkzugang mit Zertifikaten · BiXCore">
+  <meta property="og:description" content="Übersicht über den zertifikatsbasierten WLAN- und LAN-Zugang für Windows, Linux und Android in BiXCore.">
+  <meta property="og:url" content="https://lab.bixcore.de/de/pages/identity.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/identity.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/identity.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/identity.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/identity.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/identity.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/identity.html" hreflang="en" lang="en">English</a><a href="/ru/pages/identity.html" hreflang="ru" lang="ru">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Netzwerkidentitäten</p>
+<p class="kicker">ACTIVE DIRECTORY / PKI / EAP-TLS</p>
+<h1>Netzwerkzugang mit Zertifikaten</h1>
+<p class="lede">Ich wollte, dass Geräte sich mit Zertifikaten identifizieren, statt ein gemeinsames WLAN-Passwort zu verwenden. Dafür mussten Active Directory, die Zertifizierungsstelle und FreeRADIUS mit unterschiedlichen Clientsystemen zusammenarbeiten.</p>
+<div class="article">
+<h2>Der Aufbau</h2>
+<div class="two-col"><div class="mini-card"><h3>Verzeichnisdienste</h3><p>Zwei Windows Server 2025-Domänencontroller stellen replizierte Active-Directory- und DNS-Dienste einschließlich LDAPS für Verzeichnisabfragen bereit.</p></div><div class="mini-card"><h3>Zertifikate und RADIUS</h3><p>Eine Enterprise-CA stellt Gerätezertifikate aus. FreeRADIUS prüft das Zertifikat und wendet die Netzwerkzugangsrichtlinie an. Die beiden UniFi-APs und der getestete Omada-Switch nutzen separate RadSec-Transportzertifikate und TLS 1.3 für die Verbindung zum Proxy. <a href="/de/pages/radsec-mtls.html">Umstellung auf RadSec →</a></p></div></div>
+<h2>Was bei den Tests funktionierte</h2>
+<ul>
+<li><strong>EAP-TLS über LAN und WLAN:</strong> Unterstützte Clients authentifizierten sich mit verwalteten Zertifikaten.</li>
+<li><strong>LDAPS-Failover:</strong> Ich machte den primären Domänencontroller unerreichbar und überprüfte, dass Verzeichnisabfragen über den zweiten weiterliefen.</li>
+<li><strong>Windows:</strong> Autoenrollment und kabelgebundene Authentifizierungsprofile wurden bereitgestellt und getestet.</li>
+<li><strong>Linux:</strong> Verzeichnisdienstintegration und zertifikatsbasierte LAN- oder WLAN-Verbindungen funktionierten im getesteten Aufbau.</li>
+<li><strong>Android:</strong> Verwaltete Geräte erhielten SCEP-Identitäten für den Enterprise-WLAN-Zugang.</li>
+<li><strong>Widerruf:</strong> Ich testete CRL-Aktualisierungen und das daraus resultierende Authentifizierungsverhalten.</li>
+</ul>
+<h2>Ein wichtiger Unterschied</h2>
+<p>Zwei Domänencontroller verbessern die Verfügbarkeit des Verzeichnisdienstes, machen aber weder die Zertifizierungsstelle noch den SCEP-Registrierungsdienst redundant. Diese Komponenten benötigen weiterhin einen eigenen Wiederherstellungsplan.</p>
+<p><a class="source-link" href="/de/pages/windows-ad-pki.html">Mehr zu AD CS, NDES und FreeRADIUS →</a>   <a class="source-link" href="/de/pages/linux-mobile-identity.html">Registrierung unter Linux und Android →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/de/pages/work-index.html">← Alle Projekte</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

@@ -6,23 +6,27 @@
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="Keeping OPNsense running: updates, custom hooks, firewall-state problems, monitoring and UPS troubleshooting.">
   <title>Keeping OPNsense Running · BiXCore</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="/styles.css">
   <link rel="canonical" href="https://lab.bixcore.de/pages/security-operations.html">
-  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BiXCore">
   <meta property="og:title" content="Keeping OPNsense Running · BiXCore">
   <meta property="og:description" content="Keeping OPNsense running: updates, custom hooks, firewall-state problems, monitoring and UPS troubleshooting.">
   <meta property="og:url" content="https://lab.bixcore.de/pages/security-operations.html">
   <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/security-operations.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/security-operations.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/security-operations.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/security-operations.html">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
-    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+    <a class="brand" href="/index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="/pages/work-index.html">Projects</a><a href="/pages/notes.html">Troubleshooting</a><a href="/pages/hardware.html">Hardware</a><a href="/pages/roadmap.html">Plans</a><a href="/pages/about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Language selection"><a href="/de/pages/security-operations.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/security-operations.html" hreflang="en" lang="en" aria-current="page">English</a><a href="/ru/pages/security-operations.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Operations</p>
+<p class="breadcrumb"><a href="/index.html">Home</a> / <a href="/pages/work-index.html">Projects</a> / Operations</p>
 <p class="kicker">OPNSENSE / MONITORING / RECOVERY</p>
 <h1>Keeping OPNsense Running</h1>
 <p class="lede">A firewall can look fine after an update and still have a broken background service or a stale routing state. I have spent almost as much time checking what survives a reboot as I have configuring the features themselves.</p>
@@ -37,13 +41,13 @@
 <p>I corrected overly broad file permissions in the UPS monitoring configuration. At that earlier checkpoint I had not yet checked regeneration; the later November tests below confirmed the persistent correction. LLDP also showed my own device as a neighbor alongside the real switch; that observation alone was not enough to claim a physical loop.</p>
 <h2>Historical incident: the old USB LTE modem after reboot</h2>
 <p>While testing the new IPv6-only VLAN on 9 November, the former USB LTE modem did not bring its PPP uplink back after the gateway restarted. I inspected the device and tried a manual USB reset and interface reconfiguration. The link still had no usable address until a subsequent device reset; the modem then recovered in the observed session.</p>
-<p>I did not establish the cause of the old USB incident. I later retired that modem and switched to Ethernet LTE. The previously tested full primary-to-LTE failover and VPN recovery are separate from that one boot incident. <a href="notes.html#lte-recovery">The short incident note →</a></p>
+<p>I did not establish the cause of the old USB incident. I later retired that modem and switched to Ethernet LTE. The previously tested full primary-to-LTE failover and VPN recovery are separate from that one boot incident. <a href="/pages/notes.html#lte-recovery">The short incident note →</a></p>
 <h2>Issues I investigated</h2>
 <div class="two-col">
-<article class="mini-card"><h3>Invalid PF states after reboot</h3><p>Old policy-routing states pointed at an invalid gateway even though the active rules were correct. A later boot reproduced this class of state. I requested targeted removal again, but I still don't have proof that the startup cause has been fixed.</p><p><a href="notes.html#pf-state">What I checked →</a></p></article>
-<article class="mini-card"><h3>WAN IPv6 source selection</h3><p>A provider-specific problem broke outbound traffic from one WAN IPv6 address. I compared explicit source addresses, applied a temporary workaround and later added a persistent recovery path.</p><p><a href="notes.html#ipv6">The IPv6 case →</a></p></article>
-<article class="mini-card"><h3>DNS and guest access after reconnects</h3><p>I investigated dynamic DNS updates that stopped after reboot and checked the generated guest portal IPv6 record separately.</p><p><a href="notes.html#ddns">The DDNS investigation →</a></p></article>
-<article class="mini-card"><h3>UPS monitoring</h3><p>Network UPS Tools initially failed to detect the USB UPS, and a later listener configuration also needed correction. I checked the actual UPS connection and power-test behavior.</p><p><a href="notes.html#ups">The UPS problems →</a></p></article>
+<article class="mini-card"><h3>Invalid PF states after reboot</h3><p>Old policy-routing states pointed at an invalid gateway even though the active rules were correct. A later boot reproduced this class of state. I requested targeted removal again, but I still don't have proof that the startup cause has been fixed.</p><p><a href="/pages/notes.html#pf-state">What I checked →</a></p></article>
+<article class="mini-card"><h3>WAN IPv6 source selection</h3><p>A provider-specific problem broke outbound traffic from one WAN IPv6 address. I compared explicit source addresses, applied a temporary workaround and later added a persistent recovery path.</p><p><a href="/pages/notes.html#ipv6">The IPv6 case →</a></p></article>
+<article class="mini-card"><h3>DNS and guest access after reconnects</h3><p>I investigated dynamic DNS updates that stopped after reboot and checked the generated guest portal IPv6 record separately.</p><p><a href="/pages/notes.html#ddns">The DDNS investigation →</a></p></article>
+<article class="mini-card"><h3>UPS monitoring</h3><p>Network UPS Tools initially failed to detect the USB UPS, and a later listener configuration also needed correction. I checked the actual UPS connection and power-test behavior.</p><p><a href="/pages/notes.html#ups">The UPS problems →</a></p></article>
 </div>
 <h2>Why I moved remote Plex streaming to Vodafone</h2>
 <p>I compared actual remote downloads through Windscribe and the regular WAN. The measured VPN sessions were around <strong>2.0–3.4 MB/s</strong>; Vodafone gave <strong>4.4–5.1 MB/s</strong>. After moving ordinary playback, I checked remote 4K Direct Play on a phone at roughly 29 Mbit/s. These are application measurements, not a bandwidth guarantee.</p>
@@ -53,9 +57,9 @@
 <p>I use service health checks and notification routing on the gateway, and collect metrics for the wider infrastructure. I also tested the backup internet path on 5 November: primary WAN to LTE and back, including VPN recovery. This verified the LTE/VPN recovery path. I continue checking individual service behavior when the network changes.</p>
 <p>Power protection has similar limits: I tested UPS communication and a controlled loss of mains power, but not every connected device has been confirmed to receive battery-backed power.</p>
 <h2>What changed on 26–27 November</h2>
-<p>I replaced the earlier USB LTE modem with an Ethernet-connected Zyxel and tested the new Vodafone-to-LTE-to-Vodafone recovery path physically. The new route observer and targeted PF cleanup recovered Windscribe automatically in both directions. On a separate reboot, the startup-state mitigation removed 25 invalid states. <a href="wan-failover-recovery.html">The full failover and recovery project →</a></p>
+<p>I replaced the earlier USB LTE modem with an Ethernet-connected Zyxel and tested the new Vodafone-to-LTE-to-Vodafone recovery path physically. The new route observer and targeted PF cleanup recovered Windscribe automatically in both directions. On a separate reboot, the startup-state mitigation removed 25 invalid states. <a href="/pages/wan-failover-recovery.html">The full failover and recovery project →</a></p>
 <p>My NUT permission correction now survives configuration regeneration and reboot. The wider recovery audit also checked custom hooks, FreeRADIUS, DNS and other running services after offline imaging. The image and custom archive were verified, but a test restore is still outstanding.</p>
 <h2>What remains open</h2>
 <p>The startup cause of the invalid PF states is still unresolved. I also want more complete tests following WAN reconnects, prefix changes, UPS events and gateway restarts, with the resulting observations added to the working notes.</p>
-<p><a class="source-link" href="notes.html">All troubleshooting cases →</a> &nbsp; <a class="source-link" href="roadmap.html">Current test plans →</a></p>
-</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>
+<p><a class="source-link" href="/pages/notes.html">All troubleshooting cases →</a> &nbsp; <a class="source-link" href="/pages/roadmap.html">Current test plans →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/pages/work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

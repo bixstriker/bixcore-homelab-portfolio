@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Мониторинг Windows Server через Prometheus и Grafana и разработка процедур восстановления AD и PKI.">
+  <title>Мониторинг и резервное копирование Windows Server · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/ru/pages/windows-monitoring-backup.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Мониторинг и резервное копирование Windows Server · BiXCore">
+  <meta property="og:description" content="Мониторинг Windows Server через Prometheus и Grafana и разработка процедур восстановления AD и PKI.">
+  <meta property="og:url" content="https://lab.bixcore.de/ru/pages/windows-monitoring-backup.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/windows-monitoring-backup.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/windows-monitoring-backup.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/windows-monitoring-backup.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/windows-monitoring-backup.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Перейти к содержанию</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/ru/index.html" aria-label="BiXCore Lab, главная"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ИНЖЕНЕРНАЯ ЛАБОРАТОРИЯ</span></span></a>
+    <nav class="top-nav" aria-label="Основная навигация"><a href="/ru/pages/work-index.html">Проекты</a><a href="/ru/pages/notes.html">Диагностика</a><a href="/ru/pages/hardware.html">Оборудование</a><a href="/ru/pages/roadmap.html">Планы</a><a href="/ru/pages/about.html">Обо мне</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Выбор языка"><a href="/de/pages/windows-monitoring-backup.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/windows-monitoring-backup.html" hreflang="en" lang="en">English</a><a href="/ru/pages/windows-monitoring-backup.html" hreflang="ru" lang="ru" aria-current="page">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/ru/index.html">Главная</a> / <a href="/ru/pages/work-index.html">Проекты</a> / Windows Server</p>
+<p class="kicker">PROMETHEUS / GRAFANA / РЕЗЕРВНОЕ КОПИРОВАНИЕ</p>
+<h1>Мониторинг и резервное копирование Windows Server</h1>
+<p class="lede">После запуска Active Directory и служб сертификатов я хотел видеть проблемы до того, как они нарушат вход или сетевой доступ. Также нужен был план восстановления, выходящий за рамки второго контроллера домена.</p>
+<div class="article">
+<h2>Мониторинг сервисов</h2>
+<p>Установил Windows Exporter с коллекторами производительности системы, Active Directory, DNS, служб сертификатов, IIS и плановых задач. Prometheus собирает метрики, Grafana отображает наиболее часто проверяемые области.</p>
+<p>Это даёт представление о нагрузке серверов, службах каталога, публикации сертификатов и выполнении плановых задач. Sysmon использую отдельно для исследования событий Windows; полноценный SIEM не строил.</p>
+<h2>Резервные копии System State</h2>
+<p>Настроил и проверил плановые System State backup контроллеров домена с использованием NAS. Заметки о восстановлении также охватывают DNS, сертификаты, разрешения и разумный порядок запуска сервисов.</p>
+<p>Второй контроллер помогает при недоступности каталога, но не заменяет резервную копию базы CA и не гарантирует восстановление хранилища при отказе диска.</p>
+<h2>Когда резервное копирование сорвалось из-за сети</h2>
+<p>1 ноября еженедельная задача System State на одном контроллере завершилась ошибкой. Журналы Windows показали сброс Realtek NIC, затем ошибки SMB и прерванную запись на NAS. Я не считал красный индикатор ложным срабатыванием и не удалял последние рабочие бэкапы для улучшения графика.</p>
+<p>Обновил драйверы Realtek обоих контроллеров Windows Server до нового серверного пакета. Оба адаптера восстановились, следующие еженедельные System State backup 8 ноября были отмечены успешными. Это обнадёживает, но нет новой независимой проверки каталогов копий или полноценного восстановления. Одна успешная неделя не доказывает невозможность повторения сброса NIC.</p>
+<p>Нашёл слабость ротации бэкапов: она сортирует папки по датам, но пока не различает завершённые и частичные копии. Это нужно исправить, прежде чем считать сохраняемые копии последними тремя успешными бэкапами. <a href="/ru/pages/notes.html#dc-backup-nic">Заметки об отказе и восстановлении →</a></p>
+<h2>Безопасное выключение контроллеров при работе от батареи</h2>
+<p>27 ноября добавил локальную плановую PowerShell-задачу на каждом контроллере. Каждая опрашивает свой ИБП через NUT, одна через NAS, другая через OPNsense. Задача работает как SYSTEM каждую минуту и запрашивает штатное выключение Windows только при двух измерениях с интервалом пять секунд, подтверждающих работу от батареи при заряде не выше 50 процентов.</p>
+<p>Недоступность NUT-сервера, некорректное измерение, возврат сетевого питания или заряд выше порога предотвращают выключение. Решение принимается локально на сервере, поэтому удалённое администрирование не является зависимостью.</p>
+<p>Проверил реальные показания online, имитацию порога без выключения серверов, ручные и плановые запуски от SYSTEM. Обе задачи завершились успешно. ИБП до порога не разряжал и фактического выключения от батареи не наблюдал. Порядок выключения тоже важен: NUT-сервер должен быть доступен до принятия решения зависимым контроллером.</p>
+<h2>Что ещё хочу проверить</h2>
+<p>Последние плановые задачи отмечены успешными, но ни один контроллер и CA не были заново восстановлены из полного проверенного комплекта копий. Хочу завершить это испытание, прежде чем считать план восстановления проверенным от начала до конца.</p>
+<p><a class="source-link" href="/ru/pages/windows-ad-pki.html">Каталог и службы сертификатов →</a>   <a class="source-link" href="/ru/pages/roadmap.html">Задачи восстановления в планах →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/ru/pages/work-index.html">← Все проекты</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Личная лаборатория сетей и IT-безопасности</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

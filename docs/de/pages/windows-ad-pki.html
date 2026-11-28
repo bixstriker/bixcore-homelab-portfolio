@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Aufbau von Active Directory, AD CS, NDES und FreeRADIUS einschließlich einer CRL-Korrektur für zwei CAs.">
+  <title>Active Directory, PKI und EAP-TLS · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/de/pages/windows-ad-pki.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Active Directory, PKI und EAP-TLS · BiXCore">
+  <meta property="og:description" content="Aufbau von Active Directory, AD CS, NDES und FreeRADIUS einschließlich einer CRL-Korrektur für zwei CAs.">
+  <meta property="og:url" content="https://lab.bixcore.de/de/pages/windows-ad-pki.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/windows-ad-pki.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/windows-ad-pki.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/windows-ad-pki.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/windows-ad-pki.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/windows-ad-pki.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/windows-ad-pki.html" hreflang="en" lang="en">English</a><a href="/ru/pages/windows-ad-pki.html" hreflang="ru" lang="ru">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Windows Server</p>
+<p class="kicker">ACTIVE DIRECTORY / AD CS / RADIUS</p>
+<h1>Active Directory, Zertifikate und EAP-TLS</h1>
+<p class="lede">BiXCore hat eine eigene Windows-Domäne und Zertifikatsinfrastruktur. Ich baute sie auf, um zu verstehen, wie Geräte sich mit individuellen Zertifikaten am Netz authentifizieren und was beim Ausfall unterstützender Dienste geschieht.</p>
+<div class="article">
+<h2>Aufbau der Domäne</h2>
+<p>Ich betreibe zwei Windows Server 2025-Domänencontroller mit repliziertem Active Directory und DNS. Beim Hinzufügen des zweiten Controllers prüfte ich Replikation, SYSVOL/DFSR, Namensauflösung, Authentifizierung und abhängige Dienste.</p>
+<p>Enterprise-CA und NDES-Dienst laufen auf einem Controller. Für Verzeichnisabfragen kann ich auf den zweiten ausweichen, er bietet aber nicht automatisch eine zweite CA oder einen zweiten SCEP-Registrierungsserver.</p>
+<h2>Zertifikate und Autorisierung</h2>
+<p>Die CA stellt unterschiedliche Zertifikatstypen für Windows-Rechner, Domänencontroller und verwaltete Android-Geräte aus. NDES bietet SCEP-Registrierung für mobile Clients. FreeRADIUS auf OPNsense prüft Zertifikatskette und Widerrufsinformationen und trifft danach eine separate Autorisierungsentscheidung.</p>
+<p>Für bestimmte Infrastrukturidentitäten nutze ich lokale Richtlinien, für berechtigte Domänencomputer LDAPS. Ich testete Verzeichnisdienst-Fallback bei nicht verfügbarem primärem Controller und verifizierte LAN- und WLAN-EAP-TLS für unterstützte Clienttypen.</p>
+<h2 id="two-ca-crls">Zwei Zertifizierungsstellen und ihre Sperrlisten</h2>
+<p>Vor der Umstellung auf die Windows-Enterprise-CA besaßen einige verwaltete Android-Geräte bereits Clientzertifikate einer früheren lokalen CA. Während der Migration ließ ich diese CA vertrauenswürdig, damit die Geräte weiterhin Zugang hatten.</p>
+<p>Als ich strenge CRL-Prüfung in FreeRADIUS aktivierte, scheiterte die Authentifizierung dieser älteren Geräte. Die Zertifikate waren weiterhin vertrauenswürdig, doch das erzeugte CA-Bundle enthielt nur die Sperrliste der neuen CA, nicht die der alten. TLS-Validierung scheiterte, weil die passende CRL fehlte.</p>
+<p>Ich erstellte eine gültige CRL für die frühere CA und ergänzte einen kleinen Helper, der sie <em>nachdem</em> OPNsense das FreeRADIUS-Zertifikatsbundle regeneriert hat, anhängt. Ein Start-/Konfigurations-Hook wendet die Änderung beim Neuaufbau der Plugin-Dateien erneut an. Ich prüfte beide CRLs und ihre Aussteller und testete die älteren Android-Clients erneut. EAP-TLS funktionierte wieder mit aktivierter Widerrufsprüfung.</p>
+<p>Die zentrale Erkenntnis: Vertrauen in einen Zertifikatsaussteller genügt bei vorgeschriebener CRL-Prüfung nicht. FreeRADIUS benötigt eine nutzbare Sperrliste für jede akzeptierte ausstellende CA.</p>
+<h2>Den gesamten CRL-Veröffentlichungspfad prüfen</h2>
+<p>Ich testete auch den Veröffentlichungspfad der Widerrufsinformationen von der Windows-CA über einen separaten Webendpunkt auf dem NAS zu OPNsense und dem aktiven FreeRADIUS-Zertifikatsbundle. Aussteller, Revision und Sperrlisteninhalt stimmten an den geprüften Stationen überein; der HTTP-Endpunkt lieferte die erwartete Antwort. Ein weiteres produktives Zertifikat musste ich nicht nur für einen negativen Test widerrufen.</p>
+<p>Früher konnte das Veröffentlichungsskript Erfolg melden, obwohl der entfernte Dateivergleich oder Austausch scheiterte. Ich korrigierte die Exit-Status-Auswertung, testete Fehlerfälle mit temporären Dateien und verifizierte eine geplante Ausführung unter dem regulären Dienstkonto. Erfolg bei unveränderter oder aktualisierter Datei wird nun nur gemeldet, wenn die entfernte Operation tatsächlich erfolgreich war.</p>
+<p>Unabhängige Sicherung der CA-Datenbank und des Schlüssels sowie ein vollständiger CA-Recovery-Test bleiben separate Aufgaben. <a href="/de/pages/windows-monitoring-backup.html">Backup- und Recovery-Notizen →</a></p>
+<h2>Ein SCEP-Zertifikat bis zum Widerruf verfolgen</h2>
+<p>Ich testete den Austausch eines verwalteten Android-Zertifikats von der Ausstellung bis zum Widerruf des alten Zertifikats. Die neue CRL stimmte auf der ausstellenden CA, am NAS-HTTP-Endpunkt und im aktiven FreeRADIUS-Bundle überein. Das Telefon verband sich mit dem neuen Zertifikat. Dies war ein beobachteter Geräteablauf; ein Access-Accept-Paket erfasste ich nicht separat.</p>
+<h2>PKI-Veröffentlichung wiederholbar absichern</h2>
+<p>Der Widerruf legte auch eine Race Condition offen: Zwei geplante Veröffentlichungswege nutzten dieselbe temporäre Datei auf dem NAS, einer wollte sie verschieben, nachdem der andere dies bereits getan hatte. Eine weitere Veröffentlichung war erfolgreich, die aktuelle CRL blieb verfügbar. Ich ergänzte einen benannten Mutex und eindeutige temporäre Dateinamen und prüfte einen normalen Lauf sowie einen zweiten Lauf bei absichtlich gehaltener Sperre. Zwei gleichzeitige Veröffentlichungen geänderter Dateien wurden nicht erneut getestet.</p>
+<p><a href="/de/pages/notes.html#pki-publish-race">Untersuchung der Publication-Race-Condition →</a></p>
+<h2>Probleme, die ich lösen musste</h2>
+<div class="two-col">
+<article class="mini-card"><h3>Domänencontroller an einem geschützten Switch-Port</h3><p>Ein Controller kann Netzwerkkonnektivität benötigen, bevor er die für Zugangsentscheidungen verwendeten eigenen Verzeichnisdienste erreicht. Ich gab seiner kabelgebundenen EAP-TLS-Identität ein geeignetes eigenes Zertifikat und einen separaten Autorisierungspfad und prüfte das Ergebnis an Switch und RADIUS.</p><p><a href="/de/pages/notes.html#dc-eap">Das Bootstrap-Problem →</a></p></article>
+<article class="mini-card"><h3>LDAPS-Fallback prüfen</h3><p>Ein zweiter LDAP-Endpunkt in der Konfiguration genügte nicht. Ich nahm den primären Endpunkt außer Betrieb und prüfte, dass autorisierungsrelevante Abfragen über den anderen Controller weiterliefen.</p><p><a href="/de/pages/notes.html#identity">Failover-Test →</a></p></article>
+<article class="mini-card"><h3>IPv6 am Domänencontroller</h3><p>Die IPv6-DNS-Einträge des Servers sahen korrekt aus, aber nicht alle Adressen waren erreichbar. Paketprüfung und ND-Sicherheitseinstellungen des Switches führten zur Korrektur für die getesteten Adressen.</p><p><a href="/de/pages/notes.html#omada-nd">Neighbor-Discovery-Problem →</a></p></article>
+<article class="mini-card"><h3>Zertifikate warten sich nicht selbst</h3><p>Zertifikatserneuerung und CRL-Veröffentlichung sind eingerichtet. Ich möchte aber den Umgang mit ersetzten Mobilzertifikaten verbessern und die vollständige Recovery der ausstellenden CA testen.</p><p><a href="/de/pages/linux-mobile-identity.html">Android- und Linux-Registrierung →</a></p></article>
+</div>
+<h2>Eine untergeordnete CA für einen eng begrenzten TLS-Inspection-Pilotversuch</h2>
+<p>Am 27. November stellte ich per AD CS eine dedizierte untergeordnete Inspection-CA für Zenarmor aus. Das Zertifikat hat CA Basic Constraints, Pfadlängenlimit null und Server Authentication EKU. Der private Schlüssel entstand am Gateway; der private Enterprise-Root-Schlüssel blieb auf dem CA-Server. Ich prüfte Kette und Widerrufsinformationen unter Windows, korrigierte die Importreihenfolge in Zenarmor und verifizierte den beim HTTPS-Pilotversuch für zwei Domains tatsächlich präsentierten Aussteller.</p>
+<p>Diese CA hat eine andere Aufgabe als EAP-TLS-Endgerätezertifikate. Die vorhandene RADIUS-Server-Vertrauensrichtlinie blieb unverändert, und ich stellte keine neue Enterprise-Root aus. Den Full-Inspection-Versuch einschließlich des ungeklärten DNS-Enrichment-Bypasses beschreibe ich in <a href="/de/pages/zenarmor.html">meinen Zenarmor-Notizen</a>.</p>
+<h2>Was noch Aufmerksamkeit benötigt</h2>
+<p>Der Verzeichnisdienst-Failover funktionierte, aber Wiederherstellung von CA und NDES aus einem unabhängigen Backup ist eine andere Übung. Die IPv6-Neighbor-Bindings des Switches müssen nach künftigen Upstream-Präfixwechseln ebenfalls geprüft werden.</p>
+<p><a class="source-link" href="/de/pages/identity.html">Überblick über zertifikatsbasierten Zugang →</a>   <a class="source-link" href="/de/pages/windows-policy-deployment.html">Windows-Arbeitsplatzrichtlinien →</a>   <a class="source-link" href="/de/pages/windows-monitoring-backup.html">Monitoring und Wiederherstellung →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/de/pages/work-index.html">← Alle Projekte</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

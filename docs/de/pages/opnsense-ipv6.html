@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Was ich auf OPNsense aufgebaut und getestet habe: Netztrennung, WireGuard, IPv6-Übersetzung und Traffic Inspection.">
+  <title>OPNsense, WireGuard und IPv6 · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/de/pages/opnsense-ipv6.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="OPNsense, WireGuard und IPv6 · BiXCore">
+  <meta property="og:description" content="Was ich auf OPNsense aufgebaut und getestet habe: Netztrennung, WireGuard, IPv6-Übersetzung und Traffic Inspection.">
+  <meta property="og:url" content="https://lab.bixcore.de/de/pages/opnsense-ipv6.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/opnsense-ipv6.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/opnsense-ipv6.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/opnsense-ipv6.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/opnsense-ipv6.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/opnsense-ipv6.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/opnsense-ipv6.html" hreflang="en" lang="en">English</a><a href="/ru/pages/opnsense-ipv6.html" hreflang="ru" lang="ru">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Netzwerk</p>
+<p class="kicker">FIREWALL / IPV6 / VPN</p>
+<h1>OPNsense, WireGuard und IPv6</h1>
+<p class="lede">OPNsense ist das Zentrum meines Netzes. Im Alltag übernimmt es unauffällig Routing, Firewall-Regeln, VPN-Zugang und DNS. Interessant wird es, wenn sich nach einem Neustart etwas anders verhält oder IPv6 einen anderen Weg als IPv4 nimmt.</p>
+<div class="article">
+<h2>Das Netzwerk dahinter</h2>
+<p>Das Gateway ist ein Intel-N305-Gerät mit 10GbE-Schnittstellen. Getrennte Netzsegmente dienen Alltagsclients, Gästen, verwalteten Geräten und der Proxmox-Testumgebung. Suricata und Zenarmor untersuchen ausgewählten Verkehr; FreeRADIUS arbeitet mit der Zertifikatsinfrastruktur für unterstützte LAN- und WLAN-Geräte.</p>
+<p>Außerdem richtete ich Policy Routing, ein kommerzielles VPN für ausgewählten Verkehr, WireGuard-Fernzugriff sowie dynamisches DNS und Zertifikatserneuerung für benötigte Dienste ein.</p>
+<h2>Was ich getestet habe</h2>
+<ul>
+<li><strong>Firewall-Richtlinien:</strong> Ausgewählte Zugriffswege zwischen Netzsegmenten wurden von Clients aus geprüft, nicht nur im Regel-Editor.</li>
+<li><strong>Suricata und Zenarmor:</strong> Ein kontrollierter IPS-Test erzeugte ein Block-Ereignis; eine separate Anfrage zu einer gesperrten Kategorie wurde von der Zenarmor-Richtlinie abgewiesen.</li>
+<li><strong>WireGuard:</strong> Ich testete einen mobilen Client mit IPv4 und IPv6 über das Heimnetz, einschließlich DNS und Zugriff auf erlaubte interne Dienste. Andere Clients können Split-Tunnel-Profile behalten.</li>
+<li><strong>IPv6 NPTv6:</strong> Ich ersetzte eine statische Übersetzung, die Änderungen des Upstream-Präfixes nicht folgen konnte. Die neue Regel verfolgt das delegierte Präfix; ich prüfte die effektive Regel und die vom Testclient gemeldete IPv6-Adresse.</li>
+<li><strong>WAN-Quelladresswahl:</strong> Als die SLAAC-Adresse des Providers als ausgehende Quelle nicht mehr funktionierte, verglich ich sie mit der DHCPv6-Adresse und ergänzte einen Recovery-Pfad für den beobachteten Fehler.</li>
+</ul>
+<h2>Lokales IPv6 unabhängig vom Provider-Präfix trennen</h2>
+<p>Im November überprüfte ich die IPv6-Regeln für Core und Guest erneut. Der lokale Netzalias enthielt noch eine statische Kopie des delegierten Provider-Präfixes, die bei einem Wechsel veralten würde. Ich ersetzte das statische Präfix durch einen aus aktiven Schnittstellen abgeleiteten Alias und deckte weiterhin den lokalen ULA-Bereich ab.</p>
+<p>Das erste Apply der Schnittstellengruppe war irreführend: Mitglieder waren vorhanden, aber die PF-Tabelle war leer. Ich untersuchte den Unterschied zwischen Gruppen-Apply und normalem Alias-Refresh, regenerierte die Filtervorlagen und aktualisierte Aliase mit den regulären OPNsense-Mechanismen. Firewall-Quellcode und Richtlinienreihenfolge blieben unverändert.</p>
+<p>Ich prüfte beide Seiten. Ein Gastclient konnte weiterhin IPv6-Internet nutzen, aber ausgewählte interne Dienste weder über ULA noch globale Adressen erreichen. Ein Core-Client erreichte dieselben Dienste. PF-Block- und Allow-Zähler stiegen bei den Tests entsprechend.</p>
+<p>Diese Tests belegen das aktuelle Isolationsverhalten. Ich habe seit dem Update <strong>noch keinen</strong> Wechsel des delegierten Provider-Präfixes beobachtet. Automatische Neunummerierung und Bereinigung alter globaler Adressen bleiben offen. <a href="/de/pages/notes.html#dynamic-ipv6-alias">Der Fall des leeren Alias →</a></p>
+<h2>Probleme, die eigene Notizen verdienen</h2>
+<p>Der <a href="/de/pages/notes.html#dynamic-ipv6-alias">leere Schnittstellengruppen-Alias</a> war ein separates Konfigurationsupdate-Problem. Die <a href="/de/pages/notes.html#pf-state">ungültigen PF-route-to-States</a> nach Neustart waren etwas anderes als das <a href="/de/pages/notes.html#ipv6">WAN-IPv6-Quelladressproblem</a>. Ein <a href="/de/pages/notes.html#ddns">dynamischer DNS-Ausfall</a> hing dagegen vom selben IPv6-Konnektivitätsproblem ab; die <a href="/de/pages/notes.html#wireguard">WireGuard-Full-Tunnel-Konfiguration</a> benötigte eine eigene Präfixübersetzung. Ich behandle sie getrennt statt als ein allgemeines „IPv6-Problem“.</p>
+<h2>Das neue reine IPv6-Testnetz</h2>
+<p>Am 9. November ergänzte ich ein separates <a href="/de/pages/ipv6-only-lab.html">reines IPv6-VLAN</a> über Managed Switches und UniFi-WLAN. Windows- und Android-Clients nutzten natives IPv6 und öffneten reine IPv4-Websites über DNS64 und NAT64. Der getaggte Pfad erreicht Proxmox, doch DHCPv6-Präfixdelegation an einen virtuellen Router und Konnektivität hinter dessen LAN sind noch nicht belegt.</p>
+<h2>Nächste Prüfungen</h2>
+<p>Ich möchte NPTv6 und die aktualisierten lokalen Netzaliase bei einem realen Provider-Präfixwechsel beobachten. Guest-/Core-Isolation bestand funktionale Tests, doch umfassendere Negativtests, Alias-Bereinigung nach Neunummerierung und einige Client-Neuverbindungen bleiben offen. Die <a href="/de/pages/zenarmor-multicore.html">Zenarmor-Multi-Core-Tests</a> zeigten Netmap-Stabilitätsprobleme; die 10GbE-Links sind keine Messung des Inspection-Durchsatzes. Separat verifizierte ich <a href="/de/pages/wan-failover-recovery.html">physischen WAN-Failover und automatische VPN-Wiederherstellung</a>.</p>
+<p><a class="source-link" href="/de/pages/notes.html">Fehleranalysen lesen →</a>   <a class="source-link" href="/de/pages/security-operations.html">Updates und Gateway-Betrieb →</a>   <a class="source-link" href="/de/pages/network-services.html">DNS und Gastdienste →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/de/pages/work-index.html">← Alle Projekte</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

@@ -6,23 +6,27 @@
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="My Zenarmor multi-core and Netmap stability investigation on the N305 gateway.">
   <title>Zenarmor inspection performance on the N305 · BiXCore</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="/styles.css">
   <link rel="canonical" href="https://lab.bixcore.de/pages/zenarmor-multicore.html">
-  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BiXCore">
   <meta property="og:title" content="Zenarmor inspection performance on the N305 · BiXCore">
   <meta property="og:description" content="My Zenarmor multi-core and Netmap stability investigation on the N305 gateway.">
   <meta property="og:url" content="https://lab.bixcore.de/pages/zenarmor-multicore.html">
   <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/zenarmor-multicore.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/zenarmor-multicore.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/zenarmor-multicore.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/zenarmor-multicore.html">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
-    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+    <a class="brand" href="/index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="/pages/work-index.html">Projects</a><a href="/pages/notes.html">Troubleshooting</a><a href="/pages/hardware.html">Hardware</a><a href="/pages/roadmap.html">Plans</a><a href="/pages/about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Language selection"><a href="/de/pages/zenarmor-multicore.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/zenarmor-multicore.html" hreflang="en" lang="en" aria-current="page">English</a><a href="/ru/pages/zenarmor-multicore.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Performance</p>
+<p class="breadcrumb"><a href="/index.html">Home</a> / <a href="/pages/work-index.html">Projects</a> / Performance</p>
 <p class="kicker">NETMAP / MULTI-CORE / STABILITY</p>
 <h1>Zenarmor inspection performance on the N305</h1>
 <p class="lede">I set out to compare inspection throughput, but kernel panics changed the priority.</p>
@@ -39,5 +43,5 @@
 <h2>The benchmark is still a plan, not a result</h2>
 <p>I have no defensible multi-core versus single-core speed comparison. For a future comparison I want to record the exact engine and interface settings, establish a routing baseline, repeat equal TCP/UDP workloads at several packet sizes, and measure throughput, latency, loss and per-core CPU use. Thermal conditions and other gateway services also matter.</p>
 <p>The link rate alone does not tell me the inspection rate. The useful result of this session was identifying a reproducible stability boundary and returning the firewall to a workable configuration, rather than producing a misleading performance number.</p>
-<p><a href="notes.html#zenarmor-netmap">The crash case →</a> · <a href="zenarmor.html">TLS inspection tests →</a> · <a href="roadmap.html">Remaining work →</a></p>
-</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>
+<p><a href="/pages/notes.html#zenarmor-netmap">The crash case →</a> · <a href="/pages/zenarmor.html">TLS inspection tests →</a> · <a href="/pages/roadmap.html">Remaining work →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/pages/work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

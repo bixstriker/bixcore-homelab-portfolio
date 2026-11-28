@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Mein BiXCore-Homelab: OPNsense, Windows Server, PKI, Proxmox, Fehleranalyse und geplante Projekte.">
+  <title>BiXCore · Netzwerk- und IT-Sicherheitslabor von Felix Bistriker</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/de/">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="BiXCore · Netzwerk- und IT-Sicherheitslabor von Felix Bistriker">
+  <meta property="og:description" content="Mein BiXCore-Homelab: OPNsense, Windows Server, PKI, Proxmox, Fehleranalyse und geplante Projekte.">
+  <meta property="og:url" content="https://lab.bixcore.de/de/">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <nav class="top-nav" aria-label="Hauptnavigation"><a href="#work">Projekte</a><a href="#notes">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/index.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/index.html" hreflang="en" lang="en">English</a><a href="/ru/index.html" hreflang="ru" lang="ru">Русский</a></nav>
+  </div></header>
+<main id="main">
+<section class="hero"><div class="wrap hero-grid">
+ <div>
+  <p class="eyebrow">Felix Bistriker · Privates Homelab</p>
+  <h1>BiXCore</h1>
+  <p class="hero-lead">BiXCore ist das Netzwerk, das ich zu Hause aufgebaut habe – für die Dienste, die ich täglich nutze, und für Experimente mit Technologien, die ich besser verstehen möchte. Dazu gehören inzwischen ein OPNsense-Gateway, Managed Switches und WLAN, Windows Server mit PKI, NAS-Dienste und ein separates Firewall-Labor auf Proxmox.</p>
+  <p class="hero-secondary">Ich dokumentiere, was ich eingerichtet habe, welche Probleme dabei auftraten und wie ich sie untersucht und gelöst habe.</p>
+  <div class="button-row"><a class="button primary" href="#work">Projekte ansehen →</a><a class="button secondary" href="/de/pages/work-index.html">Alle Projekte im Überblick →</a></div>
+ </div>
+ <div class="hero-graphic" aria-label="Vereinfachte Darstellung des Heimnetzwerks">
+  <div class="graphic-caption"><span>NETZWERKÜBERSICHT</span><span class="signal">OPNsense-Gateway</span></div>
+  <svg class="graphic-svg" viewBox="0 0 500 315" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="diagram-title diagram-desc"><title id="diagram-title">Übersicht des BiXCore-Netzwerks</title><desc id="diagram-desc">Der Hauptinternetanschluss und die LTE-Reserve führen zum OPNsense-Gateway, das das vertrauenswürdige Netz, das Gastnetz und die virtuelle Testumgebung voneinander trennt.</desc>
+ <g stroke="#476d80" stroke-width="2" fill="none"><path d="M128 64V82H250V104"/><path stroke="#74d9d8" stroke-dasharray="5 6" d="M372 64V82H250"/><path d="M250 169V218"/><path d="M96 218H404"/><path d="M96 218V238"/><path d="M250 218V238"/><path d="M404 218V238"/><path stroke="#74d9d8" stroke-dasharray="5 6" d="M250 170C240 191 130 171 105 238"/></g>
+ <rect x="34" y="18" width="188" height="46" rx="9" fill="#12293d" stroke="#4c6b7b"/><text x="128" y="46" fill="#cddfea" font-size="15" font-weight="600" text-anchor="middle">Hauptanschluss</text>
+ <rect x="278" y="18" width="188" height="46" rx="9" fill="#12293d" stroke="#4c6b7b"/><text x="372" y="46" fill="#cddfea" font-size="15" font-weight="600" text-anchor="middle">LTE-Reserve</text>
+ <rect x="139" y="104" width="222" height="65" rx="13" fill="#153a48" stroke="#7bdedb" stroke-width="1.7"/><text x="250" y="128" fill="#7bdedb" font-size="12" font-weight="700" text-anchor="middle">SICHERHEITSGATEWAY</text><text x="250" y="152" fill="#e9f4fc" font-size="18" font-weight="700" text-anchor="middle">OPNsense</text>
+ <g fill="#11283a" stroke="#456477"><rect x="14" y="238" width="162" height="61" rx="11"/><rect x="188" y="238" width="124" height="61" rx="11"/><rect x="324" y="238" width="162" height="61" rx="11"/></g>
+ <g fill="#e2f1f9" font-size="15" font-weight="650" text-anchor="middle"><text x="95" y="264">Internes Netz</text><text x="95" y="282" fill="#9cc4d0" font-size="11">PKI · EAP-TLS · RadSec</text><text x="250" y="264">Gäste</text><text x="250" y="282" fill="#9cc4d0" font-size="11">Eingeschränkt</text><text x="405" y="264">Virtuelles Labor</text><text x="405" y="282" fill="#9cc4d0" font-size="11">Firewall-Tests</text></g>
+ 
+ </svg>
+  <p class="annotation">Für das Heimnetz und die virtuelle Testumgebung gelten getrennte Zugriffsregeln.</p>
+ </div>
+</div></section>
+<section class="facts"><div class="wrap facts-grid">
+ <div class="fact"><b>OPNsense</b><span>Intel-N305-Gateway mit 10GbE-Schnittstellen</span></div>
+ <div class="fact"><b>Windows Server</b><span>Active Directory, Zertifikate und EAP-TLS</span></div>
+ <div class="fact"><b>Proxmox VE</b><span>Firewall- und Clienttests bei Bedarf</span></div>
+</div></section>
+<section class="section wrap" id="work">
+ <div class="section-heading"><p class="kicker">DIE PROJEKTE</p><h2>Was ich aufgebaut habe</h2>
+ <p class="section-intro">Die Projekte greifen ineinander: Das Netzwerk benötigt funktionierende Identitäts- und DNS-Dienste. Im virtuellen Labor kann ich Änderungen testen, ohne die Systeme zu beeinträchtigen, auf die ich im Alltag angewiesen bin.</p></div>
+ <div class="cards home-projects">
+  <article class="card"><h3>Gateway, Routing und IPv6</h3><p>OPNsense übernimmt die Netzsegmentierung, WireGuard, Suricata und Zenarmor. Außerdem habe ich Probleme mit der IPv6-Quelladresswahl und Präfixübersetzung untersucht.</p><p><a href="/de/pages/wan-failover-recovery.html">Physischer WAN-Failover und Wiederherstellung →</a></p><div class="card-end"><a href="/de/pages/opnsense-ipv6.html">OPNsense und IPv6 →</a></div></article>
+  <article class="card"><h3>Active Directory und Zertifikate</h3><p>Zwei Windows-Server-Domänencontroller, eine Enterprise-CA, NDES und FreeRADIUS ermöglichen den Zugang über EAP-TLS. Den RADIUS-Verkehr zwischen den UniFi-APs, dem Omada-Switch und dem Gateway übertrage ich inzwischen per RadSec mit gegenseitiger TLS-Authentifizierung.</p><div class="card-end"><a href="/de/pages/windows-ad-pki.html">Windows, PKI und EAP-TLS →</a></div></article>
+  <article class="card"><h3>Switching und WLAN</h3><p>Managed Switches, VLANs, UniFi Wi-Fi 7 und kabelgebundenes 802.1X. Außerdem habe ich RadSec mit TLS 1.3 getestet, ein Omada-Zertifikatsproblem gelöst und die Administration über TACACS+ davon getrennt gehalten.</p><p><a href="/de/pages/radsec-mtls.html">Wie ich diese Verbindungen auf RadSec umgestellt habe →</a></p><div class="card-end"><a href="/de/pages/switching-wireless.html">Switching und WLAN →</a></div></article>
+  <article class="card"><h3>DNS, NAS und alltägliche Dienste</h3><p>DNS für Clients, Active-Directory-Abfragen, Zertifikate, Docker-Netzwerke und Dienste auf dem NAS – einschließlich der Maßnahmen zur Wiederherstellung nach Änderungen.</p><div class="card-end"><a href="/de/pages/network-services.html">Netzwerkdienste →</a></div></article>
+  <article class="card"><h3>Windows- und Linux-Administration</h3><p>Gruppenrichtlinien, Zertifikatsregistrierung, Fernadministration, Bereitstellungswerkzeuge, Kubuntu-Integration und Monitoring für Server und Arbeitsplätze.</p><div class="card-end"><a href="/de/pages/windows-policy-deployment.html">Windows-Administration →</a></div></article>
+  <article class="card"><h3>Mein reines IPv6-Netz</h3><p>Ich habe ein isoliertes IPv6-VLAN über Managed Switches und Wi-Fi 7 bereitgestellt und anschließend mit realen Windows- und Android-Clients natives IPv6 sowie den Zugriff auf reine IPv4-Websites über DNS64/NAT64 getestet.</p><div class="card-end"><a href="/de/pages/ipv6-only-lab.html">So habe ich es aufgebaut →</a></div></article><article class="card"><h3>PacketFence und Zugangskontrolle</h3><p>Ich habe eine separate NAC-Test-VM eingerichtet, zwei Fehler untersucht und später einen funktionsfähigen Backport einer Upstream-Korrektur eingespielt. Den Gastzugang habe ich erneut getestet und nach einem Neustart überprüft.</p><div class="card-end"><a href="/de/pages/packetfence-nac.html">PacketFence-Labor →</a></div></article>
+  <article class="card"><h3>Proxmox-Firewall-Labor</h3><p>Dreizehn Router-/Firewall-VMs auf zwölf Plattformen, zwei Testclients und drei Dienst-/NAC-VMs. Die ursprünglichen elf Firewalls habe ich zusätzlich mit einem realen Laptop über Ethernet getestet.</p><div class="card-end"><a href="/de/pages/proxmox-firewall-lab.html">Zum Firewall-Labor →</a></div></article>
+ </div>
+ <p class="home-section-end">Außerdem habe ich das <a href="/de/pages/barox-config-tool.html">BiX Barox Config Tool</a> entwickelt, um die Switch-CLI und Konfigurationsexporte zu untersuchen. Mein <a href="/de/pages/radius-control.html">BiXCore RADIUS Control</a> ist inzwischen ein stabiles Werkzeug für WLAN-Sitzungen, Gastzugänge und gezielte Disconnect-Vorgänge bei kabelgebundenem 802.1X. Weitere Einzelheiten zur Speichermigration, zum GPU-Passthrough und zu den Firewall-Plattformen stehen in der <a href="/de/pages/work-index.html">vollständigen Projektübersicht</a>.</p>
+</section>
+<section class="section architecture" id="architecture"><div class="wrap architecture-grid">
+ <div><p class="kicker">SO FUNKTIONIERT ES</p><h2>Ein produktiv genutztes Netz und eine separate Testumgebung</h2>
+ <p class="section-intro">OPNsense-Gateway, Switches, WLAN, Verzeichnisdienste und NAS gehören zu meiner alltäglichen Infrastruktur. Proxmox nutze ich anders: Ich starte den Host, wenn ich Firewall-Systeme vergleichen oder Konfigurationen mit Windows- und Linux-Clients testen möchte.</p>
+ <p class="muted">Das Labor nutzt eigene virtuelle Netze und einen separaten Upstream. Die wichtigsten Verbindungen habe ich geprüft; die Tests für Verkehr, der gesperrt bleiben soll, führe ich weiter.</p>
+ <p><a class="source-link" href="/de/pages/hardware.html">Hardware des Labors →</a></p></div>
+ <div class="architecture-display" aria-label="Alltägliche Dienste und separates Testlabor">
+  <div class="home-architecture-group"><h3>Alltagsnetz</h3><p>OPNsense mit Hauptinternetanschluss und LTE-Reserve, Managed Switches und WLAN, RadSec, Active Directory, PKI, DNS, NAS und Fernzugriff.</p><a href="/de/pages/opnsense.html">Netzwerk im Detail →</a></div>
+  <div class="home-architecture-group"><h3>Testumgebung</h3><p>Proxmox, virtuelle Firewall-WAN-/LAN-Netze und Windows- oder Linux-Clients. Normalerweise laufen nur die für den jeweiligen Test benötigten Maschinen.</p><a href="/de/pages/lab.html">Aufbau des Labors →</a></div>
+  <div class="home-architecture-group"><h3>Monitoring und Wiederherstellung</h3><p>Überwachung von Windows und Gateway, Zertifikatserneuerung, Backups und Korrekturen von Problemen nach Neustarts oder Updates.</p><a href="/de/pages/security-operations.html">Betrieb und Fehleranalyse →</a></div>
+ </div>
+</div></section>
+<section class="section wrap" id="notes">
+ <div class="section-heading"><p class="kicker">FEHLERANALYSE</p><h2>Aufgetretene Probleme</h2><p class="section-intro">Einige der aufschlussreichsten Arbeiten entstanden, als etwas nicht mehr funktionierte: eine IPv6-Adresse ohne Internetzugang, ein Switch, der einen Domänencontroller blockierte, oder ein ausgefallener Speicherpool. Ich habe 43 Fälle dokumentiert und nach den betroffenen Bereichen des Labors gegliedert. <a href="/de/pages/notes.html">Alle 43 Fehlerfälle ansehen →</a></p></div>
+ <div class="two-col home-topic-grid">
+  <article class="mini-card"><h3>OPNsense und IPv6</h3><p>WAN-Quelladresswahl, dynamische IPv6-Aliase, DNS, PF-States, WireGuard/NPTv6 und Isolation des Gastnetzes.</p><p><a href="/de/pages/notes.html#network-incidents">Netzwerkfehler ansehen →</a></p></article>
+  <article class="mini-card"><h3>Switching und Clientidentitäten</h3><p>Omada Neighbor Discovery, EAP-TLS für Domänencontroller, LDAPS-Failover, Android-SCEP-Registrierung und Probleme bei der Windows-Administration.</p><p><a href="/de/pages/notes.html#client-incidents">Fälle zu Switching und Identitäten →</a></p></article>
+  <article class="mini-card"><h3>NAS und Infrastrukturdienste</h3><p>Wiederherstellung einer fehlenden IPv6-ULA, Korrektur von Docker-Routen und Einrichtung des USV-Monitorings.</p><p><a href="/de/pages/notes.html#services-incidents">Fehler bei Diensten ansehen →</a></p></article>
+  <article class="mini-card"><h3>Proxmox und virtuelle Maschinen</h3><p>Probleme mit VM-Netzwerken, Speicher und GPU, DD-WRT-Wiederherstellung sowie die jüngsten PacketFence-IPSet- und DNS-Fehler.</p><p><a href="/de/pages/notes.html#virtualization-incidents">Virtualisierungsfälle ansehen →</a></p></article>
+ </div>
+ <p class="home-section-end">Jeder Fall enthält die Symptome, meine Prüfungen und die Lösung oder die noch ausstehenden Schritte. <a href="/de/pages/notes.html">Alle 43 Fälle ansehen →</a></p>
+</section>
+<section class="section architecture" id="roadmap"><div class="wrap">
+ <div class="section-heading"><p class="kicker">WIE ES WEITERGEHT</p><h2>Was ich als Nächstes ausprobieren möchte</h2><p class="section-intro">BiXCore möchte ich in mehreren Richtungen weiterentwickeln: Wiederherstellungs- und IPv6-Tests abschließen, weitere Firewall-Plattformen kennenlernen und neue Sicherheits- und Netzwerkfunktionen mit realen Clients erproben.</p></div>
+ <div class="two-col home-topic-grid">
+  <article class="mini-card"><h3>Weitere Firewall-Plattformen</h3><p>Umfangreichere FortiGate-Tests sowie die Evaluierung von Palo Alto VM-Series, Juniper vSRX, Check Point, SonicWall und virtuellem Cisco-Routing.</p></article>
+  <article class="mini-card"><h3>RADIUS, NAC und reale WLAN-Clients</h3><p>Der PacketFence-Gastzugang und ein separates reines IPv6-WLAN funktionieren. Als Nächstes stehen NAC über 802.1X, reale PacketFence-Clients und BGP/FRR an.</p></article>
+  <article class="mini-card"><h3>IPv6 und Wiederherstellung</h3><p>Das neue reine IPv6-VLAN funktioniert mit realen Clients. Präfixdelegation an Router, Präfixwechsel beim Provider, umfassendere Isolationstests und Disaster-Recovery-Tests stehen noch aus.</p></article>
+  <article class="mini-card"><h3>Zenarmor und verschlüsselter Verkehr</h3><p>Der TLS-Pilot für zwei Domains war erfolgreich; DNS Enrichment muss aber weiter untersucht werden. Multi-Core- und Native-Netmap-Tests zeigten Stabilitätsprobleme. Weitere Leistungsvergleiche müssen warten, bis sichere Tests möglich sind.</p><p><a href="/de/pages/zenarmor.html">Zenarmor: Ergebnisse und nächste Tests →</a></p></article>
+ </div>
+ <p class="home-section-end"><a class="button secondary" href="/de/pages/roadmap.html">Alle geplanten Vorhaben ansehen →</a></p>
+</div></section>
+<section class="section wrap" id="about"><div class="home-about">
+ <img class="home-about-photo" src="/assets/felix-portrait.webp" width="150" height="225" alt="Porträt von Felix Bistriker" loading="eager">
+ <div><p class="kicker">ÜBER MICH</p><h2>Die Person hinter BiXCore</h2>
+ <p class="section-intro">Ich bin Felix Bistriker. Meine Arbeit in der elektronischen Sicherheitstechnik umfasst Brandmeldetechnik, Zutrittskontrolle und Videoüberwachung – ebenso AD-Integration, Managed Switches, Router, Firewalls und GSM-Anbindungen für IP-Kameras und Videoserver. BiXCore entstand aus meinem Interesse, diese Netzwerke tiefer zu verstehen.</p>
+ <p><a class="source-link" href="/de/pages/about.html">Werdegang, Ausbildung und Erfahrung →</a>    <a class="source-link" href="https://github.com/bixstriker" rel="noopener noreferrer">GitHub-Profil →</a></p></div>
+</div></section>
+</main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Felix Bistriker</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

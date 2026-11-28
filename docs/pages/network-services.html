@@ -6,23 +6,27 @@
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="DNS, DHCP, AD forwarding, dynamic records, ACME certificates and guest services in my network.">
   <title>DNS, DHCP and Public DNS · BiXCore</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="/styles.css">
   <link rel="canonical" href="https://lab.bixcore.de/pages/network-services.html">
-  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BiXCore">
   <meta property="og:title" content="DNS, DHCP and Public DNS · BiXCore">
   <meta property="og:description" content="DNS, DHCP, AD forwarding, dynamic records, ACME certificates and guest services in my network.">
   <meta property="og:url" content="https://lab.bixcore.de/pages/network-services.html">
   <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/network-services.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/network-services.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/network-services.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/network-services.html">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
-    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+    <a class="brand" href="/index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="/pages/work-index.html">Projects</a><a href="/pages/notes.html">Troubleshooting</a><a href="/pages/hardware.html">Hardware</a><a href="/pages/roadmap.html">Plans</a><a href="/pages/about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Language selection"><a href="/de/pages/network-services.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/network-services.html" hreflang="en" lang="en" aria-current="page">English</a><a href="/ru/pages/network-services.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Network</p>
+<p class="breadcrumb"><a href="/index.html">Home</a> / <a href="/pages/work-index.html">Projects</a> / Network</p>
 <p class="kicker">DNS / DHCP / DDNS / ACME</p>
 <h1>DNS, DHCP and Network Services</h1>
 <p class="lede">I wanted clients to get dependable DNS without making the Windows domain controllers responsible for every internet lookup. IPv6, guest access and certificate renewal added a few interesting requirements.</p>
@@ -41,14 +45,14 @@
 <p>I already provided the Captive Portal API URL through DHCPv4 Option 114. I added <strong>RFC 8910 RA Option 37</strong> on the Guest VLAN, and captured actual Router Advertisements. Guest included the URL; Core and the IPv6-only lab did not. RDNSS, prefix information and PREF64 were preserved. This proves the packets were sent, not that every client OS acted on the URL.</p>
 <p>The installed OPNsense release needed a small version-specific generator patch, with rollback files kept for future upgrades.</p>
 <h2>When an IPv6-first login lost IPv4</h2>
-<p>A real guest iPhone had IPv4 and IPv6, but the portal allowed only IPv6 in its PF table after login. I traced this to OPNsense's Client Roaming address filter and applied the upstream fix for issue #11214. The existing session gained IPv4 without another login, kept all nine IPv6 entries and passed a 10/10 IPv6-readiness check. <a href="notes.html#portal-dualstack">The dual-stack portal investigation →</a></p>
+<p>A real guest iPhone had IPv4 and IPv6, but the portal allowed only IPv6 in its PF table after login. I traced this to OPNsense's Client Roaming address filter and applied the upstream fix for issue #11214. The existing session gained IPv4 without another login, kept all nine IPv6 entries and passed a 10/10 IPv6-readiness check. <a href="/pages/notes.html#portal-dualstack">The dual-stack portal investigation →</a></p>
 <h2>Letting an IoT camera find the NAS without opening the whole network</h2>
 <p>Moving my Xiaomi camera to the isolated IoT network stopped its NAS discovery. The camera was sending NetBIOS discovery broadcasts, which did not cross the VLAN boundary. I used the OPNsense UDP Broadcast Relay for discovery and added a narrowly scoped SMB rule from that camera to the intended NAS interface.</p>
 <p>I checked the active PF rules and captured the discovery and SMB traffic. With the discovery rule disabled, the camera could not find the NAS; enabling it restored discovery. I then confirmed that the camera's recordings were actually imported to the NAS. I left the general IoT-to-Core block in place, rather than allowing every IoT device to reach the storage network.</p>
 <p>The test verifies this particular camera and its transfer path, not complete isolation against every possible protocol. No changes to the NAS's SMB service or credentials were necessary.</p>
 <p>A separate check on 22 November confirmed that ordinary Core clients receive AdGuard as their DNS resolver, while Guest uses the gateway's local resolver in both IPv4 and IPv6. An encrypted DNS listener being enabled does not prove that every client uses it.</p>
 <h2>Problems I ran into</h2>
-<p>After a reboot, dynamic DNS stopped updating even though its service was running. The cause was upstream IPv6 reachability, not a missing DNS configuration. The <a href="notes.html#ddns">DDNS investigation</a> and the <a href="notes.html#ipv6">WAN source-address tests</a> explain how those two symptoms were connected.</p>
-<p>I also documented the <a href="notes.html#portal">guest portal's IPv6 record updates</a> and the <a href="notes.html#nas-ula">NAS DNS address disappearing</a> after a network event. These are separate problems with separate fixes.</p>
-<p><a class="source-link" href="opnsense-ipv6.html">Gateway and IPv6 →</a> &nbsp; <a class="source-link" href="nas-services-operations.html">NAS and Docker →</a></p>
-</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>
+<p>After a reboot, dynamic DNS stopped updating even though its service was running. The cause was upstream IPv6 reachability, not a missing DNS configuration. The <a href="/pages/notes.html#ddns">DDNS investigation</a> and the <a href="/pages/notes.html#ipv6">WAN source-address tests</a> explain how those two symptoms were connected.</p>
+<p>I also documented the <a href="/pages/notes.html#portal">guest portal's IPv6 record updates</a> and the <a href="/pages/notes.html#nas-ula">NAS DNS address disappearing</a> after a network event. These are separate problems with separate fixes.</p>
+<p><a class="source-link" href="/pages/opnsense-ipv6.html">Gateway and IPv6 →</a> &nbsp; <a class="source-link" href="/pages/nas-services-operations.html">NAS and Docker →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/pages/work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

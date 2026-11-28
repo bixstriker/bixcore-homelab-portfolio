@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Meine Untersuchung zur Stabilität von Zenarmor mit Multi-Core und Netmap auf dem N305-Gateway.">
+  <title>Zenarmor-Inspection-Leistung auf dem N305 · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/de/pages/zenarmor-multicore.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Zenarmor-Inspection-Leistung auf dem N305 · BiXCore">
+  <meta property="og:description" content="Meine Untersuchung zur Stabilität von Zenarmor mit Multi-Core und Netmap auf dem N305-Gateway.">
+  <meta property="og:url" content="https://lab.bixcore.de/de/pages/zenarmor-multicore.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/zenarmor-multicore.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/zenarmor-multicore.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/zenarmor-multicore.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/zenarmor-multicore.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/zenarmor-multicore.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/zenarmor-multicore.html" hreflang="en" lang="en">English</a><a href="/ru/pages/zenarmor-multicore.html" hreflang="ru" lang="ru">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Leistung</p>
+<p class="kicker">NETMAP / MULTI-CORE / STABILITÄT</p>
+<h1>Zenarmor-Inspection-Leistung auf dem N305</h1>
+<p class="lede">Ich wollte den Durchsatz der Inspection vergleichen. Kernel Panics veränderten jedoch die Prioritäten.</p>
+<div class="article">
+<h2>Was ich messen wollte</h2>
+<p>Ich wollte herausfinden, ob mehrere CPU-Kerne den Inspection-Durchsatz meines Intel-N305-Gateways erhöhen. Die 10GbE-Schnittstellen waren bereits vorhanden. Geplant war ein Vergleich von normalem Routing, Single-Core- und Multi-Core-Inspection mit denselben Clients und demselben Traffic-Generator.</p>
+<p>Am 27. November testete ich Zenarmor 2.7.4 auf OPNsense 26.7.9_3 mit Native und Emulated Netmap, unterschiedlichen Worker-Zahlen und ausgewählten L3-Einstellungen. Dabei setzte ich auch iperf ein. Noch bevor ein aussagekräftiger Benchmark abgeschlossen war, wurde die Stabilität zur wichtigeren Frage.</p>
+<h2>Was bei den Tests passierte</h2>
+<p>Mehrere Konfigurationen führten zu Kernel Panics oder zum Ausfall des Inspection-Prozesses. Bei der Untersuchung erfasste ich <strong>sieben Crash-Dumps und zwei weitere Ausfälle ohne neuen Dump</strong>. Im Native-Netmap-Modus beobachtete ich außerdem Uplink-Flaps und steigende Receive-Miss-Zähler. Bei einigen Multi-Worker-Konfigurationen gingen die Puffer aus oder der Prozess wurde nach einem Segmentation Fault neu gestartet.</p>
+<p>Ein wiederkehrender Kernel-Stack enthielt <code>generic_mbuf_dtor</code>, <code>mb_free_ext</code> und <code>iflib_completed_tx_reclaim</code>. Zusammen mit den Meldungen zum Netmap-Lebenszyklus und zu den Puffern deutet das auf ein Problem im Zusammenspiel von FreeBSD-Netzwerkstack, Treiberframework, Netmap und Inspection-Engine hin. Allein anhand dieser Beobachtungen kann ich weder Zenarmor noch dem NIC-Treiber eine nachgewiesene Fehlerursache zuschreiben.</p>
+<h2>Zurück zum funktionierenden Modus</h2>
+<p>Ich wechselte zurück zu Routed Mode mit Emulated Netmap und deaktiviertem Multi-Core. Die beiden logischen Worker-Zuordnungen betreffen getrennte Schnittstellen; sie belegen keinen aktiven Multi-Core-Betrieb. Suricata arbeitet weiterhin separat über PF divert-to. Über die Tunables-Oberfläche von OPNsense stellte ich die vorgesehene Netmap-Ringgröße wieder her und prüfte den zugewiesenen Pufferpool.</p>
+<p>In diesem Fallback-Modus nahm das Gateway den Betrieb wieder auf. Anschließend bestätigte ich einen eng begrenzten TLS-Inspection-Pilotversuch. Bevor die Crash-Befunde untersucht worden sind, werde ich auf dem produktiven Gateway keine weiteren störenden Native-Netmap- oder Multi-Core-Experimente durchführen. Nach den letzten Inspection-Änderungen habe ich weder einen längeren Stresstest noch einen weiteren Neustart ausgeführt.</p>
+<h2>Der Benchmark bleibt ein Vorhaben, kein Ergebnis</h2>
+<p>Ein belastbarer Geschwindigkeitsvergleich zwischen Multi-Core und Single-Core liegt nicht vor. Für einen späteren Vergleich möchte ich die genauen Engine- und Schnittstelleneinstellungen dokumentieren, eine Routing-Baseline bestimmen, identische TCP-/UDP-Lasten mit unterschiedlichen Paketgrößen wiederholen und Durchsatz, Latenz, Verluste sowie CPU-Auslastung pro Kern messen. Auch Temperaturbedingungen und andere Gateway-Dienste spielen eine Rolle.</p>
+<p>Die Linkrate allein sagt nichts über den Inspection-Durchsatz aus. Der Nutzen dieser Versuchsreihe bestand darin, eine reproduzierbare Stabilitätsgrenze zu erkennen und die Firewall wieder in einen funktionsfähigen Zustand zu bringen, statt irreführende Leistungszahlen zu veröffentlichen.</p>
+<p><a href="/de/pages/notes.html#zenarmor-netmap">Zur Crash-Analyse →</a> · <a href="/de/pages/zenarmor.html">TLS-Inspection-Tests →</a> · <a href="/de/pages/roadmap.html">Offene Vorhaben →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/de/pages/work-index.html">← Alle Projekte</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#07101b">
+<meta name="description" content="Wie ich BiX Barox Config Tool für industrielle Switch-CLI, Konfigurationsexporte und Vergleiche von Netzwerkeinstellungen mit sorgfältiger Hardware-Validierung entwickelt habe.">
+<title>BiX Barox Config Tool · BiXCore</title>
+<link rel="stylesheet" href="/styles.css">
+<style>
+.barox-figure{margin:28px auto 34px;max-width:600px}
+.barox-figure img{display:block;width:100%;height:auto;border:1px solid #345069;border-radius:11px}
+.barox-figure figcaption{font-size:.9rem;color:var(--muted);line-height:1.6;margin-top:11px}
+.status-table th:first-child{min-width:100px}
+</style>
+  <link rel="canonical" href="https://lab.bixcore.de/de/pages/barox-config-tool.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="BiX Barox Config Tool · BiXCore">
+  <meta property="og:description" content="Wie ich BiX Barox Config Tool für industrielle Switch-CLI, Konfigurationsexporte und Vergleiche von Netzwerkeinstellungen mit sorgfältiger Hardware-Validierung entwickelt habe.">
+  <meta property="og:url" content="https://lab.bixcore.de/de/pages/barox-config-tool.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/barox-config-tool.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/barox-config-tool.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/barox-config-tool.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/barox-config-tool.html">
+</head>
+<body>
+<a class="skip-link" href="#main">Zum Inhalt springen</a>
+<header class="site-header"><div class="wrap header-inner">
+<a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+<nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/barox-config-tool.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/barox-config-tool.html" hreflang="en" lang="en">English</a><a href="/ru/pages/barox-config-tool.html" hreflang="ru" lang="ru">Русский</a></nav>
+</div></header>
+<main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Barox Config Tool</p>
+<p class="kicker">EIGENES SOFTWAREPROJEKT / INDUSTRIELLES SWITCHING</p>
+<h1>BiX Barox Config Tool</h1>
+<p class="lede">Die Arbeit mit Managed Switches weckte den Wunsch nach etwas Nützlicherem als einer Sammlung kopierter CLI-Befehle. Ich begann mit einem Werkzeug, das Konfigurationsexporte liest, die Einstellungen verständlich macht und dokumentierte Recovery-Schritte vorbereitet. Daraus entstanden ein Parser, eine Analyse-Engine, eine Windows-GUI und ein eigener CLI-Forschungsbereich.</p>
+<div class="article">
+<h2>Woher die Idee kam</h2>
+<p>In Projekten der elektronischen Sicherheitstechnik und Videoüberwachung kann ein Switch ein kritischer Anlagenteil sein. VLANs, Uplinks, Multicast, Managementzugang und andere Einstellungen beeinflussen das Gesamtsystem. Eine Konfiguration aus einem Export manuell wieder aufzubauen, möchte ich nicht dem Raten überlassen.</p>
+<p>Das ursprüngliche Ziel war praktisch: Aus einer Barox-Running- oder Startup-Konfiguration ein geordnetes CLI-Verfahren mit Erklärungen erzeugen, das ein Ingenieur prüfen und manuell anwenden kann. Später ergänzte ich Konfigurationsvergleiche und die Hervorhebung von Befunden über mehrere Switches desselben Netzes hinweg.</p>
+
+<h2>Was das Werkzeug heute kann</h2>
+<div class="two-col">
+<article class="mini-card"><h3>Von der Konfiguration zur CLI</h3><p>Liest Konfigurationsexporte und erstellt geordnete CLI-Schritte, eine verständliche Wiederherstellungsanleitung und einen strukturierten Plan. Quellreferenzen bleiben erhalten; nicht validierbare Befehle werden markiert, statt ihre Bedeutung vorzutäuschen.</p></article>
+<article class="mini-card"><h3>Konfigurationsanalyse</h3><p>Prüft einen einzelnen Switch auf lokale Befunde und Compliance-Regeln. Bei mehreren Exporten desselben Systems erfolgt auch eine geräteübergreifende Analyse. Berichte können auf Englisch, Deutsch oder Russisch ausgegeben werden.</p></article>
+<article class="mini-card"><h3>Windows-Anwendung</h3><p>Eine kleine Desktop-GUI ermöglicht Auswahl oder Drag-and-drop von Exportdateien, Berichtssprache und Ausgabeerstellung. Sie ist eine Oberfläche für Offline-Konvertierung und -Vergleich, kein automatisches Switch-Konfigurationswerkzeug.</p></article>
+<article class="mini-card"><h3>CLI- und Hardware-Untersuchungen</h3><p>Ich entwickelte einen separaten Workflow, um Befehlssyntax aus Firmwarematerial und Live-Gerätehilfe zu sammeln und abzugleichen. Auf realer Hardware testete ich ausgewählte Zustandsübergänge der seriellen Konsole auf dem Weg zu einem kontrollierten Recovery-Verfahren.</p></article>
+</div>
+
+<h2>Windows-Oberfläche</h2>
+<p>Die Desktop-Anwendung bietet Dateiauswahl, Berichtssprachen und getrennte Aktionen für Konvertierung und Analyse. Der Screenshot entstand ohne geladene Konfiguration; der lokale Ausgabepfad wurde vor Veröffentlichung entfernt.</p>
+<figure class="barox-figure">
+<img src="/assets/barox-gui-public.webp" width="520" height="467" alt="BiX Barox Config Tool Desktop-GUI, leere Konfigurationsliste und anonymisierter lokaler Ausgabeordner" loading="lazy">
+<figcaption>Windows-GUI für Offline-Konvertierung und -Vergleich. Der lokale Pfad wurde vor Veröffentlichung ersetzt; keine Switch-Konfiguration ist geladen.</figcaption>
+</figure>
+
+<h2>Was tatsächlich umgesetzt ist</h2>
+<div class="table-wrap"><table class="status-table">
+<thead><tr><th>Komponente</th><th>Status</th><th>Was ich belegen kann</th></tr></thead>
+<tbody>
+<tr><td><strong>Ziel 1</strong></td><td>Für dokumentierte Testdaten umgesetzt</td><td>Offline-Export-zu-CLI-Konvertierung, erzeugte Erläuterungen und Recovery-Plan. Vor Anwendung müssen die Ergebnisse manuell geprüft werden.</td></tr>
+<tr><td><strong>Ziel 2</strong></td><td>Umgesetzt, eingefrorene Analyse-Baseline</td><td>Einzelgeräteprüfungen und Mehrgerätevergleiche von Konfigurationen eines realen Systems sowie mehrsprachige verständliche Berichte.</td></tr>
+<tr><td><strong>Ziel 3</strong></td><td>Teilweise umgesetzt</td><td>Ausgewählte serielle Konsolentests und ein Offline-Capability-Preflight sind durch Hardwarebefunde gestützt. Ein allgemeiner automatischer Recovery-Executor ist nicht fertig.</td></tr>
+<tr><td><strong>Ziel 4</strong></td><td>Nur Konzept</td><td>Möglicher künftiger Planner, der Korrekturen anhand von Analysebefunden vorschlägt. Noch keine Implementierung oder abgenommene Spezifikation.</td></tr>
+</tbody></table></div>
+
+<h2>Die interessanteren technischen Probleme</h2>
+<p><strong>CLI-Grammatik ist nicht dasselbe wie ein getesteter Befehl.</strong> Für das wichtigste Barox-Referenzmodell enthält mein Forschungskatalog 6,644 Kontext- und Syntaxdatensätze in acht CLI-Kontexten. Einige stammen aus Live-Hilfe, andere nur aus Firmware- oder kombinierten Befunden. Diese Zahl bedeutet <em>nicht</em> , dass 6,644 Befehle erfolgreich auf einem physischen Switch ausgeführt wurden.</p>
+<p><strong>Switch-Vergleiche benötigen Kontext.</strong> Identische IP-Adressen bedeuten beispielsweise in verschiedenen VLANs nicht dasselbe. Ein unbekannter Uplink beweist nicht, dass kein Kabel existiert. Beobachtete Tatsachen, konfigurierte Zustände, abgeleitete Beziehungen und anlagenspezifische Richtlinien müssen getrennt werden.</p>
+<p><strong>Sichere Wiederherstellung erfordert mehr als Befehlsgenerierung.</strong> Eine serielle Sitzung hat Prompts, Modi, fragmentierte Antworten und mögliche Befehlsfehler. Ausgewählte Übergänge, Timeouts und Prompt-Verarbeitung habe ich auf Hardware getestet; automatische Anwendung, Verifizierung und Fehler-Recovery sind separate offene Arbeiten.</p>
+
+<h2>Tests und Grenzen</h2>
+<p>Das Repository dokumentiert 515 ermittelte Regressionstestfälle sowie einen früheren erfolgreichen vollständigen Lauf während der Entwicklung. Diesen historischen Bericht behandle ich weder als neuen Lauf noch als Nachweis vollständiger Hardwarekompatibilität. Für ausgewählte Konsolentests sind Hardwarebefunde vorhanden; die neuere Dokumentationsarbeit umfasste keine weitere physische Gerätesitzung.</p>
+<p>Die Anwendung bleibt ein privates Ingenieurprojekt. Firmware-Syntax ist keine automatische Freigabe zur Befehlsanwendung. Ich setze weder identisches Verhalten aller Barox-Modelle voraus noch behaupte ich, dass alle generierten Recovery-Schritte ohne Prüfung sicher ausführbar sind. Allgemeine automatische Wiederherstellung und Remediation bleiben Zukunftsaufgaben.</p>
+
+<h2>Warum der Quellcode hier nicht öffentlich ist</h2>
+<p>Das Entwicklungsrepository enthält auch Forschungsartefakte, Geräteaufzeichnungen und generierte Konfigurations- und Recovery-Materialien. Manche spiegeln reale Anlagen wider oder enthalten sensible Einstellungen. Statt das gesamte Archiv zu veröffentlichen, halte ich es privat und beschreibe das Projekt hier in bereinigter Form. Kundenkonfigurationen, Geräteadressen, Zugangsdaten und rohe Management-Transkripte sind nicht enthalten.</p>
+<p><a class="source-link" href="https://github.com/bixstriker/bixcore-homelab-portfolio/blob/main/projects/barox-config-tool.md" rel="noopener noreferrer">Öffentliche Projektnotizen auf GitHub lesen →</a>   <a class="source-link" href="/de/pages/work-index.html">Weitere BiXCore-Projekte →</a></p>
+<p class="muted">Unabhängige private Entwicklungsarbeit; kein offizielles Barox-Produkt und keine Herstellerzertifizierung.</p>
+</div><hr class="rule"><p><a class="button secondary" href="/de/pages/work-index.html">← Alle Projekte</a></p>
+</main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer>
+</body></html>

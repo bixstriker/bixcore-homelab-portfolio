@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Kubuntu in Active Directory aufnehmen und SCEP-Zertifikate für Android-Enterprise-WLAN nutzen.">
+  <title>Linux und Android mit derselben PKI · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/de/pages/linux-mobile-identity.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Linux und Android mit derselben PKI · BiXCore">
+  <meta property="og:description" content="Kubuntu in Active Directory aufnehmen und SCEP-Zertifikate für Android-Enterprise-WLAN nutzen.">
+  <meta property="og:url" content="https://lab.bixcore.de/de/pages/linux-mobile-identity.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/linux-mobile-identity.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/linux-mobile-identity.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/linux-mobile-identity.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/linux-mobile-identity.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/linux-mobile-identity.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/linux-mobile-identity.html" hreflang="en" lang="en">English</a><a href="/ru/pages/linux-mobile-identity.html" hreflang="ru" lang="ru">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Clientidentitäten</p>
+<p class="kicker">KUBUNTU / ANDROID / SCEP</p>
+<h1>Linux und Android mit derselben PKI</h1>
+<p class="lede">Zertifikatsbasierter Netzwerkzugang unter Windows war nur ein Teil des Projekts. Auch Kubuntu und Android sollten dasselbe Enterprise-WLAN ohne gemeinsames Passwort nutzen. Jede Plattform erforderte ein anderes Registrierungsverfahren.</p>
+<div class="article">
+<h2>Kubuntu und Active Directory</h2>
+<p>Ich nahm einen Kubuntu-Arbeitsplatz mit realmd, SSSD und Kerberos in die Domäne auf und prüfte die Auflösung von Domänenkonten und Gruppen. Kabelgebundene und drahtlose NetworkManager-Profile verwenden verwaltete EAP-TLS-Clientzertifikate. Außerdem richtete ich eine automatische Zertifikatserneuerung ein und testete das Verbindungsverhalten.</p>
+<p>Ein separates lokales Administratorkonto blieb erhalten, damit Verzeichnisdienst- oder Netzwerkprobleme den Recovery-Zugang nicht verhindern. Für Linux gibt es zudem eigene Notizen zur Login-Sitzung und WireGuard-Integration.</p>
+<h2>Dual-Boot und Fernzugriff unter Kubuntu</h2>
+<p>Auf einem physischen Windows-/Kubuntu-Laptop blieb GRUB in der UEFI-Bootreihenfolge an erster Stelle, Windows wurde als Standard konfiguriert. Ein realer Neustart bestätigte Menü und Standardauswahl.</p>
+<p>KRDP akzeptierte zunächst eine RDP-/TLS-Verbindung, zeigte dann einen schwarzen Bildschirm und trennte sie. Eine gespeicherte Windows-RDP-Verbindung mit vollständigem Linux-UPN und richtigem Kontokontext funktionierte. Ich erneuerte das separate selbstsignierte KRDP-TLS-Zertifikat und testete Ed25519-SSH-Schlüsselanmeldung von Windows. Das sind Fernzugriffsdaten, nicht die EAP-TLS-Clientidentität des WLANs.</p>
+<p><a href="/de/pages/notes.html#krdp-credentials">Das KRDP-Benutzernamenproblem →</a></p>
+<h2>Android und verwaltete Zertifikate</h2>
+<p>Für Android setzte ich Mobile Device Management mit SCEP-Registrierung über den internen NDES-Dienst ein. Das verwaltete Profil installiert Vertrauensmaterial und Clientidentität, die Android für EAP-TLS-WLAN nutzen kann. Ich testete mehrere Geräte einschließlich Arbeitsprofil-Szenarien.</p>
+<p>Überraschend war, dass das Anwenden der WLAN-Konfiguration eine weitere SCEP-Anfrage auslösen konnte. Ich untersuchte das als Teil des Profilablaufs, statt eine defekte WLAN-Authentifizierung anzunehmen. Die Geräte verbanden sich erfolgreich.</p>
+<h2>Android-Registrierung nach einem Softwareupdate wiederherstellen</h2>
+<p>Nach einem Android-/HyperOS-Update eines Xiaomi-Tablets meldete der Management-Agent, der SCEP-Server sei nicht erreichbar. Der Registrierungsendpunkt antwortete weiterhin; ein zweites Xiaomi-Telefon mit demselben Profil erhielt ein neues Zertifikat und verband sich. Deshalb untersuchte ich zunächst das verwaltete Arbeitsprofil, bevor ich NDES oder CA änderte.</p>
+<p>Am 25. November entfernte ich nur das betroffene Arbeitsprofil, startete neu und registrierte es erneut, wobei das SCEP-Zertifikatsprofil vor dem WLAN-Profil zugewiesen wurde. Tablet und ein zweites betroffenes Telefon erhielten wieder EAP-TLS-Zugang. Die CA stellte neue Zertifikate aus, ersetzte Zertifikate wurden widerrufen, und die CRL wurde neu veröffentlicht. Persönliche Profile und Daten blieben erhalten.</p>
+<p>Das Verfahren funktionierte, doch den genauen Android- oder Management-Agent-Fehler habe ich nicht ermittelt. NDES, FreeRADIUS und Zertifikatsvorlage mussten nicht geändert werden.</p>
+<h2>Erneuerung und Bereinigung</h2>
+<p>Für Kubuntu ist ein Zertifikatserneuerungsverfahren dokumentiert. Einen Android-SCEP-Ersatz testete ich bis zum Widerruf des alten Zertifikats und zur Veröffentlichung der aktualisierten CRL. Weitere Erneuerungs- und Recovery-Szenarien sind offen.</p>
+<p>Die eigene Active-Directory- und HTTPS-Integration des Proxmox-Hosts beschreibe ich unter <a href="/de/pages/proxmox-host-storage.html">Virtualisierungsaufbau</a> statt sie mit der Arbeitsplatzregistrierung zu vermischen.</p>
+<p><a class="source-link" href="/de/pages/notes.html#android-scep">Die zusätzliche Android-SCEP-Anfrage →</a>   <a class="source-link" href="/de/pages/identity.html">Wie EAP-TLS in BiXCore funktioniert →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/de/pages/work-index.html">← Alle Projekte</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

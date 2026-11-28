@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Сорок три диагностических случая OPNsense, IPv6, идентификации Windows, коммутации, NAS и Proxmox.">
+  <title>Проблемы и исправления · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/ru/pages/notes.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Проблемы и исправления · BiXCore">
+  <meta property="og:description" content="Сорок три диагностических случая OPNsense, IPv6, идентификации Windows, коммутации, NAS и Proxmox.">
+  <meta property="og:url" content="https://lab.bixcore.de/ru/pages/notes.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/notes.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/notes.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/notes.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/notes.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Перейти к содержанию</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/ru/index.html" aria-label="BiXCore Lab, главная"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ИНЖЕНЕРНАЯ ЛАБОРАТОРИЯ</span></span></a>
+    <nav class="top-nav" aria-label="Основная навигация"><a href="/ru/pages/work-index.html">Проекты</a><a href="/ru/pages/notes.html">Диагностика</a><a href="/ru/pages/hardware.html">Оборудование</a><a href="/ru/pages/roadmap.html">Планы</a><a href="/ru/pages/about.html">Обо мне</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Выбор языка"><a href="/de/pages/notes.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/notes.html" hreflang="en" lang="en">English</a><a href="/ru/pages/notes.html" hreflang="ru" lang="ru" aria-current="page">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/ru/index.html">Главная</a> / Диагностика</p>
+<p class="kicker">ЧЕМУ Я НАУЧИЛСЯ ПРИ СОЗДАНИИ BIXCORE</p>
+<h1>Проблемы, с которыми я столкнулся</h1>
+<p class="lede">Многие части BiXCore потребовали нескольких попыток. Иногда причина была в небольшой детали настройки, иногда понадобились захваты пакетов, журналы сервисов и проверки с обеих сторон соединения. Эти случаи стоит сохранить в заметках.</p>
+<div class="article">
+<section id="network-incidents">
+<h2>OPNsense, WAN и IPv6</h2>
+<div class="two-col">
+<article class="mini-card" id="pf-bootzero"><h3>Автоматическая очистка недопустимых PF states после загрузки</h3><p>Ранее ручная очистка PF прекращала предупреждения, но не предотвращала повторение проблемы. 26 ноября после перезагрузки обнаружил те же ошибочные gateway states, хотя активные правила и локальное правило broadcast были правильными.</p><p>Расширил периодическую проверку: она подтверждает рабочий шлюз и повторно проверяет каждое совпадающее состояние перед удалением. Вторая реальная перезагрузка воспроизвела предупреждения, затем проверка автоматически удалила все 25 ошибочных states. Это смягчает race condition запуска без сброса посторонних состояний, но не устраняет первопричину upstream.</p><p><a href="/ru/pages/wan-failover-recovery.html">Физические тесты перезагрузки и восстановления →</a></p></article>
+
+<article class="mini-card" id="zenarmor-dns-enrichment"><h3>Почему TLS-инспекция постоянно обходилась</h3><p>Несмотря на правило инспекции конкретного сайта, браузер иногда показывал публичный сертификат. При включённом исключении потоков без DNS enrichment выбранные HTTPS-соединения обходили инспекцию. Отключение исключения вернуло локального издателя и статус TLS-Inspected.</p><p>Прямой DNS-тест через Unbound, включая запрос и TLS-подключение с одного исходного адреса, не устранил обход. Причина отсутствия enrichment неизвестна; результат не доказывает вину AdGuard Home.</p><p><a href="/ru/pages/zenarmor.html">TLS-пилот →</a></p></article>
+
+<article class="mini-card" id="zenarmor-netmap"><h3>Испытания Zenarmor multi-core выявили kernel panic</h3><p>Пробовал Native и Emulated Netmap с несколькими конфигурациями workers для сравнения производительности. Вместо этого зафиксировал семь crash dumps и два дополнительных отказа без новых дампов. Повторяющийся FreeBSD mbuf/iflib stack и сообщения Netmap свидетельствуют о нестабильности, но не доказывают, какой компонент ответственен.</p><p>Вернулся к Routed Emulated Netmap без multi-core. Шлюз восстановил работу, но полный стресс-тест и надёжное сравнение производительности остаются открытыми.</p><p><a href="/ru/pages/zenarmor-multicore.html">Исследование стабильности →</a></p></article>
+
+<article class="mini-card" id="portal-dualstack"><h3>Гостевой портал разрешал IPv6, но забывал IPv4</h3>
+<p>У iPhone был IPv4-адрес, однако вход Captive Portal сначала по IPv6 не добавлял его в PF allow table сессии. Проблема оказалась в фильтрации адресов портала при включённом Client Roaming, а не в DHCP.</p>
+<p>Проверил и применил upstream-исправление OPNsense issue #11214. Без нового входа существующая сессия получила IPv4, сохранила девять IPv6-записей. Телефон прошёл IPv6-readiness на 10/10. После будущих обновлений шлюза патч нужно перепроверить.</p><p><a href="/ru/pages/network-services.html">Гостевой доступ и dual stack →</a></p></article>
+
+<article class="mini-card" id="dynamic-ipv6-alias"><h3>У нового IPv6-алиаса оказалась пустая PF-таблица</h3>
+<p>Заменил статический префикс провайдера набором, формируемым по действующим локальным интерфейсам. Группа интерфейсов выглядела правильно, но её PF-алиас после первого Apply оставался пустым.</p>
+<p>Регенерация штатных шаблонов фильтра и обновление алиасов заполнили таблицу. Guest-клиенты по-прежнему имели IPv6-интернет, но не достигали внутренних сервисов; Core-клиент мог их достичь. Реальная смена префикса провайдера после миграции ещё не наблюдалась.</p><p><a href="/ru/pages/opnsense-ipv6.html">Новая IPv6-изоляция →</a></p></article><article class="mini-card" id="lte-recovery"><h3>Резервный LTE-канал не поднялся после перезагрузки шлюза</h3>
+<p>При создании новой лаборатории IPv6 прежний USB LTE-модем не восстановил PPP uplink после перезапуска OPNsense. Первого сброса устройства и перенастройки интерфейса оказалось недостаточно. Дополнительный сброс восстановил LTE в наблюдаемой сессии.</p>
+<p>Этот исторический случай USB-модема потребовал ручного восстановления, его причину не установил. В конце ноября заменил USB-модем на Zyxel с Ethernet. Ранее реальное переключение основного WAN на LTE и восстановление VPN уже прошли отдельные испытания; их не следует смешивать с отказом модема при старте.</p><p><a href="/ru/pages/security-operations.html">Заметки об отказоустойчивости шлюза →</a></p></article>
+<article class="mini-card" id="ipv6"><h3>Неверный исходный IPv6-адрес</h3>
+<p>WAN имел несколько глобальных IPv6-адресов, но исходящие соединения вели себя по-разному в зависимости от выбранного источника. Проверки с явно заданными адресами показали, что SLAAC-адрес провайдера не достигал той же цели, которая была доступна с DHCPv6 IA_NA.</p>
+<p>Добавил механизм восстановления наблюдаемого отказа выбора исходного адреса. Переподключения провайдера и будущие смены префикса требуют наблюдения.</p><p><a href="/ru/pages/opnsense-ipv6.html">OPNsense и IPv6 →</a></p></article>
+<article class="mini-card" id="ddns"><h3>Динамический DNS перестал обновляться после перезагрузки</h3>
+<p>Сервис обновления DNS работал, но не мог достичь API провайдера через IPv6. Выявил связь с той же проблемой исходного WAN-адреса вместо предположений о неверных DNS-записях или API-ключах.</p>
+<p>Соединение восстановлено в документированной сессии. Оставил последующую проверку будущих обновлений WAN.</p><p><a href="/ru/pages/network-services.html">DNS и динамические записи →</a></p></article>
+<article class="mini-card" id="pf-state"><h3>Firewall states указывали на недопустимый шлюз</h3>
+<p>После перезагрузки повторные ошибки ARP привели к PF states с route-to адресом 0.0.0.0. Активные правила уже указывали на правильный шлюз, поэтому изменение сохранённых правил не было решением.</p>
+<p>Удалил отдельные затронутые состояния и подтвердил прекращение ошибок. Исходная проблема порядка загрузки upstream не исправлена. Позднее добавил испытанный <a href="/ru/pages/notes.html#pf-bootzero">автоматический обход</a>.</p><p><a href="/ru/pages/security-operations.html">Эксплуатация шлюза →</a></p></article>
+<article class="mini-card" id="wireguard"><h3>WireGuard: IPv4 работал, для IPv6 потребовался другой подход</h3>
+<p>Хотел направлять IPv4 и IPv6 мобильного клиента через домашнюю сеть. Статическая трансляция IPv6 не подходила для изменяемого префикса провайдера, поэтому перешёл на NPTv6 с отслеживанием делегированного префикса.</p>
+<p>Проверил действующую трансляцию firewall, внешние адреса клиента, DNS и разрешённый локальный доступ. Реальная смена upstream-префикса остаётся открытым тестом.</p><p><a href="/ru/pages/opnsense.html">Результаты WireGuard →</a></p></article>
+<article class="mini-card" id="portal"><h3>Доступность гостевого портала через IPv6</h3>
+<p>IPv6-адрес гостевого портала зависит от префикса провайдера. Добавил механизм обновления DNS AAAA-записи и сравнил создаваемую запись с действующим адресом.</p>
+<p>Это подтвердило механизм обновления, но не заменило проверку реальной будущей смены префикса.</p><p><a href="/ru/pages/network-services.html">Сервисы гостевой сети →</a></p></article>
+<article class="mini-card" id="lldp"><h3>Адрес управления LLDP должен переживать обновления</h3>
+<p>Соседи LLDP были видны, но нужное объявление management address должно было сохраняться после перезапуска сервиса и регенерации конфигурации. Добавил постоянный startup hook и проверил объявляемое значение.</p>
+<p>Различие между действующей и постоянной настройкой оказалось полезным и в других частях шлюза.</p><p><a href="/ru/pages/switching-wireless.html">Коммутация и LLDP →</a></p></article>
+</div></section>
+<section id="client-incidents">
+<h2>Коммутация, сертификаты и клиенты</h2>
+<div class="two-col">
+<article class="mini-card" id="radsec-omada-certificate"><h3>Omada отклонял сертификаты моего RadSec CA</h3><p>Хотел оставить проверку сертификатов на проводном коммутаторе включённой. Мои тестовые корневые и промежуточные цепочки проходили OpenSSL, но Omada всё равно отклонял серверный сертификат без полезного кода ошибки X.509.</p><p>Публичный серверный сертификат Let's Encrypt исправил эту сторону TLS. Следующий отказ прокси показал неверного издателя <em>клиентского</em> сертификата Omada. После восстановления правильного клиентского CA TLS 1.3 и Access-Accept заработали при включённой проверке. Точная причина отказа Omada от экспериментальных внутренних серверных цепочек неизвестна.</p><p><a href="/ru/pages/radsec-mtls.html">Полное исследование RadSec →</a></p></article>
+<article class="mini-card" id="radsec-unifi-das"><h3>RadSec работал, а UniFi Disconnect перестал</h3><p>EAP-TLS и Accounting пережили переход на RadSec, но мои адресные Disconnect-запросы перестали получать ACK. Прокси переносил Accounting Detail под другого отправителя, а UniFi DAS отклонял старые настройки до миграции.</p><p>Ограниченные helpers теперь проверяют прокси, исходную идентичность AP, сессию и активного TLS client перед выбором правильного DAS-пути. В реальных тестах Disconnect/PMKSA и отдельная EAPOL reauthentication привели к ожидаемым новым сессиям. Эти проверки были до финальной вечерней очистки сертификатов.</p><p><a href="/ru/pages/radius-control.html">RADIUS Control v1.0.2 →</a></p></article>
+<article class="mini-card" id="omada-accounting"><h3>Omada подтвердил Disconnect, но оставил старую сессию открытой</h3>
+<p>Добавил проводной 802.1X Disconnect в RADIUS Control. Сначала коммутатор вернул NAK, после исправления пакета — ACK, но старая запись Accounting могла остаться открытой даже после новой аутентификации.</p>
+<p>Одна новая сессия появилась сразу после первоначального таймаута. Изменил очистку: она ждёт проверенного ACK и однозначно соответствующего нового Accounting-Start, прежде чем закрыть неизменившуюся старую строку. Порты рабочей станции и контроллера домена прошли итоговый реальный тест; неопределённые результаты автоматически не повторяются.</p><p><a href="/ru/pages/radius-control.html">Проект RADIUS Control →</a></p></article>
+
+<article class="mini-card" id="tacacs-fallback"><h3>TACACS+ не переключался на локальный вход Omada</h3>
+<p>Испытал недоступность TACACS+ на Omada и Barox. Barox принял локальную recovery-учётную запись; Omada отклонил рабочую локальную запись в режиме TACACS+ затем local. Захваты показали попытки соединения без ответа, адресная сетевая блокировка воспроизвела результат.</p>
+<p>Внутренняя причина в коммутаторе неизвестна. Сообщил о результате производителю.</p><p><a href="/ru/pages/tacacs-switch-aaa.html">Исследование TACACS+ →</a></p></article>
+<article class="mini-card" id="pki-publish-race"><h3>Две задачи публикации PKI столкнулись</h3>
+<p>Две плановые задачи при отзыве сертификата использовали одно временное имя файла на NAS. Одна завершилась ошибкой после перемещения файла другой; ещё одна публикация успешно завершилась.</p>
+<p>Добавил именованный mutex и уникальные имена передачи. Обычная публикация и контролируемое ожидание блокировки прошли. Одновременная публикация изменяющихся файлов остаётся открытой.</p><p><a href="/ru/pages/windows-ad-pki.html">Исправление публикации PKI →</a></p></article>
+<article class="mini-card" id="rustdesk-upgrade"><h3>RustDesk обновился, но задача развёртывания зависла</h3>
+<p>MSI-обновление на одной рабочей станции завершилось ошибкой 1603. EXE установил новый клиент, но скрипт ждал дочерние процессы и не завершался. Изменил логику ожидания и проверил установленную версию; следующий ручной запуск завершился.</p><p><a href="/ru/pages/windows-policy-deployment.html">Развёртывание через GPO →</a></p></article>
+<article class="mini-card" id="krdp-credentials"><h3>KRDP подключался, затем показывал чёрный экран</h3>
+<p>Windows достигал RDP-сервиса Kubuntu через TLS, но сессия закрывалась при входе. Передача полного Linux UPN в правильном контексте учётной записи Windows исправила испытанное подключение. Внутреннюю причину прежнего отказа не считаю доказанной.</p><p><a href="/ru/pages/linux-mobile-identity.html">Удалённый доступ Kubuntu →</a></p></article>
+<article class="mini-card" id="radius-coa"><h3>UniFi отклонял RADIUS Disconnect после Wi-Fi-роуминга</h3>
+<p>Включил RADIUS Accounting для UniFi AP и подтвердил обновления сессий в существующей базе FreeRADIUS. Первый адресный Disconnect-Request получил NAK, поскольку идентификатор относился к завершённому при роуминге соединению.</p>
+<p>После проверки актуальной accounting-сессии следующий запрос получил Disconnect-ACK. Телефон явно отключился от Wi-Fi и снова прошёл EAP-TLS. Это подтверждает отключение и повторную аутентификацию, <strong>не</strong> смену VLAN в реальном времени через CoA.</p><p><a href="/ru/pages/identity-pki.html">Сетевой доступ по сертификатам →</a></p></article>
+<article class="mini-card" id="identity"><h3>Реальное испытание второго LDAPS-сервера</h3>
+<p>FreeRADIUS имел два endpoint каталога. Сделал основной контроллер недоступным и повторил проверки аутентификации, вместо предположения о failover по одному наличию второго сервера в конфигурации.</p>
+<p>Запросы каталога продолжались через второй контроллер. CA и сервис регистрации — отдельные зависимости с собственными требованиями к восстановлению.</p><p><a href="/ru/pages/windows-ad-pki.html">AD CS и FreeRADIUS →</a></p></article>
+<article class="mini-card" id="dc-eap"><h3>Проводной EAP-TLS контроллеров домена</h3>
+<p>Контроллеру может требоваться доступ к сети до возможности обратиться к службам каталога и сертификатов, участвующим в обычной авторизации. Пришлось отделить его bootstrap identity от обычной авторизации компьютеров.</p>
+<p>После настройки выбора сертификата и соответствующих политик проверил проводную аутентификацию на коммутаторе и FreeRADIUS.</p><p><a href="/ru/pages/windows-ad-pki.html">EAP-TLS контроллера домена →</a></p></article>
+<article class="mini-card" id="omada-nd"><h3>IPv6-адреса разрешались через DNS, но были недоступны</h3>
+<p>Контроллер домена отвечал через один IPv6-адрес, но не через настроенный вручную. Проверки пакетов и коммутатора указали на IPv6 Neighbor Discovery inspection Omada.</p>
+<p>Конкретные neighbor bindings восстановили испытанные соединения. Автоматическое изучение новых адресов после смены префикса — отдельная задача.</p><p><a href="/ru/pages/switching-wireless.html">Исследование коммутатора и IPv6 →</a></p></article>
+<article class="mini-card" id="android-scep"><h3>Android запрашивал дополнительный сертификат</h3>
+<p>Регистрация через MDM SCEP-профиль работала, но применение корпоративного Wi-Fi payload могло инициировать второй запрос. Исследовал взаимодействие сертификатного и Wi-Fi-профилей, проверяя реальный EAP-TLS доступ устройств.</p>
+<p>Клиенты успешно подключались. Очистка заменённых сертификатов остаётся в списке задач.</p><p><a href="/ru/pages/linux-mobile-identity.html">Android и Linux-клиенты →</a></p></article>
+<article class="mini-card" id="profile-migration"><h3>Windows входила с временным профилем после миграции домена</h3>
+<p>При переносе существующей Windows в AD инструмент миграции оставил устаревшую запись профиля в реестре и проблему доступа к пользовательским данным. Windows загружала временный рабочий стол вместо исходного.</p>
+<p>Проверил события службы профилей, исправил mapping реестра и разрешения, подтвердил загрузку обычного рабочего стола. Важно сохранить старый профиль и исследовать mapping до создания нового.</p><p><a href="/ru/pages/windows-policy-deployment.html#profile-migration">Миграция Windows в домен →</a></p></article>
+<article class="mini-card" id="dc-logonui"><h3>Раскладки отсутствовали на экране входа Windows</h3>
+<p>На втором контроллере домена ожидаемые раскладки были настроены в некоторых частях Windows, но на экране входа появились не все. Сравнил языковые настройки с первым контроллером и нашёл различия интерактивного профиля администратора.</p>
+<p>После обновления списка языков профиля и выхода недостающие раскладки появились. Плановая задача настройки всё ещё возвращала ненулевой статус, поэтому проверку после перезагрузки оставил открытой вместо принятия статуса задачи за доказательство успеха или ошибки.</p><p><a href="/ru/pages/windows-policy-deployment.html">Политики и управление Windows →</a></p></article>
+<article class="mini-card" id="wac"><h3>Windows Admin Center и привязка HTTPS</h3>
+<p>Когда HTTPS-endpoint вёл себя не как ожидалось, проверил сертификат и HTTP.sys listener/binding вместо общей диагностики браузера. Исправленная привязка стала частью настройки управления Windows.</p>
+<p>Это напомнило, что установка доверенного сертификата и его фактическая выдача — разные шаги.</p><p><a href="/ru/pages/windows-policy-deployment.html">Инструменты управления Windows →</a></p></article>
+</div></section>
+<section id="services-incidents">
+<h2>NAS и инфраструктурные сервисы</h2>
+<div class="two-col">
+<article class="mini-card" id="nas-egress"><h3>NAS выбрал неправильный сетевой интерфейс</h3><p>После короткого отказа и восстановления линка NAS имел два connected routes в одну подсеть. Новые соединения могли уходить через вторичный интерфейс, несмотря на восстановленный основной default route. Это нарушало ожидаемое ограничение исходного адреса для управления шлюзом.</p><p>Добавил защищённое policy routing rule после существующих source-based rules и systemd timer для поддержания. Проверки маршрутов и SMB Multichannel прошли, оба SMB-пути оставались выбранными. Новый тест перезагрузки, DHCP renewal и физического link flap для этого изменения ещё предстоит.</p><p><a href="/ru/pages/nas-services-operations.html">Маршрутизация NAS и SMB →</a></p></article>
+
+<article class="mini-card" id="dc-backup-nic"><h3>Контроллер домена потерял SMB во время System State backup</h3>
+<p>Плановый backup завершился ошибкой после reset Realtek NIC; события Windows и SMB показали прерывание и неудачную запись. Обновил Realtek-драйверы обоих контроллеров и наблюдал успешное завершение следующих еженедельных System State jobs.</p>
+<p>Это не доказывает невозможность повторения аппаратной проблемы. Ротация должна учитывать успешность бэкапов, восстановление AD и CA из независимых копий не испытано.</p><p><a href="/ru/pages/windows-monitoring-backup.html">Бэкапы Windows и восстановление →</a></p></article>
+<article class="mini-card" id="nas-ula"><h3>NAS терял IPv6 ULA</h3>
+<p>После сетевых событий NAS мог потерять стабильный внутренний IPv6-адрес для DNS клиентов. Старого interface-up hook было недостаточно для надёжного восстановления.</p>
+<p>Заменил подход идемпотентным recovery-скриптом, systemd oneshot service и периодическим timer, затем проверил возврат ожидаемого адреса.</p><p><a href="/ru/pages/nas-services-operations.html">Сеть NAS →</a></p></article>
+<article class="mini-card" id="docker-route"><h3>Контейнер выбрал неверный сетевой маршрут</h3>
+<p>Контейнер reverse proxy в нескольких Docker-сетях получал неподходящий маршрут и IPv6-адрес. Исправил целевые сетевые параметры Compose вместо временного изменения внутри работающего контейнера.</p>
+<p>Это важно и для доступности, и для предсказуемого поведения после пересоздания.</p><p><a href="/ru/pages/nas-services-operations.html">Docker и reverse proxy →</a></p></article>
+<article class="mini-card" id="ups"><h3>Мониторинг ИБП не запускался</h3>
+<p>Network UPS Tools сначала не находил подключённый USB-ИБП. Права USB-устройства мешали доступу; после исправления обработки устройства сервис подключился к ИБП.</p>
+<p>Другое изменение случайно привязало сервис к адресам, отсутствовавшим на шлюзе. Исправление адресов прослушивания восстановило доступ. Ни один тест не означает наличия батарейного питания у всех устройств.</p><p><a href="/ru/pages/security-operations.html">Мониторинг и питание →</a></p></article>
+</div></section>
+<section id="virtualization-incidents">
+<h2>Proxmox и виртуальные firewall</h2>
+<div class="two-col">
+<article class="mini-card" id="packetfence-ipset"><h3>PacketFence зарегистрировал гостя, но IPSet завершался ошибкой</h3>
+<p>Windows завершил регистрацию Captive Portal, однако внешний HTTPS оставался заблокирован. Генератор правил PacketFence передавал IP-MAC пару в IP-only set, что вызывало ошибку восстановления IPSet.</p>
+<p>Выявив несовпадение с Codex, применил небольшой локальный fix и проверил гостевой доступ без обходного правила. Патч нужно проверять после будущих обновлений.</p><p><a href="/ru/pages/packetfence-nac.html">Исследование PacketFence →</a></p></article>
+<article class="mini-card" id="packetfence-dns"><h3>DNS proxy PacketFence пересылал запросы самому себе</h3>
+<p>После ремонта IPSet внешний TCP/443 работал, но обычные имена сайтов по-прежнему разрешались в Captive Portal. DNS forwarder указывал на собственный listener прокси.</p>
+<p>Изменил upstream resolver, сохранив PacketFence DNS-сервером клиентов. Обычный DNS и проверенный HTTPS заработали; отзыв и восстановление регистрации гостя блокировали и восстанавливали внешние соединения как ожидалось.</p><p><a href="/ru/pages/packetfence-nac.html">Испытания DNS и контроля доступа →</a></p></article><article class="mini-card" id="lab"><h3>Лабораторный WAN и путь VLAN</h3>
+<p>Ранняя проблема DHCP потребовала проверки виртуальной NIC, bridge Proxmox, тегированного порта коммутатора и шлюза вместо повторных изменений гостевой firewall. Также пришлось исправить разрешения DNS лабораторного сегмента.</p>
+<p>Соответствующий L2-путь и отдельные сервисы шлюза проверены. Отдельная матрица испытаний охватывает трафик, который должен быть запрещён.</p><p><a href="/ru/pages/lab-operational-method.html">Как тестирую лабораторию →</a></p></article>
+<article class="mini-card" id="pve-ipv6"><h3>Proxmox потерял IPv6 Router Advertisements</h3>
+<p>После перевода хоста на Linux bridges потребовалось исправить IPv6-адресацию: стандартные параметры forwarding/RA не обеспечивали нужное поведение management bridge.</p>
+<p>Изменил параметры интерфейса хоста и проверил действующий IPv6-путь. Сохранение после будущих сетевых изменений оставил в списке проверок.</p><p><a href="/ru/pages/proxmox-host-storage.html">Сеть хоста Proxmox →</a></p></article>
+<article class="mini-card" id="zfs"><h3>Замена хранилища VM</h3>
+<p>Проверки состояния старых дисков VM выявили проблему хранения, которую не хотел игнорировать. Проверил SMART и ZFS, перенёс данные VM на другой диск и снова запустил гостей.</p>
+<p>Новое хранилище — однодисковый ZFS-пул. Восстановление работы гостей не равнозначно резервированию или испытанию восстановления вне хоста.</p><p><a href="/ru/pages/proxmox-host-storage.html">Миграция хранилища →</a></p></article>
+<article class="mini-card" id="gpu"><h3>Проброс Intel, отсутствующий EDID и проблемы рабочего стола</h3>
+<p>Сочетание переданного Intel GPU с дополнительным виртуальным дисплейным адаптером вызывало зависания KWin и ошибки page flip. После удаления конфликтующего адаптера KDE VM всё ещё требовался EDID для Full HD.</p>
+<p>Добавление EDID решило проблему разрешения. Также потребовались исправление настройки качества изображения KRDP и взаимодействия KWallet.</p><p><a href="/ru/pages/gpu-remote-desktop.html">Тесты GPU и KRDP →</a></p></article>
+<article class="mini-card" id="ipfire"><h3>IPFire был подключён к неверному upstream bridge</h3>
+<p>При настройке IPFire WAN virtual NIC использовала неправильный bridge Proxmox. После исправления firewall получил upstream-адрес, клиентские тесты продолжились.</p>
+<p>Затем проверены управление, DHCP и выбранный проброс RDP.</p><p><a href="/ru/pages/virtual-firewall-platforms.html">Сравнение платформ firewall →</a></p></article>
+<article class="mini-card" id="freesense-boot"><h3>FreeSense загрузил установщик вместо установленной системы</h3>
+<p>После установки FreeSense с ZFS гость остановился на mountroot panic. Установочный ISO оставался подключённым, VM не загружалась с установленного системного диска.</p>
+<p>Удалил установочный ISO из пути загрузки и запустил VM с установленного диска. FreeSense загрузился нормально; проверены Kea DHCP, интернет и RDP-проброс к обоим тестовым клиентам.</p><p><a href="/ru/pages/virtual-firewall-platforms.html">Настройка и тесты FreeSense →</a></p></article>
+<article class="mini-card" id="ddwrt-reboot"><h3>DD-WRT доходил до «machine restart», но не перезапускался</h3>
+<p>После исправления kernel panic обычная перезагрузка всё равно зависала на «machine restart». VM использовала OVMF/UEFI, а загрузочная конфигурация задавала BIOS restart.</p>
+<p>Изменил аргумент перезапуска на UEFI в активном GRUB и встроенном шаблоне, который может его пересоздать. Две последовательные перезагрузки прошли. Но это <em>не</em> исправило выключение: команда poweroff гостя и Proxmox Shutdown по-прежнему не выключали VM штатно.</p><p><a href="/ru/pages/virtual-firewall-platforms.html">Восстановление DD-WRT и оставшиеся работы →</a></p></article>
+<article class="mini-card" id="ddwrt-uefi"><h3>DD-WRT: UEFI kernel panic возвращался</h3>
+<p>После reset гость завершался kernel panic из-за ссылки GRUB на неверное root-устройство и тип файловой системы. Установленный образ использовал ext4 root-раздел, но параметры генерировались для прежнего диска. Правки активного GRUB было недостаточно: устаревшие значения также находились в скомпилированном шаблоне внутри сервисного executable DD-WRT.</p>
+<p>Исправил загрузочную конфигурацию и применил замены равной длины в офлайн-бинарном шаблоне, сохранив backup и snapshot для восстановления. Отдельная <a href="/ru/pages/notes.html#ddwrt-reboot">проблема перезапуска</a> потребовала UEFI reboot. Две последующие перезагрузки прошли, активные аргументы ядра соответствовали установленной файловой системе. Обычное ACPI shutdown <strong>по-прежнему не решено</strong>, а обновление может перезаписать неофициальный патч.</p><p><a href="/ru/pages/virtual-firewall-platforms.html">Результаты тестов DD-WRT →</a></p></article>
+<article class="mini-card" id="ddwrt-access"><h3>Управление DD-WRT исчезло после неудачных SSH-попыток</h3>
+<p>При настройке SSH и веб-интерфейс стали недоступны с административной рабочей станции. Вместо обвинения виртуального bridge проверил blocklist и packet filter. Две неудачные попытки SSH вызвали защиту от brute force и блокировку источника управления.</p>
+<p>Удаление соответствующей runtime-блокировки восстановило доступ в лаборатории. Запись blocklist может повторно применяться при перезагрузке до истечения срока; это не причина отключать brute-force protection глобально. Восстановление доступа и усиление безопасности управления остаются раздельными задачами.</p><p><a href="/ru/pages/virtual-firewall-platforms.html">Гость DD-WRT →</a></p></article>
+</div></section>
+</div>
+<hr class="rule"><p><a class="button secondary" href="/ru/pages/work-index.html">← Все проекты</a></p>
+</main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Личная лаборатория сетей и IT-безопасности</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

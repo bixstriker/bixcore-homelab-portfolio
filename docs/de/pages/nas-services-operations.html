@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Was auf meinem NAS läuft und wie ich IPv6-Wiederherstellung, Docker-Routing und Dienstneustarts korrigierte.">
+  <title>NAS-Dienste, Docker und Wiederherstellung · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/de/pages/nas-services-operations.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="NAS-Dienste, Docker und Wiederherstellung · BiXCore">
+  <meta property="og:description" content="Was auf meinem NAS läuft und wie ich IPv6-Wiederherstellung, Docker-Routing und Dienstneustarts korrigierte.">
+  <meta property="og:url" content="https://lab.bixcore.de/de/pages/nas-services-operations.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/nas-services-operations.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/nas-services-operations.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/nas-services-operations.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/nas-services-operations.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/nas-services-operations.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/nas-services-operations.html" hreflang="en" lang="en">English</a><a href="/ru/pages/nas-services-operations.html" hreflang="ru" lang="ru">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Dienste</p>
+<p class="kicker">NAS / DOCKER / IPV6 / WIEDERHERSTELLUNG</p>
+<h1>NAS-Dienste und Docker-Netzwerke</h1>
+<p class="lede">Das NAS speichert nicht nur Dateien. Es betreibt Dienste, von denen mein Netzwerk abhängt. Eine fehlende IPv6-Adresse oder eine falsche Container-Route kann deshalb weit über das NAS hinaus Probleme verursachen.</p>
+<div class="article">
+<h2>Was dort läuft</h2>
+<p>Das NAS betreibt Docker-Infrastruktur wie AdGuard, Reverse Proxy, UniFi-Controller, Fernwartungsdienste, Passwortverwaltung, PXE-/ISO-Boot und Monitoring. Andere Anwendungen laufen ebenfalls dort, aber dieses Projekt behandelt ihre Netzwerkverbindungen und ihre Wiederherstellung nach Wartung.</p>
+<h2>Container-Inventar und Switch-Authentifizierung</h2>
+<p>Im November prüfte ich alle <strong>36 Docker-Einträge</strong> auf dem NAS einschließlich gestoppter Container, ihrer Netzwerke, Portzuordnungen, Mounts und Neustartregeln. Das ist für Recovery nützlicher als ein Screenshot laufender Container. Tatsächliche Anwendungswiederherstellungen muss ich aber noch testen.</p>
+<p>Ich stellte auch TACACS-NG-UI für die Switch-Administration über Active Directory bereit. Der FastAPI-Prozess blieb bei einem Uvicorn-Worker; Backend, Frontend und Datenbank benötigten bei einer kurzen Messung zusammen etwa 122 MiB. Auch die NAS-Swap-Aktivität prüfte ich, ohne eine einzelne Messung als Kapazitätsbenchmark zu behandeln.</p>
+<p><a href="/de/pages/tacacs-switch-aaa.html">TACACS+-Aufbau und Ausfalltests →</a></p>
+<h2>Zwei Netzwerkprobleme, die ich beheben musste</h2>
+<p><strong>Fehlende IPv6-ULA.</strong> Clients nutzten eine stabile interne IPv6-Adresse für DNS, die nach Schnittstellenänderungen verschwinden konnte. Mein ursprünglicher Hook war nicht zuverlässig genug. Ich ersetzte ihn durch ein idempotentes Recovery-Skript, einen systemd-Oneshot-Dienst und einen Timer und prüfte die Adresse nach den relevanten Ereignissen.</p>
+<p><strong>Docker-Routing.</strong> Ein Reverse-Proxy-Container in mehreren Netzen konnte eine ungeeignete Default-Route oder IPv6-Adresse erhalten. Ich korrigierte die Netzwerk- und Gateway-Präferenzen in der Compose-Konfiguration, damit die Neuerstellung des Containers den alten Fehler nicht zurückbringt.</p>
+<h2>Updates ohne Verlust der Infrastruktur</h2>
+<p>Beim Update des NAS-Betriebssystems und von Docker reicht eine Liste von Containernamen nicht aus. Ich sichere Compose-Definitionen, Umgebungsdateien, Volumes, Netzwerkeinstellungen, Neustartregeln und Hilfsskripte. DNS wird früh wiederhergestellt, anschließend Reverse Proxy und abhängige Dienste.</p>
+<p>Diese Wartungsreihenfolge testete ich bei einem realen Upgrade. Dabei erkannte ich Abhängigkeiten der Dienstreihenfolge, die bei bloßem automatischem Neustart leicht übersehen werden.</p>
+<h2>Als ein Watchdog während geplanter Wartung auslöste</h2>
+<p>Nach dem NAS-Betriebssystemupdate prüfte ich, dass die stabile IPv6-DNS-Adresse zurückkehrte, wichtige Container ihre erwarteten Routen behielten und die CRL von der ausstellenden CA über das NAS bis FreeRADIUS übereinstimmte. Das war eine Update-Prüfung, kein neuer Login-Test mit widerrufenem Zertifikat.</p>
+<p>Mein Plex-Watchdog startete OpenVPN nach drei fehlgeschlagenen Erreichbarkeitsprüfungen neu. Plex kehrte später zurück, aber Docker startete noch, daher kann ich den VPN-Neustart nicht als Ursache der Wiederherstellung bezeichnen. Bei geplanter Wartung war er nicht nötig. Künftig pausiere ich den Watchdog und aktiviere ihn erst, wenn die Container bereit sind.</p>
+<h2>Plex-Watchdog und Wiedergabe getrennt halten</h2>
+<p>Externe Plex-Wiedergabe nutzt nun den in meinen Tests schnelleren Vodafone-Pfad. Windscribe hat weiterhin einen separaten weitergeleiteten Endpunkt, den der NAS-Watchdog überwacht. Er prüft den externen Port, nicht die korrekte HTTP-Antwort von Plex. Das etablierte Windscribe- und HomeWG-Recovery-Konzept blieb unverändert. <a href="/de/pages/security-operations.html">Routing- und Suricata-Tests →</a></p>
+<h2>DNS- und Zertifikatswartung</h2>
+<p>Nach Sicherung der Rollback-Dateien aktualisierte ich AdGuard Home auf das Image 1.0.0 beta 2. Anschließend prüfte ich DNS, interne Domänenweiterleitung, HTTPS, DoH und DoT. Außerdem erneuerte und verifizierte ich die Zertifikatsketten der NAS-Weboberfläche, von AdGuard und Home Assistant.</p>
+<p>Die Zertifikate werden am Gateway automatisch ausgestellt, ihre Bereitstellung in diesen Diensten erfolgt aber noch manuell. Ein vollständiger DoQ-/QUIC-Anfragetest steht aus.</p>
+<h2>Zwei Netzwerkschnittstellen ohne Routing-Konflikte</h2>
+<p>Nach einem kurzen Linkverlust der primären NAS-Schnittstelle kehrten Link und Adresse zurück, neue lokale Verbindungen konnten jedoch die andere Schnittstelle nutzen. Beide lagen im selben Subnetz. Die Default-Route war korrekt; konkurrierende direkt verbundene Routen konnten trotzdem die falsche Quelladresse wählen, worauf ein eingeschränkter SSH-Zugang zum Gateway die Anfrage verweigerte.</p>
+<p>Ich ergänzte nach den bestehenden quellbasierten Regeln eine zielbasierte Policy-Routing-Regel mit abgesichertem systemd-Dienst und Timer. Die Regel wird nur eingerichtet, wenn primärer Link, Adresse und Routingtabelle bereit sind, und bei fehlgeschlagenen Prüfungen entfernt. Sie ersetzt weder die Hersteller-Routingkonfiguration noch die bestehenden quellgebundenen SMB-Pfade.</p>
+<p>Bei den Tests am 19. November blieben beide Windows-SMB-Multichannel-Pfade ausgewählt. Mit einer früheren temporären Regelversion erreichte eine 8.22-GB-Dateikopie ungefähr 504 MB/s lesend und 324 MB/s schreibend, mit Verkehr auf beiden Schnittstellen und übereinstimmenden SHA-256-Hashes. Die permanente Regel prüfte ich anschließend mit Routenabfragen, SMB-Kanalauswahl und Container-Healthchecks. Den vollständigen Kopierbenchmark wiederholte ich mit der finalen Regel nicht; Neustart, DHCP-Erneuerung und erneuter physischer Link-Flap müssen gezielt getestet werden.</p>
+<p>Am 25. November prüfte ich die permanente Routing-Konfiguration erneut bei realem Vodafone-O2-Failover und Failback. Normaler NAS-Egress und explizit quellgebundenes Routing für die zweite SMB-Schnittstelle nutzten weiterhin die vorgesehenen Pfade. Das ist zusätzliche Live-Evidenz, kein neuer NAS-Neustart-, DHCP-Erneuerungs- oder physischer NAS-Link-Flap-Test.</p>
+<p><a href="/de/pages/notes.html#nas-egress">Routing-Untersuchung →</a></p>
+<h2>Switch-Ereignisse empfangen statt ständig abfragen</h2>
+<p>Am 22. November verlagerte ich den Switch-Benachrichtigungsdienst in meinen eigenen kleinen Docker-Empfänger. Zwei Grandstream-Switches senden SNMPv2c-Traps; Omada sendet authentifizierte, verschlüsselte SNMPv3-Traps. Net-SNMP empfängt die Nachrichten, und ein Python-Handler speichert sie in SQLite. Eine separate Versandwarteschlange sendet ausgewählte Telegram-Meldungen mit Wiederholungsversuchen, sodass langsamer Versand den Trap-Handler nicht blockiert.</p>
+<p>Ich speichere empfangene Ereignisse und benachrichtige über Linkänderungen an 13 ausgewählten Ports sowie Switch-Neustarts. Der Container läuft mit schreibgeschütztem Root-Dateisystem, eingeschränkten Rechten und getrennten persistenten Daten und Zugangsdaten. Einen realen Omada-Link-Down und Link-Up habe ich getestet: Beide Ereignisse wurden gespeichert, versendet und am Telefon empfangen. Die übrigen kritischen Ports sind zugeordnet, wurden aber nicht einzeln für Tests getrennt.</p>
+<p>Ein UDP-Trap-Empfänger auf dem NAS kann kein Ereignis melden, das er bei ausgeschaltetem NAS nie empfängt. Die Telegram-Warteschlange hilft nach dem Empfang; sie beweist keine garantierte Zustellung bei jedem Ausfall. Recovery nach NAS-Neustart und längerer Unterbrechung des Benachrichtigungsdienstes muss ich noch testen.</p>
+<h2>Was ich als Nächstes prüfen möchte</h2>
+<p>Dienste wurden nach Wartung wiederhergestellt, aber ausgewählte Anwendungen möchte ich aus unabhängigen Backups wiederherstellen, statt nur Containerstarts zu prüfen. Zudem möchte ich die IPv6-Wiederherstellung des NAS nach Netzänderungen weiter testen und eine echte Wiederherstellung der TACACS+-Datenbank und -Konfiguration verifizieren. Vor PostgreSQL 18.7 wurde ein konsistentes Backup geprüft; seine Wiederherstellung ist noch ungetestet.</p>
+<p><a class="source-link" href="/de/pages/notes.html#nas-ula">Die verschwundene IPv6-Adresse →</a>   <a class="source-link" href="/de/pages/notes.html#docker-route">Das Docker-Gateway-Problem →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/de/pages/work-index.html">← Alle Projekte</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

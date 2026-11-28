@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Ein Proxmox-Hookscript verbindet genau eine laufende virtuelle Firewall mit einem externen Laptop und trennt den Testport bei mehreren aktiven Firewall-VMs.">
+  <title>PhyLan1: Ein physischer Client für das Firewall-Labor · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/de/pages/phylan1.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="PhyLan1: Ein physischer Client für das Firewall-Labor · BiXCore">
+  <meta property="og:description" content="Ein Proxmox-Hookscript verbindet genau eine laufende virtuelle Firewall mit einem externen Laptop und trennt den Testport bei mehreren aktiven Firewall-VMs.">
+  <meta property="og:url" content="https://lab.bixcore.de/de/pages/phylan1.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/phylan1.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/phylan1.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/phylan1.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/phylan1.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/phylan1.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/phylan1.html" hreflang="en" lang="en">English</a><a href="/ru/pages/phylan1.html" hreflang="ru" lang="ru">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / PhyLan1: Ein physischer Client für das Firewall-Labor</p>
+<p class="kicker">PRIVATES LABOR / 6. NOVEMBER 2026</p><h1>PhyLan1: Ein physischer Client für das Firewall-Labor</h1><p class="lede">Ich wollte jede virtuelle Firewall mit einem realen Ethernet-Laptop testen, ohne jeder VM eine physische NIC hinzuzufügen oder ihre Netzwerkkonfiguration zu ändern. Der Proxmox-Host schaltet einen dedizierten Testport zwischen vorhandenen virtuellen LANs um.</p>
+<div class="article"><h2>Wie es funktioniert</h2>
+<p>Die dedizierte Test-NIC des Hosts gehört zu einer Linux-Bridge ohne Host-IP oder Gateway. Ein temporäres virtuelles Ethernet-Paar verbindet diese Bridge mit der LAN-Bridge der ausgewählten Firewall. Der Upstream der Firewall bleibt auf dem isolierten Labor-VLAN hinter meinem OPNsense-Hauptgateway.</p>
+<p>Der Laptop erhält seine Netzwerkeinstellungen von der jeweils aktiven Firewall. In keiner Firewall-VM wird eine zusätzliche NIC oder Bridge installiert.</p>
+<h2>Immer nur eine Firewall</h2>
+<div class="table-wrap"><table><thead><tr><th>Laufende Firewall-VMs</th><th>Physischer Testport</th></tr></thead><tbody>
+<tr><td>Null</td><td>Keine Verbindung zu einem Gast-LAN</td></tr>
+<tr><td>Genau eine</td><td>Mit der vorhandenen LAN-Bridge dieser Firewall verbunden</td></tr>
+<tr><td>Zwei oder drei</td><td>Von allen Gast-LANs getrennt</td></tr>
+</tbody></table></div>
+<p>Das Proxmox-Hookscript reagiert auf reguläre VM-Start- und Stop-Ereignisse und nutzt eine Sperre, damit zwei Ereignisse die Bridge nicht gleichzeitig umkonfigurieren. MikroTik, pfSense, Sophos und die übrigen Gäste mussten dafür nicht verändert werden.</p>
+<h2>Was ich am 6. November geprüft habe</h2>
+<p>Ich testete den externen Ethernet-Laptop mit allen elf Firewall-/Router-Plattformen und bestätigte Internetzugang und RDP-Weiterleitung zu wiederverwendbaren Windows- und Linux-Clients in derselben Testrunde. Das waren beobachtete funktionale Clienttests, kein neuer Paketmitschnitt für jede Firewall. Der am 9. November hinzugefügte vollständige OPNsense-Klon und OpenFW gehörten nicht zu dieser Testgruppe und wurden nicht in den Host-Umschalt-Hook aufgenommen.</p>
+<p>Ich prüfte auch den Wechsel zwischen zwei Gästen, den Start eines zweiten Gasts und drei gleichzeitig laufende Firewall-VMs. Sobald mehr als eine Firewall aktiv war, trennte sich der Port; bei nur einer verbleibenden Firewall wurde er wieder verbunden.</p>
+<h2>Noch nicht gelöste Grenzen</h2>
+<p>Das schützt den physischen Port bei regulären Proxmox-Ereignissen, ist aber keine vollständige Isolationsprüfung. Für einen VM-Prozess, der ohne regulären Stop-Hook endet, gibt es noch keinen Watchdog. Der Port darf nur direkt mit dem Test-Laptop oder einem dedizierten isolierten AP verbunden werden, niemals mit meinem normalen Heimswitch, wo Gast-DHCP-Server Probleme verursachen würden.</p>
+<p><a class="source-link" href="/de/pages/proxmox-firewall-lab.html">Das virtuelle Firewall-Labor →</a>   <a class="source-link" href="/de/pages/lab-operational-method.html">Testmethoden →</a>   <a class="source-link" href="/de/pages/roadmap.html">Offene Arbeiten →</a></p></div><hr class="rule"><p><a class="button secondary" href="/de/pages/work-index.html">← Alle Projekte</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

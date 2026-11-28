@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Wie ich Tests dokumentiere, Konfigurationsänderungen verfolge und ausführliche Arbeitsnotizen bei der Entwicklung von BiXCore nutze.">
+  <title>Arbeitsnotizen und Tests · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/de/pages/working-notes.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Arbeitsnotizen und Tests · BiXCore">
+  <meta property="og:description" content="Wie ich Tests dokumentiere, Konfigurationsänderungen verfolge und ausführliche Arbeitsnotizen bei der Entwicklung von BiXCore nutze.">
+  <meta property="og:url" content="https://lab.bixcore.de/de/pages/working-notes.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/working-notes.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/working-notes.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/working-notes.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/working-notes.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/working-notes.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/working-notes.html" hreflang="en" lang="en">English</a><a href="/ru/pages/working-notes.html" hreflang="ru" lang="ru">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Arbeitsnotizen</p>
+<p class="kicker">DAS LABOR DOKUMENTIEREN</p>
+<h1>Wie ich meine Arbeitsnotizen führe</h1>
+<p class="lede">BiXCore begann nicht mit einem fertigen Entwurf. Ich änderte Hardware, verlegte Dienste, lernte aus fehlgeschlagenen Konfigurationen und ersetzte gelegentlich frühere Ansätze. Meine Notizen halten fest, warum Änderungen vorgenommen wurden und was danach funktionierte.</p>
+<div class="article">
+<section id="running-tested-planned"><h2>Was läuft und was ich tatsächlich getestet habe</h2>
+<p>Ich trenne vorhandene Konfiguration von getestetem Verhalten. Zwei konfigurierte LDAPS-Endpunkte sind zum Beispiel sinnvoll, aber Verzeichnisdienst-Failover beschrieb ich erst als funktionierend, nachdem ich den primären getrennt und die Authentifizierung wiederholt hatte. Ebenso sagen erfolgreiche NAT- und RDP-Tests einer Firewall-VM nicht alles über IPS oder Isolationsregeln aus.</p>
+<p>Einige Indexeinträge beschreiben den laufenden Aufbau, andere einen konkreten Test oder noch geplante Experimente. Besonders wichtig ist diese Unterscheidung, wenn ein früherer Plan später zur funktionierenden Funktion wurde.</p></section>
+<section id="checking-the-evidence"><h2>Wie ich ein Problem überprüfe</h2>
+<p>Meist beginne ich mit der Erfahrung des Clients und vergleiche sie mit Gerätekonfiguration, Logs und Paketmitschnitten. Bei defekter IPv6-Konnektivität lieferte die Auswahl verschiedener WAN-Quelladressen eine bessere Antwort als eine globale IPv6-Adresse an der Schnittstelle. Als eine Firewall-VM keine Adresse erhielt, prüfte ich den gesamten Pfad über Proxmox, Switching und Gateway.</p>
+<p>Der Live-Zustand ist wichtig, weil ein Konfigurationsexport veraltete PF-States, erzeugte FreeRADIUS-Bundles oder beim Start fehlgeschlagene Dienste nicht unbedingt zeigt. Befehlsausgaben und detaillierte Nachweise bewahre ich separat auf; die Projektartikel erläutern Untersuchung und Ergebnis.</p>
+<p><a href="/de/pages/notes.html">Die Fehlerfälle →</a></p></section>
+<section id="changes-over-time"><h2>Wenn eine ältere Notiz den aktuellen Aufbau nicht mehr beschreibt</h2>
+<p>Einige längere Dokumente begannen als Installationsnotizen und wurden zur Änderungshistorie. Der in einem frühen Kapitel beschriebene Proxmox-Speicheraufbau wurde nach einer Festplattenzustandsprüfung ersetzt. Der neuere getestete Zustand hat Vorrang; der alte Eintrag bleibt nützlich, weil er erklärt, warum die Migration erfolgte.</p>
+<p>Das gilt auch für Windows-Zertifikatsrichtlinien, Domänencontrollerintegration und Korrekturen, die spätere Updates überstanden. Ich versuche, den aktuellen Aufbau an den Anfang jedes Projektartikels zu stellen und historische Details im Quellindex zu belassen.</p></section>
+<section id="keeping-source-files"><h2>Warum die detaillierten Dateien getrennt bleiben</h2>
+<p>Die ursprünglichen Arbeitsnotizen enthalten Konfigurationen, Screenshots, Backups und gerätespezifische Befehle. Sie sind für Betrieb und Wiederherstellung nützlich, müssen aber nicht auf der Website stehen, um den Aufbau zu erklären. Stattdessen nutze ich vereinfachte Diagramme und Beschreibungen der Entscheidungen und Testergebnisse.</p>
+<p>Originaldokumentation und Recovery-Dateien pflege ich getrennt und überprüfe neue Inhalte vor Aufnahme ins Portfolio. Öffentliche Artikel verknüpfen die Arbeiten, ohne die administrative Seite des Netzes offenzulegen.</p></section>
+<p><a class="source-link" href="/de/pages/network-v3.8.html">Netzwerk-Arbeitsnotizen →</a>   <a class="source-link" href="/de/pages/windows-server-v2.6.html">Windows-Server-Arbeitsnotizen →</a>   <a class="source-link" href="/de/pages/proxmox-v1.7.html">Proxmox Master v1.15 – Notizen →</a>   <a class="source-link" href="/de/pages/barox-config-tool.html">Barox-Werkzeugprojekt →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/de/pages/work-index.html">← Alle Projekte</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Моя домашняя лаборатория BiXCore: OPNsense, Windows Server, PKI, Proxmox, диагностика и будущие проекты.">
+  <title>BiXCore · Лаборатория сетей и IT-безопасности Феликса Бистрикера</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/ru/">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="BiXCore · Лаборатория сетей и IT-безопасности Феликса Бистрикера">
+  <meta property="og:description" content="Моя домашняя лаборатория BiXCore: OPNsense, Windows Server, PKI, Proxmox, диагностика и будущие проекты.">
+  <meta property="og:url" content="https://lab.bixcore.de/ru/">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/">
+</head>
+<body>
+  <a class="skip-link" href="#main">Перейти к содержанию</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/ru/index.html" aria-label="BiXCore Lab, главная"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ИНЖЕНЕРНАЯ ЛАБОРАТОРИЯ</span></span></a>
+    <nav class="top-nav" aria-label="Основная навигация"><a href="#work">Проекты</a><a href="#notes">Диагностика</a><a href="/ru/pages/hardware.html">Оборудование</a><a href="/ru/pages/roadmap.html">Планы</a><a href="/ru/pages/about.html">Обо мне</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Выбор языка"><a href="/de/index.html" hreflang="de" lang="de">Deutsch</a><a href="/index.html" hreflang="en" lang="en">English</a><a href="/ru/index.html" hreflang="ru" lang="ru" aria-current="page">Русский</a></nav>
+  </div></header>
+<main id="main">
+<section class="hero"><div class="wrap hero-grid">
+ <div>
+  <p class="eyebrow">Феликс Бистрикер · Личная домашняя лаборатория</p>
+  <h1>BiXCore</h1>
+  <p class="hero-lead">BiXCore — сеть, которую я создал у себя дома для повседневных сервисов и экспериментов с технологиями, в которых хочу лучше разобраться. Сейчас она включает шлюз OPNsense, управляемые коммутаторы и Wi-Fi, Windows Server и PKI, сервисы NAS и отдельную лабораторию межсетевых экранов на Proxmox.</p>
+  <p class="hero-secondary">Я документирую, что настроил, с какими проблемами столкнулся и как их исследовал и решал.</p>
+  <div class="button-row"><a class="button primary" href="#work">Посмотреть проекты →</a><a class="button secondary" href="/ru/pages/work-index.html">Полный список проектов →</a></div>
+ </div>
+ <div class="hero-graphic" aria-label="Упрощённая схема домашней сети">
+  <div class="graphic-caption"><span>ОБЗОР СЕТИ</span><span class="signal">Шлюз OPNsense</span></div>
+  <svg class="graphic-svg" viewBox="0 0 500 315" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="diagram-title diagram-desc"><title id="diagram-title">Обзор сети BiXCore</title><desc id="diagram-desc">Основной интернет-канал и резервный LTE подключены к OPNsense, который разделяет доверенную сеть, гостевую сеть и виртуальную тестовую среду.</desc>
+ <g stroke="#476d80" stroke-width="2" fill="none"><path d="M128 64V82H250V104"/><path stroke="#74d9d8" stroke-dasharray="5 6" d="M372 64V82H250"/><path d="M250 169V218"/><path d="M96 218H404"/><path d="M96 218V238"/><path d="M250 218V238"/><path d="M404 218V238"/><path stroke="#74d9d8" stroke-dasharray="5 6" d="M250 170C240 191 130 171 105 238"/></g>
+ <rect x="34" y="18" width="188" height="46" rx="9" fill="#12293d" stroke="#4c6b7b"/><text x="128" y="46" fill="#cddfea" font-size="15" font-weight="600" text-anchor="middle">Основной интернет</text>
+ <rect x="278" y="18" width="188" height="46" rx="9" fill="#12293d" stroke="#4c6b7b"/><text x="372" y="46" fill="#cddfea" font-size="15" font-weight="600" text-anchor="middle">Резервный LTE</text>
+ <rect x="139" y="104" width="222" height="65" rx="13" fill="#153a48" stroke="#7bdedb" stroke-width="1.7"/><text x="250" y="128" fill="#7bdedb" font-size="12" font-weight="700" text-anchor="middle">ШЛЮЗ БЕЗОПАСНОСТИ</text><text x="250" y="152" fill="#e9f4fc" font-size="18" font-weight="700" text-anchor="middle">OPNsense</text>
+ <g fill="#11283a" stroke="#456477"><rect x="14" y="238" width="162" height="61" rx="11"/><rect x="188" y="238" width="124" height="61" rx="11"/><rect x="324" y="238" width="162" height="61" rx="11"/></g>
+ <g fill="#e2f1f9" font-size="15" font-weight="650" text-anchor="middle"><text x="95" y="264">Доверенная сеть</text><text x="95" y="282" fill="#9cc4d0" font-size="11">PKI · EAP-TLS · RadSec</text><text x="250" y="264">Гости</text><text x="250" y="282" fill="#9cc4d0" font-size="11">Ограниченный доступ</text><text x="405" y="264">Виртуальная лаборатория</text><text x="405" y="282" fill="#9cc4d0" font-size="11">Тесты firewall</text></g>
+ 
+ </svg>
+  <p class="annotation">Для домашней сети и виртуальной тестовой среды действуют отдельные политики доступа.</p>
+ </div>
+</div></section>
+<section class="facts"><div class="wrap facts-grid">
+ <div class="fact"><b>OPNsense</b><span>Шлюз на Intel N305 с интерфейсами 10GbE</span></div>
+ <div class="fact"><b>Windows Server</b><span>Active Directory, сертификаты и EAP-TLS</span></div>
+ <div class="fact"><b>Proxmox VE</b><span>Тестирование firewall и клиентов по необходимости</span></div>
+</div></section>
+<section class="section wrap" id="work">
+ <div class="section-heading"><p class="kicker">ПРОЕКТЫ</p><h2>Что я создал</h2>
+ <p class="section-intro">Проекты связаны между собой: сети необходимы рабочие службы идентификации и DNS, а виртуальная лаборатория позволяет проверять изменения, не нарушая работу систем, от которых я завишу.</p></div>
+ <div class="cards home-projects">
+  <article class="card"><h3>Шлюз, маршрутизация и IPv6</h3><p>OPNsense обеспечивает сегментацию сети, WireGuard, Suricata и Zenarmor. Я также исследовал проблемы выбора исходного IPv6-адреса и трансляции префиксов.</p><p><a href="/ru/pages/wan-failover-recovery.html">Физическое переключение WAN и восстановление →</a></p><div class="card-end"><a href="/ru/pages/opnsense-ipv6.html">OPNsense и IPv6 →</a></div></article>
+  <article class="card"><h3>Active Directory и сертификаты</h3><p>Два контроллера домена Windows Server, корпоративный CA, NDES и FreeRADIUS обеспечивают доступ через EAP-TLS. Теперь RADIUS-трафик между точками UniFi, коммутатором Omada и шлюзом передаётся по RadSec с взаимной TLS-аутентификацией.</p><div class="card-end"><a href="/ru/pages/windows-ad-pki.html">Windows, PKI и EAP-TLS →</a></div></article>
+  <article class="card"><h3>Коммутация и Wi-Fi</h3><p>Управляемые коммутаторы, VLAN, UniFi Wi-Fi 7 и проводной 802.1X. Я также испытал RadSec с TLS 1.3, решил проблему с сертификатом Omada и сохранил отдельное администрирование через TACACS+.</p><p><a href="/ru/pages/radsec-mtls.html">Как я перевёл эти соединения на RadSec →</a></p><div class="card-end"><a href="/ru/pages/switching-wireless.html">Коммутация и Wi-Fi →</a></div></article>
+  <article class="card"><h3>DNS, NAS и повседневные сервисы</h3><p>DNS клиентов, запросы Active Directory, сертификаты, Docker-сети и сервисы на NAS, включая их восстановление после изменений.</p><div class="card-end"><a href="/ru/pages/network-services.html">Сетевые сервисы →</a></div></article>
+  <article class="card"><h3>Администрирование Windows и Linux</h3><p>Групповые политики, регистрация сертификатов, удалённое управление, средства развёртывания, интеграция Kubuntu и мониторинг серверов и рабочих станций.</p><div class="card-end"><a href="/ru/pages/windows-policy-deployment.html">Администрирование Windows →</a></div></article>
+  <article class="card"><h3>Моя сеть только с IPv6</h3><p>Я провёл изолированный IPv6 VLAN через управляемые коммутаторы и Wi-Fi 7, затем проверил нативный IPv6 и доступ к IPv4-сайтам через DNS64/NAT64 на реальных клиентах Windows и Android.</p><div class="card-end"><a href="/ru/pages/ipv6-only-lab.html">Как я её создал →</a></div></article><article class="card"><h3>PacketFence и контроль доступа</h3><p>Я создал отдельную тестовую NAC VM, исследовал два сбоя и позднее применил функциональный бэкпорт исправления из основного проекта. Повторно проверил цикл гостевого доступа, в том числе после перезагрузки.</p><div class="card-end"><a href="/ru/pages/packetfence-nac.html">Лаборатория PacketFence →</a></div></article>
+  <article class="card"><h3>Лаборатория firewall на Proxmox</h3><p>Тринадцать виртуальных маршрутизаторов и firewall на двенадцати платформах, два тестовых клиента и три VM с сервисами и NAC. Первоначальные одиннадцать firewall также испытаны с реальным ноутбуком через Ethernet.</p><div class="card-end"><a href="/ru/pages/proxmox-firewall-lab.html">Лаборатория firewall →</a></div></article>
+ </div>
+ <p class="home-section-end">Я также создал <a href="/ru/pages/barox-config-tool.html">BiX Barox Config Tool</a> для изучения CLI коммутаторов и экспорта конфигураций. Мой <a href="/ru/pages/radius-control.html">BiXCore RADIUS Control</a> сейчас является стабильным инструментом для управления Wi-Fi-сессиями, гостевым доступом и отдельными операциями Disconnect для проводного 802.1X. Подробнее о миграции хранилища, GPU passthrough и отдельных firewall-платформах можно прочитать в <a href="/ru/pages/work-index.html">полном списке проектов</a>.</p>
+</section>
+<section class="section architecture" id="architecture"><div class="wrap architecture-grid">
+ <div><p class="kicker">КАК ЭТО РАБОТАЕТ</p><h2>Рабочая сеть и отдельная среда для экспериментов</h2>
+ <p class="section-intro">Шлюз OPNsense, коммутаторы, Wi-Fi, службы каталогов и NAS — часть моей повседневной инфраструктуры. Proxmox я использую иначе: запускаю его для сравнения межсетевых экранов или испытания конфигураций с клиентами Windows и Linux.</p>
+ <p class="muted">Лаборатория использует выделенные виртуальные сети и отдельный upstream. Основные пути подключения я проверил и продолжаю тестировать трафик, который должен быть заблокирован.</p>
+ <p><a class="source-link" href="/ru/pages/hardware.html">Оборудование лаборатории →</a></p></div>
+ <div class="architecture-display" aria-label="Повседневные сервисы и отдельная тестовая лаборатория">
+  <div class="home-architecture-group"><h3>Повседневная сеть</h3><p>OPNsense с основным интернет-каналом и резервным LTE, управляемые коммутаторы и Wi-Fi, RadSec, Active Directory, PKI, DNS, NAS и удалённый доступ.</p><a href="/ru/pages/opnsense.html">Подробнее о сети →</a></div>
+  <div class="home-architecture-group"><h3>Тестовая среда</h3><p>Proxmox, виртуальные WAN/LAN-сети firewall и клиенты Windows или Linux. Обычно я запускаю только машины, необходимые для конкретного теста.</p><a href="/ru/pages/lab.html">Устройство лаборатории →</a></div>
+  <div class="home-architecture-group"><h3>Мониторинг и восстановление</h3><p>Мониторинг Windows и шлюза, обновление сертификатов, резервное копирование и устранение проблем после перезапусков или обновлений.</p><a href="/ru/pages/security-operations.html">Эксплуатация и диагностика →</a></div>
+ </div>
+</div></section>
+<section class="section wrap" id="notes">
+ <div class="section-heading"><p class="kicker">ДИАГНОСТИКА</p><h2>Проблемы, с которыми я столкнулся</h2><p class="section-intro">Некоторые из самых полезных исследований начались с отказов: IPv6-адрес без доступа в интернет, коммутатор, блокирующий контроллер домена, неисправный пул хранения. Я описал 43 случая, сгруппировав их по затронутым частям лаборатории. <a href="/ru/pages/notes.html">Все 43 диагностических случая →</a></p></div>
+ <div class="two-col home-topic-grid">
+  <article class="mini-card"><h3>OPNsense и IPv6</h3><p>Выбор исходного WAN-адреса, динамические IPv6-алиасы, DNS, PF states, WireGuard/NPTv6 и изоляция гостей.</p><p><a href="/ru/pages/notes.html#network-incidents">Диагностика сети →</a></p></article>
+  <article class="mini-card"><h3>Коммутация и идентификация клиентов</h3><p>Omada Neighbor Discovery, EAP-TLS контроллера домена, LDAPS failover, регистрация Android SCEP и проблемы управления Windows.</p><p><a href="/ru/pages/notes.html#client-incidents">Случаи по коммутации и идентификации →</a></p></article>
+  <article class="mini-card"><h3>NAS и инфраструктурные сервисы</h3><p>Восстановление отсутствующего IPv6 ULA, исправление Docker-маршрутов и настройка мониторинга ИБП.</p><p><a href="/ru/pages/notes.html#services-incidents">Диагностика сервисов →</a></p></article>
+  <article class="mini-card"><h3>Proxmox и виртуальные машины</h3><p>Проблемы сетей VM, хранилища и GPU, восстановление DD-WRT, а также недавние сбои PacketFence IPSet и DNS.</p><p><a href="/ru/pages/notes.html#virtualization-incidents">Диагностика виртуализации →</a></p></article>
+ </div>
+ <p class="home-section-end">В каждом случае описаны симптомы, выполненные проверки, решение или дальнейшие задачи. <a href="/ru/pages/notes.html">Все 43 случая →</a></p>
+</section>
+<section class="section architecture" id="roadmap"><div class="wrap">
+ <div class="section-heading"><p class="kicker">ЧТО ДАЛЬШЕ</p><h2>Что я хочу попробовать дальше</h2><p class="section-intro">У BiXCore есть несколько направлений развития: завершить тесты восстановления и IPv6, изучить другие firewall-платформы и испытать новые сетевые функции и функции безопасности с реальными клиентами.</p></div>
+ <div class="two-col home-topic-grid">
+  <article class="mini-card"><h3>Другие firewall-платформы</h3><p>Расширенные тесты FortiGate и изучение Palo Alto VM-Series, Juniper vSRX, Check Point, SonicWall и виртуальной маршрутизации Cisco.</p></article>
+  <article class="mini-card"><h3>RADIUS, NAC и реальные Wi-Fi-клиенты</h3><p>Гостевой доступ PacketFence и отдельная сеть Wi-Fi только с IPv6 работают. Следующие задачи — NAC через 802.1X, реальные клиенты PacketFence и BGP/FRR.</p></article>
+  <article class="mini-card"><h3>IPv6 и восстановление</h3><p>Новый VLAN только с IPv6 работает на реальных клиентах. Делегирование префиксов маршрутизаторам, смена префикса провайдера, дополнительные проверки изоляции и тесты аварийного восстановления ещё предстоят.</p></article>
+  <article class="mini-card"><h3>Zenarmor и зашифрованный трафик</h3><p>Пилот TLS на двух доменах прошёл успешно, но DNS enrichment требует исследования. Тесты Multi-Core и Native Netmap выявили проблемы стабильности; дальнейшее сравнение производительности возможно после организации безопасных испытаний.</p><p><a href="/ru/pages/zenarmor.html">Zenarmor: результаты и следующие тесты →</a></p></article>
+ </div>
+ <p class="home-section-end"><a class="button secondary" href="/ru/pages/roadmap.html">Полный список планов →</a></p>
+</div></section>
+<section class="section wrap" id="about"><div class="home-about">
+ <img class="home-about-photo" src="/assets/felix-portrait.webp" width="150" height="225" alt="Портрет Феликса Бистрикера" loading="eager">
+ <div><p class="kicker">ОБО МНЕ</p><h2>Кто стоит за BiXCore</h2>
+ <p class="section-intro">Я Феликс Бистрикер. Моя работа в области электронных систем безопасности включает пожарную сигнализацию, контроль доступа и видеонаблюдение, а также интеграцию AD, управляемые коммутаторы, маршрутизаторы, межсетевые экраны и GSM-подключения IP-камер и видеосерверов. BiXCore вырос из моего интереса к более глубокому пониманию этих сетей.</p>
+ <p><a class="source-link" href="/ru/pages/about.html">Опыт, образование и профессиональный путь →</a>    <a class="source-link" href="https://github.com/bixstriker" rel="noopener noreferrer">Профиль GitHub →</a></p></div>
+</div></section>
+</main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Felix Bistriker</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

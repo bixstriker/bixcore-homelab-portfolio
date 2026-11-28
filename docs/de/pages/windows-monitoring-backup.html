@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Windows Server mit Prometheus und Grafana überwachen und AD- und PKI-Recovery-Verfahren entwickeln.">
+  <title>Monitoring und Backup für Windows Server · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/de/pages/windows-monitoring-backup.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Monitoring und Backup für Windows Server · BiXCore">
+  <meta property="og:description" content="Windows Server mit Prometheus und Grafana überwachen und AD- und PKI-Recovery-Verfahren entwickeln.">
+  <meta property="og:url" content="https://lab.bixcore.de/de/pages/windows-monitoring-backup.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/windows-monitoring-backup.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/windows-monitoring-backup.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/windows-monitoring-backup.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/windows-monitoring-backup.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/windows-monitoring-backup.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/windows-monitoring-backup.html" hreflang="en" lang="en">English</a><a href="/ru/pages/windows-monitoring-backup.html" hreflang="ru" lang="ru">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Windows Server</p>
+<p class="kicker">PROMETHEUS / GRAFANA / BACKUP</p>
+<h1>Windows Server überwachen und sichern</h1>
+<p class="lede">Nachdem Active Directory und Zertifikatdienste liefen, wollte ich Probleme erkennen, bevor sie Anmeldung oder Netzzugang beeinträchtigen. Außerdem wollte ich einen Recovery-Plan, der über einen zweiten Domänencontroller hinausgeht.</p>
+<div class="article">
+<h2>Dienste überwachen</h2>
+<p>Ich installierte Windows Exporter mit Collectors für Systemleistung, Active Directory, DNS, Zertifikatdienste, IIS und geplante Aufgaben. Prometheus sammelt die Metriken; mein Grafana-Dashboard konzentriert sich auf die am häufigsten benötigten Prüfbereiche.</p>
+<p>Damit sehe ich Serverlast, Verzeichnisdienste, Zertifikatsveröffentlichung und Ausführung geplanter Aufgaben. Sysmon nutze ich separat zur Untersuchung von Windows-Ereignissen; ein vollständiges SIEM habe ich daraus nicht gemacht.</p>
+<h2>System-State-Backups</h2>
+<p>Ich konfigurierte und prüfte geplante System-State-Backups für die Domänencontroller mit NAS-Speicher als Teil der Backup-Lösung. Die Recovery-Notizen behandeln auch DNS, Zertifikate, Zugriffsrechte und die sinnvolle Reihenfolge der wiederherzustellenden Dienste.</p>
+<p>Der zweite Domänencontroller hilft bei einem Verzeichnisdienstausfall. Er ersetzt weder die Sicherung der CA-Datenbank noch garantiert er die Wiederherstellung des Serverspeichers nach Festplattenausfall.</p>
+<h2>Als ein Backup wegen eines Netzwerkausfalls scheiterte</h2>
+<p>Am 1. November schlug ein wöchentlicher System-State-Job auf einem Controller fehl. Windows-Logs zeigten einen Realtek-Netzwerkadapter-Reset, danach SMB-Fehler und einen unterbrochenen Schreibvorgang zum NAS. Das rote Monitoring-Ergebnis betrachtete ich nicht als Fehlalarm und löschte keine letzten funktionierenden Backups, um die Anzeige zu bereinigen.</p>
+<p>Ich aktualisierte die Realtek-NIC-Treiber beider Windows-Server-Controller auf das neuere Server-Treiberpaket. Beide Adapter waren wieder aktiv, und die nächsten geplanten wöchentlichen System-State-Backups am 8. November wurden als erfolgreich gemeldet. Das ist ermutigend, doch die Dokumentation enthält keine neue unabhängige Prüfung dieser Backup-Kataloge oder vollständige Wiederherstellung. Eine erfolgreiche Woche beweist nicht, dass der alte NIC-Reset nie wieder auftritt.</p>
+<p>Auch in der Backup-Rotation fand ich eine Schwäche: Sie sortiert datierte Ordner, unterscheidet aber noch nicht erfolgreich abgeschlossene von unvollständigen Backups. Das muss korrigiert werden, bevor die aufbewahrten Kopien als zuverlässig letzte drei erfolgreiche Backups gelten können. <a href="/de/pages/notes.html#dc-backup-nic">Ausfall- und Recovery-Notizen →</a></p>
+<h2>Domänencontroller bei Batteriebetrieb sicher herunterfahren</h2>
+<p>Am 27. November ergänzte ich auf jedem Domänencontroller eine lokale geplante PowerShell-Aufgabe. Jede fragt die eigene USV über NUT ab, eine über das NAS, die andere über OPNsense. Die Aufgabe läuft jede Minute als SYSTEM und veranlasst ein reguläres Windows-Herunterfahren nur, wenn zwei Messungen im Abstand von fünf Sekunden Batteriebetrieb bei höchstens 50 Prozent Ladung bestätigen.</p>
+<p>Nicht erreichbarer USV-Server, ungültige Messung, Rückkehr zur Netzversorgung oder Ladung über dem Schwellenwert verhindern das Herunterfahren. Die Entscheidung erfolgt lokal auf jedem Server, unabhängig von meiner Fernadministrationsverbindung.</p>
+<p>Ich prüfte reale Online-Messwerte, simulierte die Auslösebedingung ohne Abschalten der Server und verifizierte manuelle und geplante SYSTEM-Ausführungen. Beide Aufgaben endeten erfolgreich. Die USVs wurden nicht bis zum Schwellenwert entladen, und ein tatsächliches batteriebedingtes Herunterfahren habe ich nicht beobachtet. Auch die Abschaltreihenfolge muss beachtet werden, da der NUT-Server bis zur Entscheidung des abhängigen Controllers verfügbar bleiben muss.</p>
+<h2>Was ich noch testen möchte</h2>
+<p>Die letzten geplanten Jobs wurden als erfolgreich gemeldet. Ich habe jedoch noch keinen der Controller und die CA aus einem vollständigen verifizierten Backup-Satz wieder aufgebaut. Diese Übung möchte ich abschließen, bevor ich den Recovery-Plan als durchgängig getestet betrachte.</p>
+<p><a class="source-link" href="/de/pages/windows-ad-pki.html">Verzeichnis- und Zertifikatdienste →</a>   <a class="source-link" href="/de/pages/roadmap.html">Recovery-Arbeiten im Ausblick →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/de/pages/work-index.html">← Alle Projekte</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

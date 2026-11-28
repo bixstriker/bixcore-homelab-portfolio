@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Proxmox und Windows im Dual-Boot, Korrektur des Host-Netzwerks und Migration des VM-Speichers.">
+  <title>Aufbau des Proxmox-Hosts · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/de/pages/proxmox-host-storage.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Aufbau des Proxmox-Hosts · BiXCore">
+  <meta property="og:description" content="Proxmox und Windows im Dual-Boot, Korrektur des Host-Netzwerks und Migration des VM-Speichers.">
+  <meta property="og:url" content="https://lab.bixcore.de/de/pages/proxmox-host-storage.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/proxmox-host-storage.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/proxmox-host-storage.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/proxmox-host-storage.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/proxmox-host-storage.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/proxmox-host-storage.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/proxmox-host-storage.html" hreflang="en" lang="en">English</a><a href="/ru/pages/proxmox-host-storage.html" hreflang="ru" lang="ru">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Proxmox</p>
+<p class="kicker">HYPERVISOR / SPEICHER / NETZWERK</p>
+<h1>Aufbau des Proxmox-Hosts</h1>
+<p class="lede">Ich wollte ein richtiges Firewall-Labor, aber keinen weiteren leistungsfähigen Rechner dauerhaft dafür betreiben. Die Lösung war ein älterer Desktop, auf dem Windows verfügbar bleibt und Proxmox bei Bedarf startet.</p>
+<div class="article">
+<h2>Windows und Proxmox auf demselben PC</h2>
+<p>Ich installierte Debian 13 und Proxmox VE 9.2 neben dem vorhandenen Windows 11. Windows bleibt die normale Bootauswahl; bei Bedarf startet eine einmalige UEFI-BootNext-Anforderung stattdessen Proxmox. Den Wechsel testete ich ohne Tastatur oder Monitor.</p>
+<p>Später rüstete ich auf einen Intel Core i7-4790K auf und bestätigte aktives VT-d/IOMMU am laufenden Host. Die Linux-Netzwerkkonfiguration stellte ich vom Desktop-orientierten NetworkManager auf ifupdown2 um, das besser mit Proxmox-Bridges zusammenarbeitet.</p>
+<h2>Host-Netzwerk und Verzeichnisdienstintegration</h2>
+<p>Host-Managementnetz und Upstream-Verkehr virtueller Firewalls haben unterschiedliche Rollen. Jede Firewall erhält außerdem ein eigenes virtuelles LAN für Windows- und Linux-Testclients. Damit kann ein Client zwischen Firewall-Systemen wechseln, ohne das reguläre Heimgateway zu verändern.</p>
+<p>Ich nahm den Proxmox-Host mit realmd und SSSD in Active Directory auf und installierte ein vertrauenswürdiges Management-HTTPS-Zertifikat der internen CA. IPv6 auf der Management-Bridge erforderte zusätzliche Arbeit: Linux musste Router Advertisements bei aktiviertem Forwarding und Bridges anders behandeln.</p>
+<p>Ein frühes VLAN-/DHCP-Problem erforderte Prüfungen am physischen Switch, getaggten Uplink, Proxmox-Bridge und Gast-NIC, nicht nur Änderungen im virtuellen Router. <a href="/de/pages/notes.html#lab">Die Fehleranalyseschritte habe ich dokumentiert</a> für spätere Firewall-Aufbauten.</p>
+<h2>Den VM-Speicher ersetzen</h2>
+<p>Der erste VM-Pool verwendete zwei ältere HDDs ohne Redundanz. Nach SMART- und ZFS-Prüfungen entschied ich mich für die Migration auf eine Ersatzfestplatte, statt den fehleranfälligen Aufbau weiterzuverwenden.</p>
+<p>Ich migrierte die ZFS-Daten, aktualisierte Proxmox-Speicherreferenzen, startete die vorhandenen Gäste erneut und legte den alten Pool still. Der aktuelle Aufbau nutzt eine einzelne 2-TB-ZFS-Festplatte. Für ein Bedarfslabor ist das geeignet, bei Festplattenausfall ist aber eine Wiederherstellung aus separatem Backup nötig.</p>
+<h2>Den Host nach den November-Updates prüfen</h2>
+<p>Am 26. November lief der Host mit Debian 13.8 und Proxmox VE 9.3.1. Bootpfad, ZFS-Pool und Systemdienste wurden nach den Updates geprüft. Ein AppArmor-Denial beim CUPS-Neustart hatte die Logrotation aufgehalten; ich korrigierte das Profil und prüfte den Abschluss von CUPS und des nächsten logrotate-Laufs. Die AppArmor-Änderung muss nach Paketupdates erneut geprüft werden.</p>
+<p>Außerdem verifizierte ich separaten Ed25519-SSH-Zugang von Windows zum Labor-Administrationskonto. Root-SSH-Zugang per Schlüssel wurde nicht aktiviert. Der Bestand von 18 VMs ist intakt; Snapshots ersetzen kein unabhängiges Backup des VM-Pools auf einer einzelnen Festplatte.</p>
+<h2>Was ich verbessern möchte</h2>
+<p>Die offenen Aufgaben sind praktisch: Restore-Test außerhalb des Hosts, weitere Neustart- und IPv6-Prüfungen und vollständige Tests zu sperrender Netzpfade. Da ich normalerweise nur zwei oder drei VMs gleichzeitig betreibe, haben Zuverlässigkeit und niedrige Betriebskosten Vorrang vor einem dauerhaften Cluster.</p>
+<p><a class="source-link" href="/de/pages/notes.html#zfs">Speicher-Fehlerfall →</a>   <a class="source-link" href="/de/pages/virtual-firewall-platforms.html">Getestete Firewall-Systeme →</a>   <a class="source-link" href="/de/pages/gpu-remote-desktop.html">GPU-Passthrough →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/de/pages/work-index.html">← Alle Projekte</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

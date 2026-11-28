@@ -6,23 +6,27 @@
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="How I passed an Intel GPU through to a KDE VM, fixed Full HD and tested H.264 encoding and KRDP.">
   <title>Intel iGPU Passthrough and Remote Desktop · BiXCore</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="/styles.css">
   <link rel="canonical" href="https://lab.bixcore.de/pages/gpu-remote-desktop.html">
-  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BiXCore">
   <meta property="og:title" content="Intel iGPU Passthrough and Remote Desktop · BiXCore">
   <meta property="og:description" content="How I passed an Intel GPU through to a KDE VM, fixed Full HD and tested H.264 encoding and KRDP.">
   <meta property="og:url" content="https://lab.bixcore.de/pages/gpu-remote-desktop.html">
   <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/gpu-remote-desktop.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/gpu-remote-desktop.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/gpu-remote-desktop.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/gpu-remote-desktop.html">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
-    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+    <a class="brand" href="/index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="/pages/work-index.html">Projects</a><a href="/pages/notes.html">Troubleshooting</a><a href="/pages/hardware.html">Hardware</a><a href="/pages/roadmap.html">Plans</a><a href="/pages/about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Language selection"><a href="/de/pages/gpu-remote-desktop.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/gpu-remote-desktop.html" hreflang="en" lang="en" aria-current="page">English</a><a href="/ru/pages/gpu-remote-desktop.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Proxmox</p>
+<p class="breadcrumb"><a href="/index.html">Home</a> / <a href="/pages/work-index.html">Projects</a> / Proxmox</p>
 <p class="kicker">INTEL GRAPHICS / KDE / REMOTE DESKTOP</p>
 <h1>Intel GPU Passthrough and KRDP</h1>
 <p class="lede">I wanted a KDE virtual machine that could use the host's Intel graphics hardware and give me a usable Full HD remote desktop. It took several attempts to get the GPU, display mode and desktop session to cooperate.</p>
@@ -41,5 +45,5 @@
 <p>The Intel HD 4600 was still attached to the guest with the i915 driver and a render node. An FFmpeg VA-API test using the i965 driver successfully encoded 60 H.264 frames at 1280 × 720 and 30 fps after the reboot. This confirms hardware encoding in the guest; it does not establish which encoder KRDP used during the real remote desktop session.</p>
 <h2>What I would do differently</h2>
 <p>Next time I would first test the guest's display mode and EDID, then check the remote desktop settings, instead of changing several graphics devices together. The current lab setup also uses a convenience-oriented desktop login, which I would not copy unchanged to a more exposed machine.</p>
-<p><a class="source-link" href="notes.html#gpu">The graphics troubleshooting case →</a> &nbsp; <a class="source-link" href="proxmox-host-storage.html">The Proxmox host →</a></p>
-</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>
+<p><a class="source-link" href="/pages/notes.html#gpu">The graphics troubleshooting case →</a> &nbsp; <a class="source-link" href="/pages/proxmox-host-storage.html">The Proxmox host →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/pages/work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

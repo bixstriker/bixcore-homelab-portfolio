@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Создание Active Directory, AD CS, NDES и FreeRADIUS, включая исправление проверки CRL двух CA.">
+  <title>Active Directory, PKI и EAP-TLS · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/ru/pages/windows-ad-pki.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Active Directory, PKI и EAP-TLS · BiXCore">
+  <meta property="og:description" content="Создание Active Directory, AD CS, NDES и FreeRADIUS, включая исправление проверки CRL двух CA.">
+  <meta property="og:url" content="https://lab.bixcore.de/ru/pages/windows-ad-pki.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/windows-ad-pki.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/windows-ad-pki.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/windows-ad-pki.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/windows-ad-pki.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Перейти к содержанию</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/ru/index.html" aria-label="BiXCore Lab, главная"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ИНЖЕНЕРНАЯ ЛАБОРАТОРИЯ</span></span></a>
+    <nav class="top-nav" aria-label="Основная навигация"><a href="/ru/pages/work-index.html">Проекты</a><a href="/ru/pages/notes.html">Диагностика</a><a href="/ru/pages/hardware.html">Оборудование</a><a href="/ru/pages/roadmap.html">Планы</a><a href="/ru/pages/about.html">Обо мне</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Выбор языка"><a href="/de/pages/windows-ad-pki.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/windows-ad-pki.html" hreflang="en" lang="en">English</a><a href="/ru/pages/windows-ad-pki.html" hreflang="ru" lang="ru" aria-current="page">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/ru/index.html">Главная</a> / <a href="/ru/pages/work-index.html">Проекты</a> / Windows Server</p>
+<p class="kicker">ACTIVE DIRECTORY / AD CS / RADIUS</p>
+<h1>Active Directory, сертификаты и EAP-TLS</h1>
+<p class="lede">У BiXCore собственный домен Windows и инфраструктура сертификатов. Я создал её, чтобы понять, как устройства могут аутентифицироваться в сети по индивидуальным сертификатам и что происходит при отказе вспомогательных сервисов.</p>
+<div class="article">
+<h2>Создание домена</h2>
+<p>Использую два контроллера домена Windows Server 2025 с репликацией Active Directory и DNS. Добавление второго потребовало проверки репликации, SYSVOL/DFSR, разрешения имён, аутентификации и зависимых сервисов.</p>
+<p>Корпоративный центр сертификации и NDES размещены на одном контроллере. Для запросов к каталогу можно использовать второй, но это не означает наличия второго CA или сервера регистрации SCEP.</p>
+<h2>Сертификаты и авторизация</h2>
+<p>CA выдаёт разные типы сертификатов компьютерам Windows, контроллерам домена и управляемым Android-устройствам. NDES обеспечивает SCEP-регистрацию мобильных клиентов. FreeRADIUS на OPNsense проверяет цепочку сертификата и сведения об отзыве, затем отдельно принимает решение об авторизации.</p>
+<p>Для определённых инфраструктурных идентичностей использую локальные политики, для подходящих доменных компьютеров — LDAPS. Проверил fallback каталога при недоступном основном контроллере, проводной и беспроводной EAP-TLS поддерживаемых клиентов.</p>
+<h2 id="two-ca-crls">Два центра сертификации и их списки отзыва</h2>
+<p>До перехода на корпоративный Windows CA у некоторых управляемых Android-устройств уже были сертификаты прежнего локального CA. На время миграции сохранил доверие к нему, чтобы устройства продолжали подключаться.</p>
+<p>После включения строгой проверки CRL в FreeRADIUS старые устройства перестали аутентифицироваться. Сертификаты оставались доверенными, но сформированный CA bundle содержал список отзыва нового CA, а не старого. TLS-проверка не находила соответствующий CRL.</p>
+<p>Создал действительный CRL прежнего CA и добавил небольшой helper, который дополняет bundle <em>после того, как</em> OPNsense регенерирует файлы сертификатов FreeRADIUS. Hook запуска и конфигурации повторяет изменение при пересоздании файлов плагина. Проверил наличие обоих CRL, их издателей и снова испытал старые Android-клиенты. EAP-TLS восстановился при включённой проверке отзыва.</p>
+<p>Главный урок: доверия к издателю недостаточно, если требуется проверка CRL. FreeRADIUS необходим действительный список отзыва каждого принимаемого CA.</p>
+<h2>Проверка всего пути публикации CRL</h2>
+<p>Также проверил путь публикации сведений об отзыве с Windows CA через отдельный веб-endpoint на NAS до OPNsense и действующего bundle FreeRADIUS. Издатель, ревизия и содержимое CRL совпадали на проверенных этапах, HTTP-endpoint возвращал ожидаемый ответ. Для этого не требовалось отзывать ещё один рабочий сертификат ради негативного теста.</p>
+<p>Раньше скрипт публикации мог сообщать об успехе даже при ошибке сравнения или замены удалённого файла. Исправил обработку exit status, проверил ошибки на временных файлах и плановый запуск от штатной сервисной учётной записи. Успех при неизменном или обновлённом файле теперь сообщается только при успешной удалённой операции.</p>
+<p>Независимый бэкап базы и ключа CA и полное испытание восстановления CA остаются отдельными задачами. <a href="/ru/pages/windows-monitoring-backup.html">Заметки о бэкапах и восстановлении →</a></p>
+<h2>Путь SCEP-сертификата до отзыва</h2>
+<p>Проверил замену управляемого Android-сертификата от выдачи до отзыва старого. Новый CRL совпадал на выдающем CA, HTTP-endpoint NAS и в активном bundle FreeRADIUS. Телефон подключился с новым сертификатом. Это наблюдавшийся сценарий одного устройства; отдельный пакет Access-Accept не захватывал.</p>
+<h2>Безопасный повтор публикации PKI</h2>
+<p>Отзыв также выявил race condition: два плановых процесса публикации использовали один временный файл на NAS, один попытался переместить его после другого. Другая публикация завершилась успешно, обновлённый CRL оставался доступным. Добавил именованный mutex и уникальные временные имена, проверил обычный запуск и ожидание при намеренно удерживаемой блокировке. Две одновременные публикации изменяющихся файлов повторно не испытаны.</p>
+<p><a href="/ru/pages/notes.html#pki-publish-race">Исследование конфликта публикации →</a></p>
+<h2>Проблемы, которые пришлось решить</h2>
+<div class="two-col">
+<article class="mini-card"><h3>Контроллер домена на защищённом порту коммутатора</h3><p>Контроллеру может требоваться сеть до доступа к тем самым службам каталога, которые используются для авторизации. Выделил его проводной EAP-TLS-идентичности подходящий сертификат и отдельный путь авторизации, затем проверил результат на коммутаторе и RADIUS.</p><p><a href="/ru/pages/notes.html#dc-eap">Проблема начальной аутентификации →</a></p></article>
+<article class="mini-card"><h3>Проверка LDAPS fallback</h3><p>Недостаточно указать второй LDAP-endpoint в конфигурации. Сделал основной недоступным и проверил продолжение запросов авторизации через другой контроллер.</p><p><a href="/ru/pages/notes.html#identity">Тест failover →</a></p></article>
+<article class="mini-card"><h3>IPv6 на контроллере домена</h3><p>DNS-записи IPv6 выглядели правильными, но не все адреса были доступны. Исследование пакетов и настроек ND security коммутатора привело к исправлению для проверенных адресов.</p><p><a href="/ru/pages/notes.html#omada-nd">Проблема Neighbor Discovery →</a></p></article>
+<article class="mini-card"><h3>Сертификаты не обслуживают себя сами</h3><p>Настроил продление сертификатов и публикацию CRL, но ещё хочу улучшить отзыв заменённых мобильных сертификатов и проверить полноценное восстановление выдающего CA.</p><p><a href="/ru/pages/linux-mobile-identity.html">Регистрация Android и Linux →</a></p></article>
+</div>
+<h2>Подчинённый CA для узкого пилота TLS Inspection</h2>
+<p>27 ноября через AD CS выпустил отдельный подчинённый CA инспекции для Zenarmor. Сертификат имеет CA Basic Constraints, нулевой path length и Server Authentication EKU. Закрытый ключ создан на шлюзе; ключ корпоративного root CA остался на сервере CA. Проверил цепочку и отзыв в Windows, исправил порядок импорта сертификатов Zenarmor и проверил реально предъявляемого издателя при HTTPS-пилоте на двух доменах.</p>
+<p>Этот CA имеет другую задачу, чем клиентские EAP-TLS-сертификаты. Не менял существующую политику доверия RADIUS и не перевыпускал корпоративный root. Эксперимент с полной инспекцией, включая нерешённый обход DNS enrichment, описан в <a href="/ru/pages/zenarmor.html">заметках о Zenarmor</a>.</p>
+<h2>Что ещё требует внимания</h2>
+<p>Failover каталога работал, но восстановление CA и NDES из независимого бэкапа — отдельное испытание. Neighbor bindings IPv6 коммутатора также требуют проверки после будущей смены upstream-префикса.</p>
+<p><a class="source-link" href="/ru/pages/identity.html">Обзор доступа по сертификатам →</a>   <a class="source-link" href="/ru/pages/windows-policy-deployment.html">Политики Windows-клиентов →</a>   <a class="source-link" href="/ru/pages/windows-monitoring-backup.html">Мониторинг и восстановление →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/ru/pages/work-index.html">← Все проекты</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Личная лаборатория сетей и IT-безопасности</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

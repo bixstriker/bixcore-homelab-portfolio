@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Mein TACACS+-Aufbau zur Switch-Administration, Active-Directory-Integration, Autorisierungsprüfungen und der ungelöste lokale Omada-Fallback.">
+  <title>TACACS+ und Switch-Administration · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/de/pages/tacacs-switch-aaa.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="TACACS+ und Switch-Administration · BiXCore">
+  <meta property="og:description" content="Mein TACACS+-Aufbau zur Switch-Administration, Active-Directory-Integration, Autorisierungsprüfungen und der ungelöste lokale Omada-Fallback.">
+  <meta property="og:url" content="https://lab.bixcore.de/de/pages/tacacs-switch-aaa.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/tacacs-switch-aaa.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/tacacs-switch-aaa.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/tacacs-switch-aaa.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/tacacs-switch-aaa.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/tacacs-switch-aaa.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/tacacs-switch-aaa.html" hreflang="en" lang="en">English</a><a href="/ru/pages/tacacs-switch-aaa.html" hreflang="ru" lang="ru">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / TACACS+</p>
+<p class="kicker">SWITCH-ADMINISTRATION / ACTIVE DIRECTORY / AAA</p>
+<h1>TACACS+ für die Switch-Administration</h1>
+<p class="lede">Ich wollte Verzeichniskonten für die Switch-Verwaltung nutzen und zugleich administrative Rechte und Recovery-Zugang kontrollieren. Besonders interessant wurde das Verhalten bei nicht verfügbarem TACACS+-Dienst.</p>
+<div class="article">
+<h2>Wie ich den Aufbau umgesetzt habe</h2>
+<p>Für Netzwerkclients nutze ich bereits RADIUS und Zertifikate. Switch-Administratoranmeldungen sind jedoch ein anderer Zugriffstyp. Ich stellte <strong>tac_plus-ng</strong> über TACACS-NG-UI auf meinem NAS bereit. Das Backend nutzt validierte LDAPS-Verbindungen zu zwei Active-Directory-Controllern mit separatem Web-Frontend und PostgreSQL-Datenbank. Der bestehende Reverse Proxy blieb für die UI erhalten.</p>
+<p>Ich unterschied zwischen einem Administrator mit Konfigurationszugriff und weiteren authentifizierten Benutzern mit eingeschränkten Rechten. Omada und Barox interpretieren Privilegstufen unterschiedlich. Deshalb testete ich den tatsächlichen Zugriff in jeder Oberfläche, statt eine direkte Zuordnung der Zahlen anzunehmen.</p>
+<p>Authentifizierung und eingeschränkte Rollen funktionierten an beiden Switches. Authentifizierung, Autorisierung und Accounting sind soweit unterstützt eingerichtet; nicht jeder mögliche Befehl und Accounting-Eintrag wurde geprüft.</p>
+<h2>Ein kontrollierter Fallback-Test</h2>
+<p>Anschließend nahm ich den TACACS+-Daemon absichtlich außer Betrieb und prüfte, ob die Switches tatsächlich eine lokale Notfallanmeldung erlaubten.</p>
+<ul>
+<li><strong>Barox:</strong> Der separate lokale Administrator konnte sich bei nicht verfügbarem TACACS+ anmelden. Nach Rückkehr des Dienstes funktionierte die normale Domänenanmeldung wieder.</li>
+<li><strong>Omada:</strong> Die lokale Webanmeldung funktionierte bei ausdrücklich eingestellter lokaler Authentifizierung. Mit TACACS+-danach-lokal und unerreichbarem Server wurde dasselbe lokale Konto abgewiesen. Über SSH zeigte sich ein ähnliches Symptom.</li>
+<li><strong>Netzwerkprüfung:</strong> Paketmitschnitte zeigten wiederholte TCP-Verbindungsversuche von Omada ohne Antwort. Ein gezielter Netzwerk-Drop reproduzierte das Ergebnis, ohne den gesamten Container-Stack anzuhalten.</li>
+</ul>
+<p>Der Omada-Fehler ist reproduzierbar <strong>in meiner getesteten Konfiguration</strong>. Das beweist keinen Firmwarefehler als Ursache; die interne Fallback-Entscheidung des Switches ist nicht sichtbar. Am 12. November 2026 meldete ich die Beobachtungen an TP-Link-Support. Das Problem bleibt offen.</p>
+<h2>Ressourcenverbrauch und Wiederherstellung</h2>
+<p>Das Docker-Projekt trennt TACACS+-Backend, UI und Datenbank. Den FastAPI-Dienst reduzierte ich auf einen Uvicorn-Worker. Eine Momentaufnahme zeigte ungefähr 122 MiB für den laufenden Stack; das war kein Spitzenlasttest.</p>
+<p>Ein zentraler Anmeldedienst vereinfacht die tägliche Administration, schafft aber auch eine Abhängigkeit. Eine unabhängige Wiederherstellung von Datenbank und Konfiguration muss ich noch dokumentieren und testen. Auf Omadas lokalen Fallback verlasse ich mich erst, wenn das Verhalten geklärt ist.</p>
+<p><a class="source-link" href="/de/pages/switching-wireless.html">Managed Switches und WLAN →</a>   <a class="source-link" href="/de/pages/nas-services-operations.html">NAS-Betrieb →</a>   <a class="source-link" href="/de/pages/notes.html#tacacs-fallback">Fallback-Untersuchung →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/de/pages/work-index.html">← Alle Projekte</a></p>
+</main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

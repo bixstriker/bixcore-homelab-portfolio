@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Managed Switches, UniFi-WLAN, VLANs, EAP-TLS und meine Untersuchungen zu IPv6 Neighbor Discovery.">
+  <title>Switching, WLAN und Network Discovery · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/de/pages/switching-wireless.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Switching, WLAN und Network Discovery · BiXCore">
+  <meta property="og:description" content="Managed Switches, UniFi-WLAN, VLANs, EAP-TLS und meine Untersuchungen zu IPv6 Neighbor Discovery.">
+  <meta property="og:url" content="https://lab.bixcore.de/de/pages/switching-wireless.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/switching-wireless.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/switching-wireless.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/switching-wireless.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/switching-wireless.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/switching-wireless.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/switching-wireless.html" hreflang="en" lang="en">English</a><a href="/ru/pages/switching-wireless.html" hreflang="ru" lang="ru">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Netzwerk</p>
+<p class="kicker">SWITCHING / WLAN / 802.1X</p>
+<h1>Switching, WLAN und 802.1X</h1>
+<p class="lede">Die Switching- und WLAN-Seite von BiXCore eignet sich gut, um dasselbe Netz aus drei Perspektiven zu verstehen: Client, Access Point oder Switch und RADIUS-Server.</p>
+<div class="article">
+<h2>Switches und VLANs</h2>
+<p>Ich verwende Managed Switches von Omada und Grandstream, um Client-, Gast-, Infrastruktur- und Laborverkehr zu trennen. Getaggte und ungetaggte VLAN-Mitgliedschaften, Port-PVIDs und Trunk-Verhalten habe ich an den realen Switch-Oberflächen geprüft. Konfigurationsexporte halfen beim Abgleich, ersetzten jedoch nicht die Prüfung der aktiven Einstellungen.</p>
+<p>Die Switches ermöglichten mir außerdem, herstellerspezifische Konfigurationsformate zu untersuchen und zwei Geräte zu vergleichen, ohne identische Portrollen vorauszusetzen.</p>
+<h2>Switch-Administration über TACACS+</h2>
+<p>Ich ergänzte einen separaten TACACS+-Dienst für die Administratoranmeldung auf Omada und Barox. Er verwendet AD über LDAPS und unterscheidet Volladministratoren von eingeschränkten Konten. Der Ausfalltest war besonders aufschlussreich: Barox wechselte zum lokalen Recovery-Konto, Omada dagegen nicht im getesteten TACACS+-danach-lokal-Aufbau, obwohl die explizite lokale Anmeldung funktionierte. Ich meldete das Verhalten an TP-Link; die Ursache ist noch unbekannt.</p>
+<p><a href="/de/pages/tacacs-switch-aaa.html">TACACS+-Aufbau und Fallback-Untersuchung →</a></p>
+<h2>Enterprise-WLAN und Netzwerkzugang</h2>
+<p>Das WLAN nutzt verwaltete UniFi-APs und einen lokal betriebenen Controller. Unterstützte Clients authentifizieren sich über EAP-TLS-Zertifikate mit FreeRADIUS statt mit einem gemeinsamen Passwort. Kabelgebundenes 802.1X bringt weitere Anforderungen: Geräte wie Domänencontroller müssen so behandelt werden, dass die Netzwerkauthentifizierung nicht von noch unerreichbaren Diensten abhängt.</p>
+<p>Ich untersuchte außerdem, welche Informationen sich aus dem Controller-Backup-Format gewinnen lassen. Das half beim Verständnis gespeicherter WLAN-Einstellungen, aber der laufende Controller und reale Clientverbindungen sind aussagekräftigere Prüfungen.</p>
+<h2>RadSec im WLAN und am kabelgebundenen Switch</h2>
+<p>Beide UniFi-APs und Omada verwenden inzwischen <strong>RadSec mit TLS 1.3</strong> zum OPNsense-Gateway. Endgeräte-EAP-TLS blieb von diesem Transport getrennt. Bei Omada scheiterten die Test-CA-Ketten trotz erfolgreicher OpenSSL-Prüfung. Deshalb verwendete ich eine vertrauenswürdige Let's-Encrypt-Kette für die Serveridentität des Proxys und behielt die separate bestehende CA für die Clientidentität des Switches bei.</p>
+<p>Omadas Serverzertifikatsprüfung ist aktiv. Ich prüfte erfolgreiches TLS, neue Autorisierung und Accounting. Beide UniFi-APs wurden ebenfalls getestet. Die ACME-Neustartaktion des Gateways funktioniert; die automatische Aktualisierung der exportierten PEM-Datei des Proxys bei der ersten realen Erneuerung muss noch geprüft werden. <a href="/de/pages/radsec-mtls.html">Was ich ausprobiert habe und was funktionierte →</a></p>
+<h2>Eine WLAN-Sitzung beobachten und zurücksetzen</h2>
+<p>Ich ergänzte RADIUS Accounting für das UniFi-Enterprise-WLAN und prüfte, dass die bestehende FreeRADIUS-Datenbank die WLAN-Sitzungsaktualisierungen erfasste. Ein Disconnect-Test zeigte die Bedeutung von Roaming: Eine Session-ID kann veraltet sein, obwohl das Telefon noch im Netz ist. Mit einem aktuellen Sitzungseintrag bestätigte der AP den gezielten Disconnect, und der Client authentifizierte sich erneut per EAP-TLS.</p>
+<p>Das ist ein getesteter Disconnect, kein erfolgreicher VLAN-Wechsel im laufenden Betrieb. Eine spätere CoA-VLAN-Anfrage führte in der getesteten Firmware zu einem Unsupported-Attribute NAK. Die separate <a href="/de/pages/ipv6-only-lab.html">reine IPv6-Test-SSID</a> ist eine andere WLAN-Konfiguration und hat die Enterprise-SSID nicht ersetzt.</p>
+<p><a href="/de/pages/radius-control.html">Mein RADIUS-Control-Werkzeug und WLAN-Cache-Tests →</a></p>
+<h2>Omada-LAN-Disconnect: Ein ACK reichte nicht</h2>
+<p>Ich ergänzte individuelle kabelgebundene 802.1X-Disconnects für den konfigurierten Omada-Switch. Das erste Paket erhielt ein NAK, eine gezieltere Anfrage ein authentifiziertes ACK. Dann stellte ich fest, dass Omada den alten Accounting-Eintrag nach der Rückkehr des Clients manchmal offen ließ.</p>
+<p>Die Bereinigung wartet nun auf einen eindeutig passenden nachfolgenden Accounting-Start desselben Clients und Ports. Die abschließenden Tests an zwei physischen Ports mit Arbeitsplatzrechner und Domänencontroller waren erfolgreich. Es gibt keine willkürliche Portabschaltung und keine automatische Wiederholung bei unklarem Ergebnis. <a href="/de/pages/notes.html#omada-accounting">Der Accounting-Fehlerfall →</a> · <a href="/de/pages/radius-control.html">RADIUS Control →</a></p>
+<h2>Drei getrennte Untersuchungen</h2>
+<div class="two-col">
+<article class="mini-card"><h3>IPv6 Neighbor Discovery</h3><p>Ein Windows-Domänencontroller hatte IPv6-Adressen, die per DNS aufgelöst, aber nicht erreicht werden konnten. Das ND-Inspection-Verhalten des Switches war Teil des Problems. Gezielte Neighbor-Bindings stellten die getesteten Verbindungen wieder her.</p><p><a href="/de/pages/notes.html#omada-nd">Wie ich das diagnostiziert habe →</a></p></article>
+<article class="mini-card"><h3>LLDP nach Konfigurationsänderungen</h3><p>Neighbor Discovery funktionierte. Ich wollte aber auch, dass die richtige Management-Adresse nach Start und Konfigurationsregeneration angekündigt wird. Dafür war eine persistente Starteinstellung erforderlich.</p><p><a href="/de/pages/notes.html#lldp">Die LLDP-Korrektur →</a></p></article>
+<article class="mini-card"><h3>Kabelgebundene Zertifikatsauthentifizierung</h3><p>Infrastrukturgeräte und Domänencontroller mit 802.1X benötigten einen anderen Autorisierungspfad als gewöhnliche Arbeitsplatzrechner. Ich testete das abschließende Verhalten am Switch und in FreeRADIUS.</p><p><a href="/de/pages/notes.html#dc-eap">Das EAP-TLS-Bootstrap-Problem →</a></p></article>
+</div>
+<h2>Benachrichtigung bei Änderungen eines Switch-Links</h2>
+<p>Ich wollte, dass ein Linkausfall ein tatsächliches Ereignis auslöst, statt auf das Öffnen meines Dashboards zu warten. Ich konfigurierte Traps der beiden Grandstream-Switches und des Omada-Switches, bei Omada mit SNMPv3-Authentifizierung und Verschlüsselung. Der Empfänger auf dem NAS protokolliert Ereignisse und versendet Telegram-Meldungen für ausgewählte Ports. Reale Link-Down- und Link-Up-Benachrichtigungen eines Omada-Testports wurden verifiziert; ich trennte nicht jeden kritischen Server oder Uplink.</p>
+<p><a href="/de/pages/nas-services-operations.html">Wie Empfänger und Versandwarteschlange funktionieren →</a></p>
+<h2>Was ich noch prüfen möchte</h2>
+<p>Die physische Verkabelungsinventur ist noch nicht abgeschlossen. Einige IPv6-Neighbor-Bindings benötigen weiterhin vollständige Neustart- und Präfixwechseltests. Außerdem möchte ich einen eigenen WLAN-Access-Point im Proxmox-Labor für separate Captive-Portal- und NAC-Experimente nutzen.</p>
+<p><a class="source-link" href="/de/pages/identity-pki.html">Zertifikatsbasierter Netzwerkzugang →</a>   <a class="source-link" href="/de/pages/roadmap.html">Künftige WLAN-Tests →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/de/pages/work-index.html">← Alle Projekte</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

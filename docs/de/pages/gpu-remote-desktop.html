@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Wie ich eine Intel-GPU an eine KDE-VM durchgereicht, Full HD eingerichtet und H.264-Encoding sowie KRDP getestet habe.">
+  <title>Intel-iGPU-Passthrough und Remote Desktop · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/de/pages/gpu-remote-desktop.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Intel-iGPU-Passthrough und Remote Desktop · BiXCore">
+  <meta property="og:description" content="Wie ich eine Intel-GPU an eine KDE-VM durchgereicht, Full HD eingerichtet und H.264-Encoding sowie KRDP getestet habe.">
+  <meta property="og:url" content="https://lab.bixcore.de/de/pages/gpu-remote-desktop.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/gpu-remote-desktop.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/gpu-remote-desktop.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/gpu-remote-desktop.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/gpu-remote-desktop.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/gpu-remote-desktop.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/gpu-remote-desktop.html" hreflang="en" lang="en">English</a><a href="/ru/pages/gpu-remote-desktop.html" hreflang="ru" lang="ru">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Proxmox</p>
+<p class="kicker">INTEL-GRAFIK / KDE / REMOTE DESKTOP</p>
+<h1>Intel-GPU-Passthrough und KRDP</h1>
+<p class="lede">Ich wollte eine KDE-VM, die die Intel-Grafikhardware des Hosts nutzt und einen brauchbaren Full-HD-Remote-Desktop bereitstellt. Bis GPU, Anzeigemodus und Desktop-Sitzung zusammenspielten, waren mehrere Versuche nötig.</p>
+<div class="article">
+<h2>Die Intel-GPU an die VM durchreichen</h2>
+<p>Nach dem CPU-Upgrade und den VT-d-Prüfungen reichte ich die integrierte Intel-GPU an den Linux-Gast durch. Bei den ersten Versuchen blieb neben der Intel-GPU ein virtueller Grafikadapter aktiv, was zu KWin-Hängern und Page-Flip-Timeouts führte.</p>
+<p>Die stabile Konfiguration nutzt die durchgereichte Intel-GPU ohne konkurrierenden virtuellen Grafikadapter.</p>
+<h2>Warum der Desktop eine niedrige Auflösung behielt</h2>
+<p>Der Gast startete, erhielt aber keinen brauchbaren Full-HD-Anzeigemodus. Die Kernel-Logs deuteten auf eine fehlende EDID-Firmwaredatei. Ich stellte eine EDID für 1920 × 1080 bereit und sorgte dafür, dass sie bereits beim frühen Boot verfügbar war. Damit war das Auflösungsproblem behoben.</p>
+<p>Bei KRDP gab es zwei getrennte Probleme. Eine KWallet-Interaktion beeinträchtigte die Anmeldung nach Aktivierung des automatischen Desktop-Logins; die Einstellung der Remote-Bildqualität verursachte ein unscharfes Bild. Nach beiden Korrekturen funktionierte die Remote-Sitzung auch nach einem Neustart.</p>
+<h2>Was ich beim Hardware-Encoding verifiziert habe</h2>
+<p>Die Intel-GPU funktionierte im Gast, und ich testete unabhängig davon <strong>Hardware-H.264-Encoding über FFmpeg</strong>. KRDP meldete ebenfalls die Nutzung von VA-API, und Remote Desktop funktionierte in Full HD.</p>
+<p>Eine Messung konnte ich in dieser VM nicht durchführen: Die virtuelle Umgebung stellte die Video-Engine-Zähler der GPU nicht bereit, die den tatsächlichen Quick-Sync-Anteil am KRDP-Encoding zeigen würden. Die Hardware-Encoding-Fähigkeit ist bestätigt; die tatsächliche KRDP-Hardwareauslastung pro Frame wurde nicht gemessen.</p>
+<h2>Erneute Prüfung nach dem Gastupdate vom 26. November</h2>
+<p>Vor dem KDE-neon-Update erstellte ich einen Rollback-Snapshot und startete nur diesen Gast neu. Wayland-Sitzung und KRDP-Listener kehrten zurück. Unter Windows prüfte ich den weitergeleiteten RDP-Pfad über MikroTik und bestätigte den tatsächlichen Desktop und Internetzugang.</p>
+<p>Die Intel HD 4600 war weiterhin mit i915-Treiber und Render-Node an den Gast angebunden. Ein FFmpeg-VA-API-Test mit dem i965-Treiber kodierte nach dem Neustart erfolgreich 60 H.264-Frames bei 1280 × 720 und 30 fps. Das bestätigt Hardware-Encoding im Gast, nicht den von KRDP in der realen Remote-Desktop-Sitzung eingesetzten Encoder.</p>
+<h2>Was ich anders machen würde</h2>
+<p>Beim nächsten Mal würde ich zuerst Anzeigemodus und EDID des Gasts prüfen, dann die Remote-Desktop-Einstellungen, statt mehrere Grafikgeräte gleichzeitig zu ändern. Im aktuellen Labor ist außerdem ein komfortorientierter Desktop-Login eingerichtet, den ich nicht unverändert auf einen stärker exponierten Rechner übertragen würde.</p>
+<p><a class="source-link" href="/de/pages/notes.html#gpu">Grafik-Fehlerfall →</a>   <a class="source-link" href="/de/pages/proxmox-host-storage.html">Der Proxmox-Host →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/de/pages/work-index.html">← Alle Projekte</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

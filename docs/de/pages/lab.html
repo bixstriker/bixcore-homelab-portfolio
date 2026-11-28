@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Mein virtuelles Firewall-Labor: Proxmox-Netzwerke, Windows- und Linux-Testclients und die erprobten Systeme.">
+  <title>Mein virtuelles Firewall-Labor · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/de/pages/lab.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Mein virtuelles Firewall-Labor · BiXCore">
+  <meta property="og:description" content="Mein virtuelles Firewall-Labor: Proxmox-Netzwerke, Windows- und Linux-Testclients und die erprobten Systeme.">
+  <meta property="og:url" content="https://lab.bixcore.de/de/pages/lab.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/lab.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/lab.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/lab.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/lab.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/lab.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/lab.html" hreflang="en" lang="en">English</a><a href="/ru/pages/lab.html" hreflang="ru" lang="ru">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Virtualisierung</p>
+<p class="kicker">PROXMOX / FIREWALLS / CLIENTTESTS</p>
+<h1>Mein virtuelles Firewall-Labor</h1>
+<p class="lede">Mit Proxmox erprobe ich verschiedene Router und Firewalls, ohne das Gateway meines Alltagsnetzes zu verändern. Windows- und Linux-Clients ermöglichen es mir, Ergebnisse auch von der anderen Seite einer Verbindung zu prüfen.</p>
+<div class="article">
+<h2>Wie ich es aufgebaut habe</h2>
+<p>Der Host läuft mit Debian 13.8 und Proxmox VE 9.3.1. Jede aktive Firewall verfügt über einen Labor-Uplink und ein eigenes virtuelles LAN, an das ich bei Bedarf Testclients anschließe. Der zuletzt verifizierte Bestand umfasst 18 virtuelle Maschinen: dreizehn Firewall-/Router-Instanzen auf zwölf Plattformen, zwei Windows-/Linux-Clients sowie PacketFence, OpenWISP und Taranac. Normalerweise laufen bei Tests nur zwei oder drei VMs.</p>
+<h2>Firewalls im Labor</h2>
+<p>Ich habe mit MikroTik CHR, pfSense CE, Sophos Firewall Home, VyOS, FortiGate VM, OpenWrt, IPFire, NethSecurity, FreeSense, DD-WRT, OPNsense und OpenFW gearbeitet. Zwei unabhängige OPNsense-Gastsysteme dienen unterschiedlichen Laboraufgaben. Installation, Administration, DHCP, DNS, NAT und ausgewählte Weiterleitungstests unterscheiden sich je nach Plattform. Die ursprüngliche Testreihe mit einem physischen Laptop umfasste elf Firewall-Instanzen, nicht alle später hinzugekommenen VMs. Eine einheitliche Sicherheits- und Wiederherstellungscheckliste habe ich noch nicht für alle zwölf Plattformen abgeschlossen.</p>
+<p>Zu weiteren Proxmox-Projekten gehören die Verzeichnisdienstintegration, vertrauenswürdiges HTTPS, Speicherwiederherstellung und Intel-iGPU-Passthrough für einen Linux-Desktop. Bei meinem jüngsten DD-WRT-Experiment untersuchte ich einen UEFI-Kernel-Panic und korrigierte eine persistente GRUB-Vorlage. Neustarts funktionieren jetzt, das Herunterfahren muss weiter untersucht werden.</p>
+<h2>Was noch zu tun ist</h2>
+<ul>
+<li>Ein einheitlicher Durchsatz- und Latenzvergleich.</li>
+<li>Negativtests zwischen allen relevanten Zonen und dem Heimnetz.</li>
+<li>Ein vollständiger Wiederherstellungstest für den aktuellen VM-Speicher auf einer einzelnen Festplatte.</li>
+<li>DHCPv6-Präfixdelegation an einen virtuellen Router über den bestehenden reinen IPv6-Labor-Uplink sowie ein eigener isolierter WLAN-Test-Access-Point. Das reine IPv6-Netz selbst wurde bereits mit realen Windows- und Android-Clients getestet.</li>
+</ul>
+<p><a class="source-link" href="/de/pages/virtual-firewall-platforms.html">Ergebnisse nach Firewall-Plattform →</a>   <a class="source-link" href="/de/pages/proxmox-host-storage.html">Hostaufbau und Speichermigration →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/de/pages/work-index.html">← Alle Projekte</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

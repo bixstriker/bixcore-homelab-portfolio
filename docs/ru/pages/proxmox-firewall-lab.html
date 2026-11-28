@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Как я создал изолированную лабораторию firewall Proxmox и что планирую попробовать с коммерческими системами и NAC.">
+  <title>Виртуальная лаборатория firewall · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/ru/pages/proxmox-firewall-lab.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Виртуальная лаборатория firewall · BiXCore">
+  <meta property="og:description" content="Как я создал изолированную лабораторию firewall Proxmox и что планирую попробовать с коммерческими системами и NAC.">
+  <meta property="og:url" content="https://lab.bixcore.de/ru/pages/proxmox-firewall-lab.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/proxmox-firewall-lab.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/proxmox-firewall-lab.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/proxmox-firewall-lab.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/proxmox-firewall-lab.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Перейти к содержанию</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/ru/index.html" aria-label="BiXCore Lab, главная"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ИНЖЕНЕРНАЯ ЛАБОРАТОРИЯ</span></span></a>
+    <nav class="top-nav" aria-label="Основная навигация"><a href="/ru/pages/work-index.html">Проекты</a><a href="/ru/pages/notes.html">Диагностика</a><a href="/ru/pages/hardware.html">Оборудование</a><a href="/ru/pages/roadmap.html">Планы</a><a href="/ru/pages/about.html">Обо мне</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Выбор языка"><a href="/de/pages/proxmox-firewall-lab.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/proxmox-firewall-lab.html" hreflang="en" lang="en">English</a><a href="/ru/pages/proxmox-firewall-lab.html" hreflang="ru" lang="ru" aria-current="page">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/ru/index.html">Главная</a> / <a href="/ru/pages/work-index.html">Проекты</a> / Proxmox</p>
+<p class="kicker">ВИРТУАЛЬНЫЕ FIREWALL / РЕАЛЬНЫЕ КЛИЕНТСКИЕ ТЕСТЫ</p>
+<h1>Виртуальная лаборатория firewall</h1>
+<p class="lede">Лаборатория Proxmox позволяет исследовать firewall без замены повседневного шлюза OPNsense. Можно создать конфигурацию, подключить Windows или Linux, проверить трафик и перейти к другой платформе.</p>
+<div class="article">
+<h2>Как работает лаборатория</h2>
+<p>Proxmox работает на повторно используемом ПК с Debian 13. Для тестовых firewall выделен upstream, для их LAN — отдельные Linux bridges. Те же клиентские VM подключаются к испытуемой firewall, поэтому не требуется одновременно запускать много машин.</p>
+<p>На 12 ноября 2026 года в лаборатории 18 VM: тринадцать экземпляров маршрутизаторов/firewall, два общих Windows/Linux-клиента, PacketFence NAC, OpenWISP и Taranac. Маршрутизаторы/firewall охватывают двенадцать платформ, включая два независимых виртуальных OPNsense. Помимо MikroTik CHR, pfSense CE, Sophos Firewall Home, VyOS, FortiGate VM, OpenWrt и IPFire установил NethSecurity 8.8.1, FreeSense 1.1.12, DD-WRT r66445 и отдельный OPNsense Community 26.7. У каждой firewall свой виртуальный LAN, подключаемый к общим клиентам по необходимости. Проверил базовое управление, IPv4, DHCP, NAT и отдельные пробросы RDP на четырёх новых системах. Также испытал внешний ноутбук через выделенный Ethernet-порт PhyLan1 со всеми одиннадцатью гостями firewall/маршрутизаторами. Hookscript Proxmox подключает порт только при работе ровно одного из них. Новый клон OPNsense и OpenFW не входили в одиннадцать испытаний PhyLan1; полные негативные и нагрузочные тесты остаются открытыми.</p>
+<p>Новая <a href="/ru/pages/packetfence-nac.html">VM PacketFence</a> не входит в одиннадцать firewall и не использует PhyLan1. После отдельных исправлений IPSet и DNS проверил виртуальную гостевую регистрацию, отзыв и восстановление доступа. Устройство <a href="/ru/pages/phylan1.html">физического тестового порта</a> описано отдельно.</p>
+<h2>Четыре дополнительных гостя 9 ноября</h2>
+<p>Установил OpenWISP 26.09.2 на небольшом Debian-сервере, подтвердил работу Docker-сервисов, доступность HTTPS и вход в dashboard. Установил Taranac Community Edition, проверил начальную настройку и WebGUI, позднее обновил до 1.3.4. Полного теста RADIUS, NAC или сетевого управления ни на одном из них пока не было.</p>
+<p>Сделал полный дисковый клон лабораторного OPNsense для будущих IPv6-only тестов. Виртуальные диски независимы, но часть настроек гостя скопирована. Перед DHCPv6 prefix delegation нужно подтвердить новые подключения NIC; не буду запускать клон вместе с оригиналом, пока возможен общий внутренний LAN.</p>
+<p>OpenFW UTM Community 4.2.1 — другая новая firewall. Проверил LAN DHCP, management interface и реальное RDP через WAN-проброс к Windows VM. SSH-вход и полный аудит политик не завершены; широкие слушатели управления при установке не являются постоянной безопасной конфигурацией.</p>
+<h2>Проверки версий 12 ноября</h2>
+<p>Обновил NethSecurity до 8.8.1, Taranac до 1.3.4. Оба виртуальных OPNsense и Windows/KDE-клиенты также получили обновления, точные новые сборки не записал. VyOS сознательно оставлен на Stream 2026.03. Это обслуживание, а не новые тесты firewall-политик или DHCPv6-PD.</p>
+<h2>Состояние лаборатории 26 ноября</h2>
+<p>17 ноября оба виртуальных OPNsense обновлены до 26.7.9_3. 22 ноября подтвердил OpenFW UTM Community 4.5.1 в WebGUI. Предыдущие испытания проброса OpenFW были на 4.2.1; полные тесты firewall, NAT и проброса на 4.5.1 не повторялись.</p>
+<p>Инвентарь остаётся из 18 VM. Обновил хост до Proxmox VE 9.3.1, проверил загрузку, хранилище, обновлённый KDE и путь RDP/интернет через MikroTik. IPFire тоже обновлён, но полный набор тестов проброса не повторял.</p>
+<p>Taranac Community Edition 1.3.5 получил два независимых hotfix. Четыре nginx-образа показывают nginx 1.30.8, а рабочий TACACS+-контейнер использует hotfix-образ. Все 12 контейнеров запущены. Полная регрессия AAA и NAC остаётся открытой.</p>
+<p>Ранние ноябрьские версии выше — исторические состояния, а не список текущих сборок. Статус испытания виртуального IPv6-only маршрутизатора и DHCPv6-PD не изменился.</p>
+<h2>Возникшие проблемы</h2>
+<p>VLAN-путь лабораторного WAN потребовал диагностики DHCP от шлюза до физического коммутатора и виртуальной NIC. Также исправил неверный upstream bridge при настройке IPFire. Это описано в <a href="/ru/pages/notes.html#lab">заметках по диагностике</a>. Позднее DD-WRT потребовал необычного ремонта UEFI: неверный root-раздел и файловая система были не только в GRUB, но и в бинарном шаблоне. Исправление шаблона и параметра UEFI reboot позволило выполнить две перезагрузки. Случай <a href="/ru/pages/notes.html#ddwrt-uefi">с загрузкой</a> и <a href="/ru/pages/notes.html#ddwrt-access">блокировка SSH</a> задокументированы отдельно; выключение DD-WRT ещё не решено.</p>
+<h2>Куда хочу двигаться дальше</h2>
+<div class="two-col">
+<article class="mini-card"><h3>Коммерческие firewall</h3><p>Хочу испытать Palo Alto VM-Series, Juniper vSRX, Check Point CloudGuard, SonicWall NSv и более полно лицензированный FortiGate VM. Cisco Catalyst 8000V также в списке для маршрутизации и WAN. Всё зависит от доступности пробных образов и лицензий.</p><p><a href="/ru/pages/roadmap.html">Планы коммерческих платформ →</a></p></article>
+<article class="mini-card"><h3>RADIUS, 802.1X и NAC</h3><p>Реальная сеть уже использует FreeRADIUS с доступом по сертификатам. В лаборатории хочу испытать взаимодействие firewall и систем контроля доступа с RADIUS, затем связать это с PacketFence. Первые изолированные виртуальные гостевые тесты Captive Portal PacketFence работают, RADIUS и 802.1X ещё открыты.</p><p><a href="/ru/pages/roadmap.html">Планы NAC и Wi-Fi →</a></p></article>
+<article class="mini-card"><h3>Реальные Wi-Fi-клиенты</h3><p>Выделенная точка Cudy Wi-Fi 7 позволила бы тестировать Captive Portal, VLAN, EAP-TLS и гостевую изоляцию на физических устройствах без изменения основного Wi-Fi.</p><p><a href="/ru/pages/roadmap.html">Физические клиентские тесты →</a></p></article>
+<article class="mini-card"><h3>IPv6-only и протоколы маршрутизации</h3><p>Сеть <a href="/ru/pages/ipv6-only-lab.html">IPv6-only upstream</a> теперь работает с физическими Wi-Fi-клиентами и передаётся до Proxmox. Ещё нужно испытать виртуальный маршрутизатор, получить делегированный /64 и маршрутизировать трафик через отдельный LAN гостя. BGP и FRR остаются в планах.</p><p><a href="/ru/pages/lab-operational-method.html">Общий список испытаний →</a></p></article>
+</div>
+<p>Перед сравнением продуктов хочу проверить нежелательные пути доступа, открытость управления, перезапуски и восстановление конфигурации. Успешный RDP-проброс — полезный первый тест, но не завершённая оценка.</p>
+<p><a class="source-link" href="/ru/pages/virtual-firewall-platforms.html">Что проверил на каждой firewall →</a>   <a class="source-link" href="/ru/pages/proxmox-v1.7.html">Все 43 главы Proxmox →</a>   <a class="source-link" href="/ru/pages/phylan1.html">Физические клиентские тесты →</a>   <a class="source-link" href="/ru/pages/roadmap.html">Полный список планируемых экспериментов →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/ru/pages/work-index.html">← Все проекты</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Личная лаборатория сетей и IT-безопасности</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

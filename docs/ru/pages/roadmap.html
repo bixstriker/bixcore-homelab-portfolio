@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Что дальше в BiXCore: платформы firewall, TLS Inspection, IPv6-only, Wi-Fi, RADIUS и восстановление.">
+  <title>Что дальше · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/ru/pages/roadmap.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Что дальше · BiXCore">
+  <meta property="og:description" content="Что дальше в BiXCore: платформы firewall, TLS Inspection, IPv6-only, Wi-Fi, RADIUS и восстановление.">
+  <meta property="og:url" content="https://lab.bixcore.de/ru/pages/roadmap.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/roadmap.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/roadmap.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/roadmap.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/roadmap.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Перейти к содержанию</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/ru/index.html" aria-label="BiXCore Lab, главная"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ИНЖЕНЕРНАЯ ЛАБОРАТОРИЯ</span></span></a>
+    <nav class="top-nav" aria-label="Основная навигация"><a href="/ru/pages/work-index.html">Проекты</a><a href="/ru/pages/notes.html">Диагностика</a><a href="/ru/pages/hardware.html">Оборудование</a><a href="/ru/pages/roadmap.html">Планы</a><a href="/ru/pages/about.html">Обо мне</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Выбор языка"><a href="/de/pages/roadmap.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/roadmap.html" hreflang="en" lang="en">English</a><a href="/ru/pages/roadmap.html" hreflang="ru" lang="ru" aria-current="page">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/ru/index.html">Главная</a> / Планы</p>
+<p class="kicker">ЧТО ДАЛЬШЕ</p>
+<h1>Планируемые проекты</h1>
+<p class="lede">Часть идей связана с улучшением рабочей сети, другая — с давно интересующими технологиями. К этому списку возвращаюсь, когда есть время поработать с лабораторией.</p>
+<div class="article">
+<section id="network-followups"><h2>Развитие текущей инфраструктуры</h2>
+<div class="two-col">
+<article class="mini-card"><h3>IPv6 после реальной смены префикса</h3><p>NPTv6 и формируемые по интерфейсам алиасы изоляции IPv6 работают с текущим делегированным префиксом. Нужна реальная смена префикса провайдера, чтобы проверить автоматическое обновление алиасов и восстановление DNS, VPN и клиентов.</p><p><a href="/ru/pages/opnsense-ipv6.html">Текущая конфигурация IPv6 →</a></p></article>
+<article class="mini-card"><h3>Восстановление сервисов из бэкапов</h3><p>Проверил образ OPNsense Clonezilla и собственный recovery-архив, включая более поздний пакет PF hotfix, но образ ещё не восстанавливал. Также хочу выполнить контролируемое восстановление отдельных NAS-приложений, данных гостей Proxmox и служб сертификатов Windows.</p><p><a href="/ru/pages/nas-services-operations.html">Работы с NAS →</a></p></article>
+<article class="mini-card"><h3>Испытание путей, которые должны блокироваться</h3><p>Сети лаборатории разделены bridges и firewall rules. Хочу системно проверить возможные пути IPv4 и IPv6, включая управление, VPN и соединения между виртуальными firewall.</p><p><a href="/ru/pages/lab-operational-method.html">Выполненные тесты firewall →</a></p></article>
+<article class="mini-card"><h3>Продление сертификатов и старые идентичности устройств</h3><p>Windows, Kubuntu и управляемые Android могут аутентифицироваться сертификатами. Хочу улучшить автоматическую замену и отзыв, особенно при дополнительном SCEP-запросе Android во время получения Wi-Fi-профиля.</p><p><a href="/ru/pages/linux-mobile-identity.html">Работы с клиентскими сертификатами →</a></p></article>
+</div></section>
+<section id="commercial-firewalls"><h2>Другие firewall и маршрутизаторы</h2>
+<p>Уже испытал несколько бесплатных или ограниченных виртуальных версий в Proxmox. Хочу изучить полные сценарии управления и политик коммерческих продуктов с теми же Windows/Linux-клиентами. Реальные возможности зависят от доступных trial и функций.</p>
+<div class="two-col">
+<article class="mini-card"><h3>FortiGate-VM</h3><p>Использовал ограниченную бесплатную версию. Расширенная оценка позволила бы подробнее изучить FortiGuard inspection, SD-WAN, VPN и VDOM.</p></article>
+<article class="mini-card"><h3>Palo Alto VM-Series</h3><p>Хочу изучить зоны PAN-OS, App-ID, security profiles и отображение решений политик в журналах.</p></article>
+<article class="mini-card"><h3>Juniper vSRX</h3><p>Junos, security zones, маршрутизация, NAT и VPN — основные причины интереса.</p></article>
+<article class="mini-card"><h3>Check Point CloudGuard</h3><p>Интересует разделение управления, установки политик и инспекции на виртуальном шлюзе.</p></article>
+<article class="mini-card"><h3>SonicWall NSv</h3><p>Ещё одна возможность сравнить администрирование firewall, VPN и threat prevention.</p></article>
+<article class="mini-card"><h3>Cisco Catalyst 8000V</h3><p>Это виртуальный маршрутизатор, а не традиционный NGFW. Использовал бы его для изучения IOS XE, динамической маршрутизации и WAN-сценариев.</p></article>
+</div>
+<p>FortiGate-VM уже установлен в бесплатной версии. Более широкие оценки остаются в планах.</p></section>
+<section id="network-experiments"><h2>Другие способы испытания сети</h2>
+<div class="two-col">
+<article class="mini-card"><h3>IPv6-only WAN за виртуальным маршрутизатором</h3><p>Новый <a href="/ru/pages/ipv6-only-lab.html">VLAN IPv6-only</a> уже работает с Windows и Android по Wi-Fi. Следующий шаг — подключить отдельную виртуальную firewall, проверить назначение WAN, запросить делегированный /64 и испытать нативный IPv6 и NAT64 за её LAN.</p></article>
+<article class="mini-card"><h3>Физическая тестовая сеть Wi-Fi</h3><p>Уже имеется работающий IPv6-only SSID UniFi с Windows и Android, а PhyLan1 позволяет использовать ноутбук с одиннадцатью firewall VM. Выделенная точка Cudy остаётся в планах для изолированных тестов Captive Portal, 802.1X и NAC без затрагивания основной сети Wi-Fi.</p></article>
+<article class="mini-card"><h3>PacketFence за пределами Captive Portal</h3><p>У меня работает <a href="/ru/pages/packetfence-nac.html">PacketFence 15.2</a> с одним виртуальным гостем: испытаны регистрация, потеря доступа и повторная регистрация. Следующие задачи — RADIUS/802.1X, EAP-TLS, назначение VLAN и физические LAN/Wi-Fi-клиенты, а также проверка наличия upstream PR #9350 в будущем релизе вместо локального backport.</p></article>
+<article class="mini-card"><h3>BGP и FRR</h3><p>Хочу построить небольшую лабораторию маршрутизации и наблюдать изменения префиксов и маршрутов при исчезновении линка или соседа.</p></article>
+</div></section>
+<section id="zenarmor-plans"><h2>Дальнейшие эксперименты Zenarmor</h2>
+<p>Уже использую Zenarmor на OPNsense и проверил блокировки политиками. Хочу подробнее исследовать инспекцию зашифрованного трафика и информацию в отчётах.</p>
+<div class="two-col">
+<article class="mini-card"><h3>TLS Inspection</h3><p>Первый пилот полной TLS-инспекции двух доменов прошёл. Далее хочу разобраться в обходе DNS enrichment, проверить доверие клиентов и application pinning в контролируемых случаях, QUIC и исключения без расширения инспекции на весь трафик.</p></article>
+<article class="mini-card"><h3>Политики фильтрации и отчёты</h3><p>Испытать разные политики приложений и категорий сайтов на тестовых клиентах, проверить исключения и ложные срабатывания, сравнить live sessions и отчёты с клиентским поведением.</p></article>
+<article class="mini-card"><h3>Взаимодействие с Suricata</h3><p>Сопоставить решения политик Zenarmor и события Suricata IPS для одного контролируемого трафика, не считая обе системы одинаковыми по назначению.</p></article>
+<article class="mini-card"><h3>Производительность инспекции</h3><p>Эксперименты multi-core и Native Netmap вызвали сбои, поэтому вернулся к Routed Emulated Netmap без multi-core. Дальнейшее сравнение требует безопасной среды и стабильной системы; достоверных сравнительных результатов пока нет.</p></article>
+</div>
+<p><a class="source-link" href="/ru/pages/zenarmor.html">Работы и идеи испытаний Zenarmor →</a>   <a class="source-link" href="/ru/pages/zenarmor-multicore.html">Исследование Netmap →</a></p></section>
+</div><hr class="rule"><p><a class="button secondary" href="/ru/index.html">← Главная</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Личная лаборатория сетей и IT-безопасности</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

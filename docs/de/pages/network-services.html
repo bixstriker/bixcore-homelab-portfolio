@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="DNS, DHCP, AD-Weiterleitung, dynamische Einträge, ACME-Zertifikate und Gastdienste in meinem Netzwerk.">
+  <title>DNS, DHCP und öffentliches DNS · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/de/pages/network-services.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="DNS, DHCP und öffentliches DNS · BiXCore">
+  <meta property="og:description" content="DNS, DHCP, AD-Weiterleitung, dynamische Einträge, ACME-Zertifikate und Gastdienste in meinem Netzwerk.">
+  <meta property="og:url" content="https://lab.bixcore.de/de/pages/network-services.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/network-services.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/network-services.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/network-services.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/network-services.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/network-services.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/network-services.html" hreflang="en" lang="en">English</a><a href="/ru/pages/network-services.html" hreflang="ru" lang="ru">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Netzwerk</p>
+<p class="kicker">DNS / DHCP / DDNS / ACME</p>
+<h1>DNS, DHCP und Netzwerkdienste</h1>
+<p class="lede">Clients sollten zuverlässiges DNS erhalten, ohne dass Windows-Domänencontroller jede Internetabfrage bearbeiten müssen. IPv6, Gastzugang und Zertifikatserneuerung brachten zusätzliche Anforderungen mit sich.</p>
+<div class="article">
+<h2>Wie DNS aufgebaut ist</h2>
+<p>OPNsense stellt DHCPv4 und die lokalen Routingfunktionen bereit. AdGuard ist der clientseitige Resolver, wo Filterung erforderlich ist; Unbound übernimmt seine eigene DNS-Rolle und ausgewählte interne Einträge. Abfragen für die Active-Directory-Domäne werden an den Verzeichnis-DNS-Dienst weitergeleitet.</p>
+<p>IPv6-Clients erhalten Resolver-Informationen über Router Advertisements und RDNSS. Ich prüfte das vorgesehene DNS-Verhalten in normalen Client- und Gastsegmenten, ohne überall dieselbe Adressfamilie vorauszusetzen.</p>
+<h2>Öffentliche Einträge und HTTPS-Zertifikate</h2>
+<p>Dynamisches DNS aktualisiert externe Einträge bei WAN-Adressänderungen. ACME DNS-01 dient bei Bedarf der Zertifikatserneuerung; NAS-Reverse-Proxy-Zertifikate haben einen separaten Wartungsschritt. Ich prüfe Zertifikatserneuerung und externe Dienstverbindungen unabhängig: Erfolg bei einem garantiert nicht das andere.</p>
+<h2>AdGuard nach einem Update prüfen</h2>
+<p>Ich aktualisierte AdGuard Home mit vorbereiteten Rollback-Dateien auf ein neueres Beta-Image und prüfte DNS, domänenspezifische Weiterleitung, Filterung, HTTPS, DoH und DoT. Ein lauschender DoQ-Port galt nicht als Beweis für eine vollständige QUIC-Clientverbindung. TLS-Zertifikate werden am Gateway automatisiert ausgestellt; das Kopieren in NAS-Dienste bleibt manuell.</p>
+<h2>Gastzugang und Netzwerkboot</h2>
+<p>Das Gast-Captive-Portal benötigt einen IPv6-AAAA-Eintrag, der dem aktuellen Gastnetz-Präfix folgt. Ich ergänzte einen Update-Hook und verglich den erzeugten DNS-Eintrag mit der realen Adresse. Im dokumentierten Test funktionierte der Mechanismus; ein tatsächlicher Provider-Präfixwechsel muss erneut geprüft werden.</p>
+<p>Für Netzwerkboot nutze ich einen PXE-/ISO-Dienst auf dem NAS mit ProxyDHCP im passenden Clientsegment, statt den normalen DHCP-Dienst des Gateways zu ersetzen.</p>
+<h2>IPv6 Router Advertisements zur Gastportal-Erkennung</h2>
+<p>Die Captive-Portal-API-URL stellte ich bereits über DHCPv4 Option 114 bereit. Ich ergänzte <strong>RFC 8910 RA Option 37</strong> im Gast-VLAN und erfasste tatsächliche Router Advertisements. Guest enthielt die URL, Core und das reine IPv6-Labor nicht. RDNSS, Präfixinformationen und PREF64 blieben erhalten. Damit ist der Paketversand belegt, nicht die Reaktion jedes Clientbetriebssystems.</p>
+<p>Das installierte OPNsense-Release erforderte einen kleinen versionsspezifischen Generator-Patch; Rollback-Dateien für spätere Upgrades blieben erhalten.</p>
+<h2>Als eine IPv6-zuerst-Anmeldung IPv4 verlor</h2>
+<p>Ein reales Gast-iPhone hatte IPv4 und IPv6, aber nach Anmeldung erlaubte das Portal nur IPv6 in seiner PF-Tabelle. Ich verfolgte dies bis zum OPNsense-Client-Roaming-Adressfilter und spielte den Upstream-Fix für Issue #11214 ein. Die bestehende Sitzung erhielt IPv4 ohne erneute Anmeldung, behielt alle neun IPv6-Einträge und bestand einen IPv6-Readiness-Check mit 10/10. <a href="/de/pages/notes.html#portal-dualstack">Dual-Stack-Portal-Untersuchung →</a></p>
+<h2>Eine IoT-Kamera das NAS finden lassen, ohne das ganze Netz zu öffnen</h2>
+<p>Nach dem Verschieben meiner Xiaomi-Kamera ins isolierte IoT-Netz funktionierte ihre NAS-Erkennung nicht mehr. Die Kamera sendete NetBIOS-Discovery-Broadcasts, die die VLAN-Grenze nicht passierten. Ich nutzte OPNsense UDP Broadcast Relay zur Erkennung und ergänzte eine eng begrenzte SMB-Regel von dieser Kamera zur vorgesehenen NAS-Schnittstelle.</p>
+<p>Ich prüfte aktive PF-Regeln und erfasste Discovery- und SMB-Verkehr. Bei deaktivierter Discovery-Regel fand die Kamera das NAS nicht; nach Aktivierung funktionierte die Erkennung wieder. Danach bestätigte ich, dass die Kameraaufnahmen tatsächlich auf das NAS importiert wurden. Die allgemeine IoT-zu-Core-Sperre blieb bestehen, statt allen IoT-Geräten Zugriff auf das Speichernetz zu geben.</p>
+<p>Der Test belegt diese Kamera und ihren Übertragungspfad, nicht die vollständige Isolation gegen jedes denkbare Protokoll. NAS-SMB-Dienst und Zugangsdaten mussten nicht verändert werden.</p>
+<p>Eine separate Prüfung am 22. November bestätigte AdGuard als DNS-Resolver für normale Core-Clients, während Guest den lokalen Gateway-Resolver für IPv4 und IPv6 nutzt. Ein aktivierter verschlüsselter DNS-Listener beweist nicht, dass jeder Client ihn verwendet.</p>
+<h2>Aufgetretene Probleme</h2>
+<p>Nach einem Neustart blieben dynamische DNS-Updates aus, obwohl der Dienst lief. Ursache war die Upstream-IPv6-Erreichbarkeit, nicht eine fehlende DNS-Konfiguration. Die <a href="/de/pages/notes.html#ddns">DDNS-Untersuchung</a> und die <a href="/de/pages/notes.html#ipv6">WAN-Quelladresstests</a> erklären den Zusammenhang beider Symptome.</p>
+<p>Ich dokumentierte außerdem die <a href="/de/pages/notes.html#portal">IPv6-Eintragsupdates des Gastportals</a> und die <a href="/de/pages/notes.html#nas-ula">das Verschwinden der NAS-DNS-Adresse</a> nach einem Netzwerkereignis. Es sind getrennte Probleme mit getrennten Korrekturen.</p>
+<p><a class="source-link" href="/de/pages/opnsense-ipv6.html">Gateway und IPv6 →</a>   <a class="source-link" href="/de/pages/nas-services-operations.html">NAS und Docker →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/de/pages/work-index.html">← Alle Projekte</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

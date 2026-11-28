@@ -52,3 +52,37 @@ html{scroll-padding-top:112px}
   .table-wrap {scrollbar-width:thin;scrollbar-color:var(--accent) transparent}
   .table-wrap::before {content:"Scroll sideways to see more columns →";display:block;padding:9px 13px;color:var(--muted);font-size:.77rem;font-weight:650;white-space:nowrap}
 }
+
+.language-switch{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;font-size:.8rem}.language-switch a{padding:.25rem .4rem;border:1px solid currentColor;border-radius:.35rem;text-decoration:none}.language-switch a[aria-current=page]{font-weight:700;background:#153a48;color:#e9f4fc}.translation-preview{max-width:80rem;margin:.5rem auto;padding:0 1rem;font-size:.85rem}
+@media(max-width:900px){.header-inner{flex-wrap:wrap}.language-switch{margin-left:auto}}
+
+/* Multilingual layout: preserve the design, allow long translated words to wrap. */
+body{overflow-wrap:anywhere}
+h1,h2,h3{overflow-wrap:anywhere;hyphens:auto}
+.header-inner{gap:16px}
+.top-nav{align-items:center;gap:12px 18px;min-width:0}
+.language-switch{display:flex;gap:.45rem;align-items:center;font-size:.8rem;flex-shrink:0;flex-wrap:wrap}
+.language-switch a{padding:.25rem .4rem;border:1px solid currentColor;border-radius:.35rem;text-decoration:none;white-space:nowrap}
+.language-switch a[aria-current=page]{font-weight:700;background:#153a48;color:#e9f4fc}
+.translation-preview{max-width:80rem;margin:.5rem auto;padding:0 1rem;font-size:.85rem}
+@media(max-width:1100px){
+ .header-inner{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px 16px;padding-block:12px;align-items:center}
+ .brand{grid-column:1;grid-row:1;min-width:0}
+ .language-switch{grid-column:2;grid-row:1;justify-content:flex-end;margin-left:0}
+ .top-nav{grid-row:2;grid-column:1/-1;gap:8px 18px}
+ .site-header{position:static}
+ html{scroll-padding-top:12px}
+ :where([id]){scroll-margin-top:12px}
+}
+@media(max-width:550px){
+ .header-inner{display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+ .language-switch{justify-content:flex-start}
+ .top-nav{gap:6px 12px;font-size:.82rem}
+ .nav-cta{padding:4px 10px}
+ .brand-sub{white-space:normal}
+ .table-wrap::before{white-space:normal}
+}
+@media(max-width:650px){
+ :lang(de) .table-wrap::before{content:"Seitlich scrollen, um weitere Spalten zu sehen →"}
+ :lang(ru) .table-wrap::before{content:"Прокрутите в сторону, чтобы увидеть остальные столбцы →"}
+}

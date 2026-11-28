@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Die Netzwerktechnik, Server, NAS und Testclients, mit denen ich mein BiXCore-Homelab aufbaue und untersuche.">
+  <title>Hardware und Laboraufbau · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/de/pages/hardware.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Hardware und Laboraufbau · BiXCore">
+  <meta property="og:description" content="Die Netzwerktechnik, Server, NAS und Testclients, mit denen ich mein BiXCore-Homelab aufbaue und untersuche.">
+  <meta property="og:url" content="https://lab.bixcore.de/de/pages/hardware.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/hardware.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/hardware.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/hardware.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/hardware.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/hardware.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/hardware.html" hreflang="en" lang="en">English</a><a href="/ru/pages/hardware.html" hreflang="ru" lang="ru">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Hardware</p>
+<p class="kicker">DAS LABOR</p>
+<h1>Hardware und Laboraufbau</h1>
+<p class="lede">Ich habe BiXCore nach und nach aufgebaut, vorhandene Rechner weiterverwendet und Netzwerktechnik ergänzt, wenn ich ein konkretes Problem lösen wollte. Diese Systeme bilden die Grundlage der Projekte auf dieser Website.</p>
+<div class="article">
+<section><h2>Netzwerk und IT-Sicherheit</h2><div class="two-col">
+<article class="mini-card"><h3>OPNsense-Gateway</h3><p>Ein Intel-N305-Gerät mit Intel X520/10GbE-Netzwerktechnik. Es übernimmt Routing, Netzsegmentierung, WireGuard, Suricata, Zenarmor, FreeRADIUS und RadSecProxy.</p></article>
+<article class="mini-card"><h3>Managed Switching</h3><p>Ein TP-Link Omada SG3210X-M2, zwei Grandstream GWN7721 und ein Industrie-Switch von Barox. Ich nutze sie für VLANs, Trunks, kabelgebundenes 802.1X, LLDP und IPv6-Untersuchungen. Auf Omada und Barox testete ich auch die zentrale Administratoranmeldung über TACACS+ und die lokale Wiederherstellung des Zugriffs. <a href="/de/pages/tacacs-switch-aaa.html">Tests zur Switch-Administration →</a></p></article>
+<article class="mini-card"><h3>WLAN</h3><p>Zwei UniFi U7 Pro XG Access Points mit lokal betriebenem Controller. Die Enterprise-WLAN-Authentifizierung ist an die PKI- und RADIUS-Infrastruktur angebunden.</p></article>
+<article class="mini-card"><h3>Stromversorgung und Ersatzanbindung</h3><p>Eine Eaton 3S USV ist zur Überwachung der Stromversorgung an die Firewall angeschlossen. Als Reserve dient derzeit ein Zyxel LTE5398-M904 per Ethernet im IP-Passthrough-Modus. Am 26. November verifizierte ich den physischen Wechsel von WAN zu LTE und zurück, einschließlich automatischer VPN-Wiederherstellung und gezielter Bereinigung veralteter Firewall-States. <a href="/de/pages/wan-failover-recovery.html">Was ich getestet habe →</a></p></article>
+</div></section>
+<section><h2>Server und Speicher</h2><div class="two-col">
+<article class="mini-card"><h3>Windows Server und PKI</h3><p>Zwei Windows Server 2025-Domänencontroller stellen Active Directory und DNS bereit. Die Enterprise-CA und der NDES-Registrierungsdienst laufen auf einem davon; dieser Unterschied ist für die Wiederherstellungsplanung wichtig.</p></article>
+<article class="mini-card"><h3>NAS</h3><p>Ein UGREEN NASync DXP4800 betreibt Docker-basierte Infrastrukturdienste, darunter DNS-Filterung, Reverse Proxy, Controller-Anwendungen, Monitoring und den Empfänger für Switch-Ereignisse. <a href="/de/pages/nas-services-operations.html">NAS-Dienste →</a></p></article>
+<article class="mini-card"><h3>Proxmox-Testhost</h3><p>Ein weiterverwendeter Desktop mit Intel Core i7-4790K, 32 GB RAM, Debian 13.8 und Proxmox VE 9.3.1. Windows läuft auf demselben Rechner per UEFI-Dual-Boot.</p></article>
+<article class="mini-card"><h3>VM-Speicher und Grafik</h3><p>Nach einer Speichermigration verwendet das Proxmox-Labor eine einzelne 2-TB-ZFS-Festplatte. Intel HD 4600 wird per Passthrough für KDE-Grafikexperimente genutzt. Die Festplatte ist nicht redundant.</p></article>
+</div></section>
+<section><h2>Testclients</h2><p>Virtuelle Windows- und Linux-Maschinen sind meine wichtigsten Testclients für DHCP, NAT, Portweiterleitung, VPN und Remote Desktop. Wenn eine Funktion reale Hardware erfordert, verwende ich auch kabelgebundene Clients und Android-WLAN-Geräte.</p>
+<p>Hier geht es um die für die Projekte relevante Ausstattung, nicht um eine vollständige Liste aller Geräte im Haushalt. Die jeweiligen Seiten beschreiben ihren Einsatz und verlinken die zugehörigen Tests.</p></section>
+<p><a class="source-link" href="/de/pages/roadmap.html">Was ich als Nächstes testen möchte →</a>   <a class="source-link" href="/de/pages/work-index.html">Projekte durchsuchen →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/de/index.html">← Startseite</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

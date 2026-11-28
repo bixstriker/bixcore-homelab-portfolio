@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Gruppenrichtlinien für Windows-Verwaltung, WinRM, WireGuard-Automatisierung und Profilmigration nutzen.">
+  <title>Windows-Clientverwaltung mit Gruppenrichtlinien · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/de/pages/windows-policy-deployment.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Windows-Clientverwaltung mit Gruppenrichtlinien · BiXCore">
+  <meta property="og:description" content="Gruppenrichtlinien für Windows-Verwaltung, WinRM, WireGuard-Automatisierung und Profilmigration nutzen.">
+  <meta property="og:url" content="https://lab.bixcore.de/de/pages/windows-policy-deployment.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/windows-policy-deployment.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/windows-policy-deployment.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/windows-policy-deployment.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/windows-policy-deployment.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/windows-policy-deployment.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/windows-policy-deployment.html" hreflang="en" lang="en">English</a><a href="/ru/pages/windows-policy-deployment.html" hreflang="ru" lang="ru">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Windows Server</p>
+<p class="kicker">GRUPPENRICHTLINIEN / VERWALTUNG / AUTOMATISIERUNG</p>
+<h1>Windows mit Gruppenrichtlinien verwalten</h1>
+<p class="lede">Nachdem weitere Windows-Rechner in Active Directory aufgenommen waren, sollten gemeinsame Einstellungen und Verwaltungswerkzeuge automatisch verfügbar sein. Gruppenrichtlinien machen dies wiederholbar, statt jeden PC neu zu konfigurieren.</p>
+<div class="article">
+<h2 id="profile-migration">Vorhandene PCs in die Domäne aufnehmen</h2>
+<p>Bei der Aufnahme der Windows-PCs in Active Directory wollte ich jahrelang genutzte lokale Benutzerprofile nicht verlieren. Mit ForensiT User Profile Wizard ordnete ich vorhandene Profile Domänenkonten zu und prüfte, dass Desktop, Anwendungen und Dateien weiterhin dem richtigen Benutzer gehörten.</p>
+<p>Eine Migration verlief nicht reibungslos: Windows lud wegen eines alten ProfileList-Eintrags und Berechtigungen der Profildaten ein temporäres Profil. Ich korrigierte Registry-Zuordnung und Dateirechte und bestätigte die normale Anmeldung. Die Recovery-Schritte sind für spätere PC-Migrationen dokumentiert.</p>
+<h2>Arbeitsplatzrichtlinien</h2>
+<p>Die Richtlinien umfassen Domänenorganisation, verwaltete lokale Administratorkennwörter mit Windows LAPS, Computerzertifikatsregistrierung, kabelgebundene EAP-TLS-Einstellungen und ausgewählte Benutzerpräferenzen. Außerdem passte ich die Kennwortalterungsrichtlinie an und prüfte die resultierende Konfiguration auf beiden Domänencontrollern.</p>
+<p>Die Tastaturlayout-GPOs ergänzen nur fehlende Layouts, ohne individuelle Eingabemethoden oder deren Reihenfolge zu ersetzen. Die Skripte bestanden ausgewählte Prüfungen; den tatsächlichen Layoutwähler am Anmeldebildschirm möchte ich nach einer weiteren Anmeldung prüfen.</p>
+<h2 id="winrm-remoting">Fernadministration</h2>
+<p>Ich konfigurierte Kerberos-basiertes PowerShell-Remoting über WinRM und testete mehrere Arbeitsplatz-zu-Arbeitsplatz- und Arbeitsplatz-zu-Server-Verbindungen. Das ist von RDP-Zugang getrennt: Das Ziel benötigt weiterhin passende Autorisierungsregeln für die jeweilige Aufgabe.</p>
+<h2>Zentral bereitgestellte Werkzeuge</h2>
+<ul>
+<li><strong>PowerShell 7:</strong> Ein verifiziertes PowerShell-7.7-ZIP-Paket wird über bestehende GPO und SYSTEM-Aufgabe bereitgestellt. Das Skript prüft den Paket-Hash, konfiguriert Remoting und vermeidet erneute Installation derselben Version. Sechs Windows-Knoten wurden geprüft; einige Neustart-Trigger bleiben offen.</li>
+<li><strong>Sysinternals und RSAT:</strong> Zentral verteilte Werkzeuge, RSAT beschränkt auf den vorgesehenen Administrationsrechner.</li>
+<li><strong>Windows Admin Center:</strong> HTTPS-Einrichtung und Zertifikats-/HTTP.sys-Fehleranalyse, nicht nur Installation der Webkonsole.</li>
+<li><strong>Sysmon:</strong> Installation mit verwalteter Konfiguration und geplanten Bereitstellungsaufgaben; Ereignisse helfen bei Untersuchungen, ein vollständiges SIEM ist nicht aufgebaut.</li>
+<li><strong>RustDesk:</strong> Selbst gehostete Support-Lösung; ihre bestehende GPO unterstützt nun versionsgeprüfte MSI- und EXE-Upgrades auf 1.5.3 mit Paket-Signatur- und Hash-Prüfungen.</li>
+</ul>
+<h2 id="windows-wireguard">WireGuard nur außerhalb des Heimnetzes verbinden</h2>
+<p>Auf einem Windows-Laptop richtete ich WireGuard so ein, dass es außerhalb des Heimnetzes automatisch startet und bei Rückkehr trennt. Ein PowerShell-Skript prüft aktive physische Netzwerkschnittstellen und wird bei Windows-Start und Netzänderungen ausgelöst. Die Aufgaben laufen als SYSTEM, sodass der Tunnel schon vor Benutzeranmeldung aufgebaut werden kann.</p>
+<p>Ich testete Heim-WLAN und Ethernet, Wechsel zum Telefon-Hotspot, Rückkehr nach Hause, Neustart unterwegs und manuelle Steuerung über die WireGuard-App. Das Skript merkt sich den aktuellen Netzwerkzustand, damit es einen manuellen Disconnect nicht sofort rückgängig macht. Überlappende Connect-Ereignisse im Log verdienen weitere Prüfung.</p>
+<h2>Richtlinienprüfung auf beiden Domänencontrollern</h2>
+<p>Ich überprüfte auch die Übernahme einer Domänenkontorichtlinienänderung auf beiden Windows-Server-Controllern, statt den Wert im GPO-Editor als ausreichend anzusehen. Die konkreten Kennwortrichtlinien bleiben privat; relevant ist hier der Nachweis, dass die resultierende Domänenrichtlinie auf beiden Controllern übereinstimmt.</p>
+<h2>Als ein RustDesk-Upgrade hängen blieb</h2>
+<p>Ein MSI-Upgrade lieferte Fehler 1603. Das EXE-Update funktionierte, doch das Bereitstellungsskript wartete auf RustDesk-Kindprozesse und schien hängen zu bleiben. Ich änderte es so, dass es auf den Installer selbst wartet und die installierte Version prüft. Der nächste manuelle Lauf endete erfolgreich, ohne Änderung des Fernsupport-Servers.</p>
+<p><a href="/de/pages/notes.html#rustdesk-upgrade">RustDesk-Bereitstellungsfehler →</a></p>
+<h2>Eine separate Gruppenrichtlinie für zertifikatsbasiertes WLAN</h2>
+<p>Die Windows-Domänenrechner hatten bereits Computerzertifikate und eine LAN-802.1X-Richtlinie. Ein Arbeitsplatz nutzte jedoch noch ein älteres lokales WLAN-Profil mit falschem Authentifizierungsmodus. Am 25. November erstellte ich in der Gruppenrichtlinienverwaltung eine WLAN-Computerauthentifizierungs-GPO mit EAP-TLS, explizitem Vertrauen in CA und Namen des RADIUS-Servers sowie Clientzertifikatsfilter für Enterprise-CA und Client Authentication EKU.</p>
+<p>Ich wendete sie zunächst auf einen Pilot-Arbeitsplatz an. WLAN AutoConfig protokollierte erfolgreiche Computerauthentifizierung, die Verbindung über das neue Profil wurde bestätigt. Danach erweiterte ich den GPO-Geltungsbereich auf die vorhandene berechtigte Computergruppe und prüfte Replikation und Anwendung. Die übrigen ausgeschalteten Clients waren zu diesem Zeitpunkt noch nicht einzeln getestet. LAN-Richtlinie, Zertifikatsvorlage und RADIUS-Konfiguration mussten nicht geändert werden.</p>
+<h2>Probleme und weitere Arbeiten</h2>
+<p>Manches erforderte mehrere Versuche. Die PowerShell-Installationsmethode musste geändert werden, und <a href="/de/pages/notes.html#wac">der HTTPS-Listener von Windows Admin Center musste geprüft werden</a>. Das RustDesk-Upgrade war auf verfügbaren Test-PCs erfolgreich; ein ausgeschalteter Rechner muss noch auf das Update geprüft werden.</p>
+<p>Außerdem möchte ich weitere Quell-/Zielkombinationen für PowerShell-Remoting validieren und prüfen, dass richtlinienbasierte Installationen nach Neuaufbau korrekt funktionieren. Das sind praktische Folgetests, keine fehlenden Beschreibungen der Bereitstellung.</p>
+<p><a class="source-link" href="/de/pages/windows-ad-pki.html">Active Directory und Zertifikate →</a>   <a class="source-link" href="/de/pages/windows-monitoring-backup.html">Windows-Monitoring und Backups →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/de/pages/work-index.html">← Alle Projekte</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

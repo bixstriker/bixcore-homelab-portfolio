@@ -6,23 +6,27 @@
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="How I built certificate-based network access with Active Directory, FreeRADIUS, SCEP and EAP-TLS.">
   <title>Certificate-Based Network Access · BiXCore</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="/styles.css">
   <link rel="canonical" href="https://lab.bixcore.de/pages/identity-pki.html">
-  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BiXCore">
   <meta property="og:title" content="Certificate-Based Network Access · BiXCore">
   <meta property="og:description" content="How I built certificate-based network access with Active Directory, FreeRADIUS, SCEP and EAP-TLS.">
   <meta property="og:url" content="https://lab.bixcore.de/pages/identity-pki.html">
   <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/identity-pki.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/identity-pki.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/identity-pki.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/identity-pki.html">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
-    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+    <a class="brand" href="/index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="/pages/work-index.html">Projects</a><a href="/pages/notes.html">Troubleshooting</a><a href="/pages/hardware.html">Hardware</a><a href="/pages/roadmap.html">Plans</a><a href="/pages/about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Language selection"><a href="/de/pages/identity-pki.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/identity-pki.html" hreflang="en" lang="en" aria-current="page">English</a><a href="/ru/pages/identity-pki.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Identity</p>
+<p class="breadcrumb"><a href="/index.html">Home</a> / <a href="/pages/work-index.html">Projects</a> / Identity</p>
 <p class="kicker">PKI / EAP-TLS / CLIENT ENROLLMENT</p>
 <h1>Certificate-Based Network Access</h1>
 <p class="lede">I wanted wired and Wi-Fi clients to use individual certificates instead of a shared network password. Getting that to work meant dealing with enrollment, trusted CAs, revocation and directory-backed authorization.</p>
@@ -31,7 +35,7 @@
 <p>Windows Server provides Active Directory and an enterprise certification authority. NDES handles SCEP for supported Android devices. FreeRADIUS runs on OPNsense and checks the client certificate before applying the relevant access policy at the switch or wireless access point.</p>
 <h2>Protecting the RADIUS transport too</h2>
 <p>I later added RadSecProxy in front of FreeRADIUS for both UniFi APs and the wired Omada switch. <strong>Transport mTLS and client EAP-TLS are two different certificate checks.</strong> The network devices use TLS 1.3 to reach the gateway, but the end-user EAP-TLS identities, directory authorization and CRL checks remain part of FreeRADIUS.</p>
-<p>The switch needed a Let's Encrypt server trust chain and a separate local CA for its own client certificate. I kept its server-certificate verification enabled and tested new authentication and Accounting. <a href="radsec-mtls.html">The RadSec certificate and migration story →</a></p>
+<p>The switch needed a Let's Encrypt server trust chain and a separate local CA for its own client certificate. I kept its server-certificate verification enabled and tested new authentication and Accounting. <a href="/pages/radsec-mtls.html">The RadSec certificate and migration story →</a></p>
 <h2>What I have tested</h2>
 <ul>
 <li>Certificate enrollment and wired EAP-TLS for selected Windows machines.</li>
@@ -44,16 +48,16 @@
 <h2>What I learned from RADIUS Accounting and Disconnect</h2>
 <p>On 7 November I enabled Accounting for both UniFi access points while keeping my existing OPNsense FreeRADIUS service and certificate checks. The server already recorded switch sessions; after the UniFi change I could also see live Start and Interim-Update information for Wi-Fi sessions in its local database.</p>
 <p>My first attempt to disconnect one phone's session failed with a NAK. It wasn't a failed EAP-TLS certificate: I had used the ID of an old session that ended when the phone roamed. I checked the newer Accounting record, sent a targeted Disconnect-Request for the current session and got an ACK. The phone visibly left Wi-Fi and connected again using EAP-TLS.</p>
-<p>That proves targeted session termination and reauthentication for this test. That Disconnect test did not change the VLAN. I later tried a CoA VLAN request; the AP returned an Unsupported-Attribute NAK. <a href="notes.html#radius-coa">The session-ID mistake →</a></p>
+<p>That proves targeted session termination and reauthentication for this test. That Disconnect test did not change the VLAN. I later tried a CoA VLAN request; the AP returned an Unsupported-Attribute NAK. <a href="/pages/notes.html#radius-coa">The session-ID mistake →</a></p>
 <h2>Checking the authorization, not just the certificate</h2>
 <p>I tightened FreeRADIUS authorization and tested real phones. Disabling a local identity caused an Access-Reject at its next full EAP-TLS login; enabling it allowed access again. A mismatched EAP identity and a valid certificate with no matching permitted local record were also refused on new logins.</p>
 <p>My RADIUS Control tool can target a UniFi session for reauthentication or Disconnect. I found that PMKSA cleanup did not clear the separate 802.11r fast-transition keys, so I don't describe account disabling as an instant guarantee that every cached Wi-Fi key has vanished.</p>
-<p>I also attempted a live VLAN reassignment through CoA. The AP returned an Unsupported-Attribute NAK, not a working VLAN change. <a href="radius-control.html">How I built RADIUS Control →</a></p>
+<p>I also attempted a live VLAN reassignment through CoA. The AP returned an Unsupported-Attribute NAK, not a working VLAN change. <a href="/pages/radius-control.html">How I built RADIUS Control →</a></p>
 <h2>Managing wired sessions without touching the directory</h2>
 <p>I extended my RADIUS Control tool to individual Omada wired 802.1X sessions. The gateway checks the live client and port, and an old Accounting row is closed only after a verified ACK and a matching new session. I tested it on separate workstation and domain-controller ports.</p>
-<p>This does not turn RADIUS Control into an AD administration tool: it does not disable domain accounts, change directory rights or edit EAP-TLS certificates. <a href="radius-control.html">The completed RADIUS Control project →</a></p>
+<p>This does not turn RADIUS Control into an AD administration tool: it does not disable domain accounts, change directory rights or edit EAP-TLS certificates. <a href="/pages/radius-control.html">The completed RADIUS Control project →</a></p>
 <h2>Problems and the next stage</h2>
-<p>The trickiest parts were <a href="notes.html#dc-eap">getting a domain controller through its own protected switch port</a>, <a href="notes.html#identity">proving LDAPS fallback</a> and <a href="notes.html#android-scep">understanding extra SCEP enrollment requests from Android</a>.</p>
+<p>The trickiest parts were <a href="/pages/notes.html#dc-eap">getting a domain controller through its own protected switch port</a>, <a href="/pages/notes.html#identity">proving LDAPS fallback</a> and <a href="/pages/notes.html#android-scep">understanding extra SCEP enrollment requests from Android</a>.</p>
 <p>Now I want to make the certificate lifecycle more predictable: renewals, revocation of old device identities and recovery of the CA itself. The second domain controller helps directory queries, but it doesn't replace that work.</p>
-<p><a class="source-link" href="windows-ad-pki.html">Windows Server and CA details →</a> &nbsp; <a class="source-link" href="linux-mobile-identity.html">Linux and Android clients →</a></p>
-</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>
+<p><a class="source-link" href="/pages/windows-ad-pki.html">Windows Server and CA details →</a> &nbsp; <a class="source-link" href="/pages/linux-mobile-identity.html">Linux and Android clients →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/pages/work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

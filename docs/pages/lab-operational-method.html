@@ -6,23 +6,27 @@
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="How I test virtual firewalls in Proxmox, from WAN and DHCP to NAT, isolation and recovery.">
   <title>How I Test Firewalls in Proxmox · BiXCore</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="/styles.css">
   <link rel="canonical" href="https://lab.bixcore.de/pages/lab-operational-method.html">
-  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BiXCore">
   <meta property="og:title" content="How I Test Firewalls in Proxmox · BiXCore">
   <meta property="og:description" content="How I test virtual firewalls in Proxmox, from WAN and DHCP to NAT, isolation and recovery.">
   <meta property="og:url" content="https://lab.bixcore.de/pages/lab-operational-method.html">
   <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/lab-operational-method.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/lab-operational-method.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/lab-operational-method.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/lab-operational-method.html">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
-    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+    <a class="brand" href="/index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="/pages/work-index.html">Projects</a><a href="/pages/notes.html">Troubleshooting</a><a href="/pages/hardware.html">Hardware</a><a href="/pages/roadmap.html">Plans</a><a href="/pages/about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Language selection"><a href="/de/pages/lab-operational-method.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/lab-operational-method.html" hreflang="en" lang="en" aria-current="page">English</a><a href="/ru/pages/lab-operational-method.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / Proxmox</p>
+<p class="breadcrumb"><a href="/index.html">Home</a> / <a href="/pages/work-index.html">Projects</a> / Proxmox</p>
 <p class="kicker">TESTING / TROUBLESHOOTING / RECOVERY</p>
 <h1>How I Test Firewalls in Proxmox</h1>
 <p class="lede">When I install a new firewall, I don't try every feature at once. I start with a working WAN and LAN connection, test it from a client and build on that. Repeating the same steps makes it easier to spot what is different between products.</p>
@@ -37,9 +41,9 @@
 <li><strong>Recovery:</strong> record what changes after restarting the firewall or restoring a snapshot, rather than assuming its runtime state is permanent.</li>
 </ol>
 <h2>What caused trouble</h2>
-<p>An early <a href="notes.html#lab">DHCP problem in the lab WAN</a> needed tests at the switch, gateway, Linux bridge and guest NIC. During the <a href="notes.html#ipfire">IPFire setup</a>, the WAN was initially attached to the wrong virtual bridge. Storage health and <a href="notes.html#gpu">KDE graphics problems</a> also turned into their own investigations.</p>
+<p>An early <a href="/pages/notes.html#lab">DHCP problem in the lab WAN</a> needed tests at the switch, gateway, Linux bridge and guest NIC. During the <a href="/pages/notes.html#ipfire">IPFire setup</a>, the WAN was initially attached to the wrong virtual bridge. Storage health and <a href="/pages/notes.html#gpu">KDE graphics problems</a> also turned into their own investigations.</p>
 <p>One lesson has been to distinguish basic network separation from full security isolation. Different Linux bridges make a useful lab layout, but I still need to test IPv4 and IPv6 paths toward all protected services.</p>
-<p>My November 2026 DD-WRT test added another important check: successful NAT is not enough if the guest cannot reboot cleanly. I traced a kernel panic to stale GRUB parameters regenerated from a binary template; a corrected UEFI reboot path passed two guest restarts. The guest still fails to shut down normally, and future firmware updates may overwrite the repair. <a href="notes.html#ddwrt-uefi">Read the DD-WRT case →</a></p>
+<p>My November 2026 DD-WRT test added another important check: successful NAT is not enough if the guest cannot reboot cleanly. I traced a kernel panic to stale GRUB parameters regenerated from a binary template; a corrected UEFI reboot path passed two guest restarts. The guest still fails to shut down normally, and future firmware updates may overwrite the repair. <a href="/pages/notes.html#ddwrt-uefi">Read the DD-WRT case →</a></p>
 <h2>The comparison I want to build</h2>
 <div class="table-wrap"><table><thead><tr><th>Area</th><th>What I want to check</th></tr></thead><tbody>
 <tr><td>Connectivity</td><td>WAN and client address assignment, DNS, IPv4/IPv6, routing and NAT</td></tr>
@@ -50,8 +54,8 @@
 <tr><td>Recovery</td><td>Restart behavior, configuration backup and restored functionality</td></tr>
 </tbody></table></div>
 <h2>Testing with a real Ethernet laptop</h2>
-<p>I now use a <a href="phylan1.html">dedicated physical lab port</a> to connect an external laptop to the selected firewall's virtual LAN. The Proxmox hookscript removes the connection when two or more firewall VMs run; I tested this with both two and three guests. I also checked internet and RDP forwarding for all eleven platforms with the laptop path available. That is not a substitute for negative-path isolation tests.</p>
+<p>I now use a <a href="/pages/phylan1.html">dedicated physical lab port</a> to connect an external laptop to the selected firewall's virtual LAN. The Proxmox hookscript removes the connection when two or more firewall VMs run; I tested this with both two and three guests. I also checked internet and RDP forwarding for all eleven platforms with the laptop path available. That is not a substitute for negative-path isolation tests.</p>
 <h2>Future test environment</h2>
-<p>I now have an <a href="ipv6-only-lab.html">IPv6-only upstream</a> working with physical Windows and Android Wi-Fi clients. Prefix delegation to a virtual firewall is still open. I also want a separate physical test access point for PacketFence, EAP-TLS and other NAC experiments without changing my normal enterprise Wi-Fi. Commercial firewall evaluations are also on the <a href="roadmap.html">roadmap</a>, subject to trial and licensing conditions.</p>
-<p><a class="source-link" href="virtual-firewall-platforms.html">Firewall platforms tested so far →</a> &nbsp; <a class="source-link" href="notes.html">More troubleshooting notes →</a></p>
-</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>
+<p>I now have an <a href="/pages/ipv6-only-lab.html">IPv6-only upstream</a> working with physical Windows and Android Wi-Fi clients. Prefix delegation to a virtual firewall is still open. I also want a separate physical test access point for PacketFence, EAP-TLS and other NAC experiments without changing my normal enterprise Wi-Fi. Commercial firewall evaluations are also on the <a href="/pages/roadmap.html">roadmap</a>, subject to trial and licensing conditions.</p>
+<p><a class="source-link" href="/pages/virtual-firewall-platforms.html">Firewall platforms tested so far →</a> &nbsp; <a class="source-link" href="/pages/notes.html">More troubleshooting notes →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/pages/work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

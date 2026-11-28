@@ -6,23 +6,27 @@
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="PacketFence 15.2 guest-registration lab: IPSet format failure, DNS forwarding loop and tested automatic network access control.">
   <title>PacketFence: My First NAC Lab · BiXCore</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="/styles.css">
   <link rel="canonical" href="https://lab.bixcore.de/pages/packetfence-nac.html">
-  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BiXCore">
   <meta property="og:title" content="PacketFence: My First NAC Lab · BiXCore">
   <meta property="og:description" content="PacketFence 15.2 guest-registration lab: IPSet format failure, DNS forwarding loop and tested automatic network access control.">
   <meta property="og:url" content="https://lab.bixcore.de/pages/packetfence-nac.html">
   <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/packetfence-nac.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/packetfence-nac.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/packetfence-nac.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/packetfence-nac.html">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
-    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+    <a class="brand" href="/index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="/pages/work-index.html">Projects</a><a href="/pages/notes.html">Troubleshooting</a><a href="/pages/hardware.html">Hardware</a><a href="/pages/roadmap.html">Plans</a><a href="/pages/about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Language selection"><a href="/de/pages/packetfence-nac.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/packetfence-nac.html" hreflang="en" lang="en" aria-current="page">English</a><a href="/ru/pages/packetfence-nac.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / PacketFence: My First NAC Lab</p>
+<p class="breadcrumb"><a href="/index.html">Home</a> / <a href="/pages/work-index.html">Projects</a> / PacketFence: My First NAC Lab</p>
 <p class="kicker">PERSONAL LAB / 6 NOVEMBER 2026</p><h1>PacketFence: My First NAC Lab</h1><p class="lede">I wanted to see what a NAC system actually does when a client registers through a portal, and what happens when I take its access away. Getting a Windows VM registered was easy compared with getting the policy to work.</p>
 <div class="article"><h2>The setup</h2>
 <p>I installed PacketFence 15.2 on Debian 12 in a separate Proxmox VM. It has an isolated IPv4 upstream and its own virtual client network with DHCP, DNS proxy, inline filtering, NAT and a captive portal. I started with a guest registration using a Null source, rather than attempting enterprise 802.1X immediately.</p>
@@ -47,4 +51,4 @@
 <p>This is <strong>not</strong> the same as installing a new official PacketFence package. A later upgrade might replace the locally modified module. The backport also says nothing by itself about RADIUS Accounting, 802.1X, MAC/IP spoofing or Security Events.</p>
 <h2>What comes next</h2>
 <p>The working functional backport can still be overwritten by an update. I need to check the next maintenance build for the upstream change and rerun registration, revocation and reboot tests after upgrading. RADIUS, EAP-TLS/802.1X, VLAN assignment, isolation actions and physical clients are separate planned experiments, not achievements of this session.</p>
-<p><a class="source-link" href="notes.html#packetfence-ipset">The IPSet incident →</a> &nbsp; <a class="source-link" href="notes.html#packetfence-dns">The DNS incident →</a> &nbsp; <a class="source-link" href="roadmap.html">Next tests →</a></p></div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>
+<p><a class="source-link" href="/pages/notes.html#packetfence-ipset">The IPSet incident →</a> &nbsp; <a class="source-link" href="/pages/notes.html#packetfence-dns">The DNS incident →</a> &nbsp; <a class="source-link" href="/pages/roadmap.html">Next tests →</a></p></div><hr class="rule"><p><a class="button secondary" href="/pages/work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

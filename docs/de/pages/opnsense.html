@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Mein OPNsense-Gateway: Netzaufbau, IPv6-Routing, Firewall-Tests und WireGuard-Fernzugriff.">
+  <title>OPNsense und IPv6 · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/de/pages/opnsense.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="OPNsense und IPv6 · BiXCore">
+  <meta property="og:description" content="Mein OPNsense-Gateway: Netzaufbau, IPv6-Routing, Firewall-Tests und WireGuard-Fernzugriff.">
+  <meta property="og:url" content="https://lab.bixcore.de/de/pages/opnsense.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/opnsense.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/opnsense.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/opnsense.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/opnsense.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/opnsense.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/opnsense.html" hreflang="en" lang="en">English</a><a href="/ru/pages/opnsense.html" hreflang="ru" lang="ru">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Netzwerksicherheit</p>
+<p class="kicker">FIREWALL / IPV6 / FERNZUGRIFF</p>
+<h1>OPNsense und IPv6</h1>
+<p class="lede">OPNsense ist das zentrale Gateway meines Heimnetzes. Neben dem alltäglichen Routing und den Firewall-Regeln übernimmt es WireGuard, Suricata, Zenarmor und den zertifikatsbasierten Netzwerkzugang.</p>
+<div class="article">
+<h2>Wie das Netzwerk aufgebaut ist</h2>
+<p>Das Gateway läuft auf einem Intel-N305-Gerät mit 10GbE-Schnittstellen. Ich verwende getrennte Netzsegmente für vertrauenswürdige Clients, Gastzugang und das Firewall-Labor. FreeRADIUS verbindet unterstützte kabelgebundene und drahtlose Zugänge mit der Zertifikatsinfrastruktur.</p>
+<p>Besonders interessant war es, ein konsistentes Verhalten von IPv4 und IPv6 zu erreichen. Eine Dual-Stack-Verbindung kann gesund erscheinen, obwohl die beiden Protokolle unterschiedliche Wege nehmen oder aus verschiedenen Gründen ausfallen.</p>
+<h2>Tests, die mir beim Verständnis geholfen haben</h2>
+<ul>
+<li><strong>Suricata:</strong> Ich löste gezielt eine IPS-Signatur aus und prüfte, dass die Firewall den Verkehr blockierte. Das war ein kontrollierter Test, kein realer Angriff.</li>
+<li><strong>Zenarmor:</strong> Ich testete eine gesperrte Webkategorie und bestätigte, dass die konfigurierte Richtlinie den Zugriff verweigerte.</li>
+<li><strong>WireGuard:</strong> Ein mobiler Client nutzte erfolgreich einen vollständigen IPv4-/IPv6-Tunnel einschließlich DNS-Auflösung und Zugriff auf erlaubte lokale Dienste. Andere Geräte können andere Tunnelprofile nutzen.</li>
+<li><strong>IPv6-Präfixübersetzung:</strong> Ich überprüfte die aktive Übersetzungsregel und die vom Client aus sichtbare externe IPv6-Adresse. Beide entsprachen dem damals verwendeten Provider-Präfix.</li>
+<li><strong>WAN-Quelladresswahl:</strong> Als eine globale IPv6-Quelladresse keinen Internetzugang hatte, verglich ich quelladressgebundene Tests und erarbeitete ein Wiederherstellungsverfahren.</li>
+</ul>
+<h2>Was ich noch teste</h2>
+<p>Ich habe noch nicht jede mögliche Kombination aus Provider-Präfixwechsel und Neustart mit diesem WireGuard-/NPTv6-Aufbau beobachtet. Außerdem möchte ich vollständige Negativtests zwischen den Netzsegmenten durchführen, statt mich nur auf die bereits geprüften erfolgreichen Verbindungen zu verlassen.</p>
+<p>Die <a href="/de/pages/wan-failover-recovery.html">physischen WAN-Failover- und Wiederherstellungstests</a> bestätigten beide WAN-Wechsel und die automatische VPN-Wiederherstellung. Meine <a href="/de/pages/zenarmor-multicore.html">Zenarmor-Multi-Core-Experimente</a> zeigten Stabilitätsprobleme statt eines belastbaren Durchsatzvergleichs.</p>
+<p><a class="source-link" href="/de/pages/zenarmor.html">Zenarmor-Testplan ansehen →</a>   <a class="source-link" href="/de/pages/opnsense-ipv6.html">Mehr zum Netzwerkaufbau →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/de/pages/work-index.html">← Alle Projekte</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

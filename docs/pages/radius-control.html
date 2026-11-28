@@ -6,23 +6,27 @@
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="My own stable RADIUS Control tool for FreeRADIUS, UniFi and Omada, with tested wired Disconnect and a careful look at Accounting failures.">
   <title>BiXCore RADIUS Control · BiXCore</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="/styles.css">
   <link rel="canonical" href="https://lab.bixcore.de/pages/radius-control.html">
-  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BiXCore">
   <meta property="og:title" content="BiXCore RADIUS Control · BiXCore">
   <meta property="og:description" content="My own stable RADIUS Control tool for FreeRADIUS, UniFi and Omada, with tested wired Disconnect and a careful look at Accounting failures.">
   <meta property="og:url" content="https://lab.bixcore.de/pages/radius-control.html">
   <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/radius-control.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/radius-control.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/radius-control.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/radius-control.html">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
-    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+    <a class="brand" href="/index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="/pages/work-index.html">Projects</a><a href="/pages/notes.html">Troubleshooting</a><a href="/pages/hardware.html">Hardware</a><a href="/pages/roadmap.html">Plans</a><a href="/pages/about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Language selection"><a href="/de/pages/radius-control.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/radius-control.html" hreflang="en" lang="en" aria-current="page">English</a><a href="/ru/pages/radius-control.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / RADIUS Control</p>
+<p class="breadcrumb"><a href="/index.html">Home</a> / <a href="/pages/work-index.html">Projects</a> / RADIUS Control</p>
 <p class="kicker">RADIUS / WI-FI / WIRED 802.1X / OWN TOOLS</p>
 <h1>Building My Own RADIUS Session Management Tool</h1>
 <p class="lede">I wanted to manage one network session without guessing which device was connected. What started as a small Accounting viewer became my own working tool for Wi-Fi, wired 802.1X and guest access.</p>
@@ -45,7 +49,7 @@
 <p>Wired 802.1X on my Omada switch needed its own implementation. My early request produced a NAK. After I narrowed the RADIUS packet to the fields the switch accepted, the switch returned a verified Disconnect-ACK.</p>
 <p>But there was another trap: the switch did not always send an Accounting-Stop for the old session. Once, the new Accounting-Start arrived just after my original timeout. Closing the old row on ACK alone could have left misleading history, or worse, targeted the wrong record.</p>
 <p>I changed the cleanup so it happens <em>only</em> after a verified ACK and a unique replacement Accounting-Start for the same client and port, while the old database row remains unchanged. There is a bounded wait and no automatic retry for an uncertain result. I tested the resulting behavior on <strong>two physical switch ports</strong>, with a workstation and a domain controller. Both had the expected new session and a correctly closed old record.</p>
-<p>The action is restricted to eligible individual wired 802.1X sessions on the configured Omada switch. It is not a blanket switch-port shutdown. <a href="notes.html#omada-accounting">The Omada failure and fix →</a></p>
+<p>The action is restricted to eligible individual wired 802.1X sessions on the configured Omada switch. It is not a blanket switch-port shutdown. <a href="/pages/notes.html#omada-accounting">The Omada failure and fix →</a></p>
 <h2>The Wi-Fi keys I decided not to flush</h2>
 <p>I found that PMKSA cleanup did not remove separate <strong>802.11r fast-transition keys</strong> on the UniFi APs. A disabled identity is rejected at its next full EAP-TLS authentication, but an existing cached FT context may remain. I accepted that limitation for my personal network rather than doing disruptive global cache flushes.</p>
 <p>I also captured a TLS 1.2 client offering an old session ID while FreeRADIUS performed a complete handshake. The full authentications took around 0.16–0.27 seconds in those samples. I left persistent TLS session caching off; the possible gain wasn't worth adding another edge case to authorization.</p>
@@ -54,11 +58,11 @@
 <p>I updated two restricted OPNsense helpers. They now accept only the expected direct or proxy Accounting Detail sources and check the <em>original AP identity</em>, client MAC, session ID and unique identifier. They also validate the exact active RadSec TLS client before using the corresponding verified UniFi DAS setting. An ambiguous or altered configuration fails closed rather than triggering a blind retry.</p>
 <p>I then exercised three actual devices: a UniFi phone completed targeted Disconnect and PMKSA cleanup with a new Accounting Start; an Omada wired workstation produced ACK and guarded cleanup without touching the domain-controller port; another UniFi phone completed a requested EAPOL reauthentication with an Accounting Stop and new Start.</p>
 <p>That is the <strong>v1.0.2 source/helper release</strong>, not a new web Docker image. Its full unit suite recorded <strong>287 tests passed and one skipped</strong>. The earlier v1.0.1 UI image remains deployed. No RADIUS daemon, AP or NAS container restart was required for that helper update.</p>
-<p>Those tests were performed earlier on 21 November, before the late-evening final RadSec certificate cleanup and restart. I have not independently repeated every RADIUS Control action after that final change. <a href="radsec-mtls.html">The RadSec migration →</a> · <a href="notes.html#radsec-unifi-das">The DAS regression →</a></p>
+<p>Those tests were performed earlier on 21 November, before the late-evening final RadSec certificate cleanup and restart. I have not independently repeated every RADIUS Control action after that final change. <a href="/pages/radsec-mtls.html">The RadSec migration →</a> · <a href="/pages/notes.html#radsec-unifi-das">The DAS regression →</a></p>
 <h2>What the release tests cover</h2>
 <p>The deployed <strong>v1.0.1</strong> interface, three healthy containers and access-control checks passed. The release suite recorded <strong>257 Python tests passed, one skipped</strong>. Browser layout tests covered phone, tablet and desktop widths, themes and languages using a mock API; they did <em>not</em> send new live Disconnect commands. Live UniFi and Omada operations were checked separately.</p>
 <p>The software is finished, but one infrastructure maintenance task remains: the dual-interface NAS route used to reach OPNsense has not yet been verified across a full NAS reboot. A successful container restart is not the same as end-to-end boot recovery.</p>
 <p>I keep the source and live configuration private. This page is about what I built, where it failed and what I actually checked.</p>
-<p><a class="source-link" href="identity-pki.html">Certificate-based access →</a> &nbsp; <a class="source-link" href="switching-wireless.html">Switching and wired 802.1X →</a> &nbsp; <a class="source-link" href="network-v3.8.html">Network notes →</a></p>
-</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p>
+<p><a class="source-link" href="/pages/identity-pki.html">Certificate-based access →</a> &nbsp; <a class="source-link" href="/pages/switching-wireless.html">Switching and wired 802.1X →</a> &nbsp; <a class="source-link" href="/pages/network-v3.8.html">Network notes →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/pages/work-index.html">← All projects</a></p>
 </main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Как я фиксирую испытания, отслеживаю изменения конфигурации и веду подробные рабочие заметки BiXCore.">
+  <title>Рабочие заметки и испытания · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/ru/pages/working-notes.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Рабочие заметки и испытания · BiXCore">
+  <meta property="og:description" content="Как я фиксирую испытания, отслеживаю изменения конфигурации и веду подробные рабочие заметки BiXCore.">
+  <meta property="og:url" content="https://lab.bixcore.de/ru/pages/working-notes.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/working-notes.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/working-notes.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/working-notes.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/working-notes.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Перейти к содержанию</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/ru/index.html" aria-label="BiXCore Lab, главная"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ИНЖЕНЕРНАЯ ЛАБОРАТОРИЯ</span></span></a>
+    <nav class="top-nav" aria-label="Основная навигация"><a href="/ru/pages/work-index.html">Проекты</a><a href="/ru/pages/notes.html">Диагностика</a><a href="/ru/pages/hardware.html">Оборудование</a><a href="/ru/pages/roadmap.html">Планы</a><a href="/ru/pages/about.html">Обо мне</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Выбор языка"><a href="/de/pages/working-notes.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/working-notes.html" hreflang="en" lang="en">English</a><a href="/ru/pages/working-notes.html" hreflang="ru" lang="ru" aria-current="page">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/ru/index.html">Главная</a> / <a href="/ru/pages/work-index.html">Проекты</a> / Рабочие заметки</p>
+<p class="kicker">ДОКУМЕНТИРОВАНИЕ ЛАБОРАТОРИИ</p>
+<h1>Как я веду рабочие заметки</h1>
+<p class="lede">BiXCore начинался не с готового проекта. Я менял оборудование, переносил сервисы, учился на неудачных конфигурациях и иногда заменял прежний подход. Заметки помогают помнить причину изменений и результат.</p>
+<div class="article">
+<section id="running-tested-planned"><h2>Что настроено и что реально испытано</h2>
+<p>Разделяю наличие конфигурации и испытанное поведение. Например, два LDAPS-endpoint полезны, но failover каталога описал как работающий только после отключения первого и повторения аутентификации. Аналогично успешные NAT и RDP виртуальной firewall не говорят обо всех её IPS или правилах изоляции.</p>
+<p>Некоторые записи индексов описывают рабочую конфигурацию, другие конкретный тест или будущий эксперимент. Это особенно важно, когда прежний план позже стал рабочей функцией.</p></section>
+<section id="checking-the-evidence"><h2>Как я проверял проблему</h2>
+<p>Обычно начинаю с поведения клиента, затем сравниваю с настройками устройств, журналами и захватами пакетов. При нарушении IPv6 выбор разных исходных WAN-адресов дал больше информации, чем наличие глобального IPv6 на интерфейсе. При отсутствии адреса у firewall VM проверил весь путь через Proxmox, коммутаторы и шлюз.</p>
+<p>Текущее состояние важно: экспорт конфигурации может не показать старый PF state, сгенерированный bundle FreeRADIUS или сервис, не запустившийся при загрузке. Командные выводы и детальные доказательства храню отдельно, а статьи описывают исследование и результат.</p>
+<p><a href="/ru/pages/notes.html">Диагностические случаи →</a></p></section>
+<section id="changes-over-time"><h2>Когда старая заметка больше не описывает конфигурацию</h2>
+<p>Некоторые длинные документы начались как заметки об установке и стали историей изменений. Например, ранняя конфигурация хранилища Proxmox была заменена после проверки дисков. Более новое проверенное состояние имеет приоритет, старая запись сохраняет причины миграции.</p>
+<p>То же относится к политикам сертификатов Windows, интеграции контроллеров и исправлениям, пережившим обновления. Стараюсь описывать текущую конфигурацию в начале каждой статьи, оставляя историю в индексе.</p></section>
+<section id="keeping-source-files"><h2>Почему подробные файлы хранятся отдельно</h2>
+<p>Исходные рабочие заметки содержат конфигурации, скриншоты, копии и команды конкретных устройств. Они полезны для эксплуатации и восстановления, но не нужны целиком на сайте для объяснения сделанного. Вместо них использую упрощённые схемы и описания решений и тестов.</p>
+<p>Оригинальные документы и recovery-файлы веду отдельно и проверяю новые материалы перед добавлением в портфолио. Публичные статьи связывают работы без раскрытия административной части сети.</p></section>
+<p><a class="source-link" href="/ru/pages/network-v3.8.html">Рабочие заметки сети →</a>   <a class="source-link" href="/ru/pages/windows-server-v2.6.html">Рабочие заметки Windows Server →</a>   <a class="source-link" href="/ru/pages/proxmox-v1.7.html">Заметки Proxmox Master v1.15 →</a>   <a class="source-link" href="/ru/pages/barox-config-tool.html">Проект инструментов Barox →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/ru/pages/work-index.html">← Все проекты</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Личная лаборатория сетей и IT-безопасности</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

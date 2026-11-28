@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="OPNsense im Betrieb halten: Updates, eigene Hooks, Firewall-State-Probleme, Monitoring und USV-Fehleranalyse.">
+  <title>OPNsense im Betrieb halten · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/de/pages/security-operations.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="OPNsense im Betrieb halten · BiXCore">
+  <meta property="og:description" content="OPNsense im Betrieb halten: Updates, eigene Hooks, Firewall-State-Probleme, Monitoring und USV-Fehleranalyse.">
+  <meta property="og:url" content="https://lab.bixcore.de/de/pages/security-operations.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/security-operations.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/security-operations.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/security-operations.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/security-operations.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/security-operations.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/security-operations.html" hreflang="en" lang="en">English</a><a href="/ru/pages/security-operations.html" hreflang="ru" lang="ru">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Betrieb</p>
+<p class="kicker">OPNSENSE / MONITORING / WIEDERHERSTELLUNG</p>
+<h1>OPNsense im Betrieb halten</h1>
+<p class="lede">Eine Firewall kann nach einem Update gesund aussehen, obwohl ein Hintergrunddienst defekt ist oder ein Routing-State veraltet ist. Ich habe fast genauso viel Zeit mit der Prüfung verbracht, was einen Neustart übersteht, wie mit der Einrichtung der Funktionen selbst.</p>
+<div class="article">
+<h2>Updates und persistente Konfiguration</h2>
+<p>Meine Prüfungen nach Updates umfassen Internet-Routing, DHCP und DNS, IPv6-Delegation, FreeRADIUS und Zertifikatswiderruf, Gastportal, LLDP, WireGuard, Suricata und Zenarmor. Wo sinnvoll, vergleiche ich Dienststatus mit realem Clientverhalten oder Gateway-Zustand.</p>
+<p>Ein gewöhnliches OPNsense-Konfigurationsbackup enthält nicht alle eigenen Hooks, Cronjobs oder NAS-Abhängigkeiten. Ich führe eine separate Recovery-Liste für RADIUS- und CRL-Updates, LLDP-Einstellungen, dynamische Portal-Einträge und weitere lokale Automatisierung.</p>
+<h2>Das OPNsense-Update vom 6. November</h2>
+<p>Ich aktualisierte das Hauptgateway auf OPNsense 26.7.8_2 und prüfte es nach dem Neustart. Eigene Dienst-Hooks und geplante Aufgaben blieben erhalten, darunter FreeRADIUS/CRL, WAN-IPv6-Wiederherstellung, Portal-Updates und LLDP-Einstellungen. Ich prüfte laufende Dienste und relevante gespeicherte Konfiguration, statt allein der Versionsnummer zu vertrauen.</p>
+<p>Mein Vodafone-LTE-Vodafone-Failover einschließlich VPN-Wiederherstellung hatte einen separaten realen Test am 5. November bestanden. Am 6. November wiederholte ich diesen erzwungenen Failover nicht; die beiden Beobachtungen bleiben getrennt.</p>
+<p>Das Update zeigte erneut, warum ich Post-Boot-Notizen führe: Die bekannten ungültigen PF-Gateway-States traten wieder auf. Ich veranlasste die gezielte Bereinigung, doch die Startursache muss weiter untersucht werden. Zenarmor protokollierte UDP-Flow-Warnungen ohne bestätigten Client-Ausfall. Ich habe Inspection-Einstellungen nicht nur zum Verstummen der Logs geändert.</p>
+<p>Ich korrigierte zu weit gefasste Dateirechte der USV-Monitoring-Konfiguration. Zu diesem früheren Zeitpunkt war die Regeneration noch nicht geprüft; spätere November-Tests bestätigten die persistente Korrektur. LLDP zeigte außerdem mein eigenes Gerät neben dem realen Switch als Nachbarn. Das allein war kein Beweis für eine physische Schleife.</p>
+<h2>Historischer Fehlerfall: das frühere USB-LTE-Modem nach dem Neustart</h2>
+<p>Bei der Einrichtung des neuen reinen IPv6-VLANs am 9. November stellte das frühere USB-LTE-Modem nach einem Gateway-Neustart seinen PPP-Uplink nicht wieder her. Ich untersuchte das Gerät und versuchte USB-Reset und Schnittstellen-Neukonfiguration. Eine nutzbare Adresse erhielt es erst nach einem weiteren Geräte-Reset; in der beobachteten Sitzung erholte es sich.</p>
+<p>Die Ursache des alten USB-Fehlers konnte ich nicht ermitteln. Später ersetzte ich dieses Modem durch Ethernet-LTE. Der zuvor getestete vollständige Haupt-WAN-LTE-Failover und die VPN-Wiederherstellung sind von diesem einzelnen Startproblem zu trennen. <a href="/de/pages/notes.html#lte-recovery">Kurze Notiz zum Fehlerfall →</a></p>
+<h2>Untersuchte Probleme</h2>
+<div class="two-col">
+<article class="mini-card"><h3>Ungültige PF-States nach Neustart</h3><p>Alte Policy-Routing-States zeigten auf ein ungültiges Gateway, obwohl die aktiven Regeln korrekt waren. Ein späterer Start reproduzierte diesen State-Typ. Ich veranlasste erneut gezielte Entfernung, habe aber noch keinen Nachweis für eine behobene Startursache.</p><p><a href="/de/pages/notes.html#pf-state">Was ich geprüft habe →</a></p></article>
+<article class="mini-card"><h3>WAN-IPv6-Quelladresswahl</h3><p>Ein providerspezifisches Problem unterbrach ausgehenden Verkehr von einer WAN-IPv6-Adresse. Ich verglich explizite Quelladressen, setzte eine vorübergehende Abhilfe ein und ergänzte später einen persistenten Wiederherstellungspfad.</p><p><a href="/de/pages/notes.html#ipv6">Der IPv6-Fehlerfall →</a></p></article>
+<article class="mini-card"><h3>DNS und Gastzugang nach Neuverbindungen</h3><p>Ich untersuchte dynamische DNS-Updates, die nach Neustart ausblieben, und prüfte separat den erzeugten IPv6-Eintrag des Gastportals.</p><p><a href="/de/pages/notes.html#ddns">DDNS-Untersuchung →</a></p></article>
+<article class="mini-card"><h3>USV-Monitoring</h3><p>Network UPS Tools erkannte zunächst die USB-USV nicht; später musste auch die Listener-Konfiguration korrigiert werden. Ich prüfte die tatsächliche USV-Verbindung und das Verhalten beim Stromtest.</p><p><a href="/de/pages/notes.html#ups">USV-Probleme →</a></p></article>
+</div>
+<h2>Warum ich externes Plex-Streaming zu Vodafone verlagert habe</h2>
+<p>Ich verglich reale externe Downloads über Windscribe und das normale WAN. Die gemessenen VPN-Sitzungen erreichten etwa <strong>2.0–3.4 MB/s</strong>; Vodafone erreichte <strong>4.4–5.1 MB/s</strong>. Nach der Umstellung der normalen Wiedergabe prüfte ich externes 4K Direct Play am Telefon mit etwa 29 Mbit/s. Das sind Anwendungsmessungen, keine Bandbreitengarantie.</p>
+<p>Ich behielt einen eigenen Suricata-IPS-Pfad für eingehenden Plex-Verkehr und bestätigte, dass eine kontrollierte Testsignatur tatsächlich <strong>blockiert wurde</strong>. Ich habe nicht jedes Videopaket unabhängig gemessen.</p>
+<p>Windscribe behält einen eigenen weitergeleiteten Endpunkt für den NAS-Watchdog und den etablierten HomeWG-Backup-Pfad. Den realen WAN-LTE-Failover und die VPN-/WireGuard-Wiederherstellung hatte ich zuvor getestet; die neue ausgehende Plex-Richtlinie ersetzte dieses Konzept nicht.</p>
+<h2>Monitoring und Ausfallsicherheit</h2>
+<p>Ich verwende Dienstprüfungen und Benachrichtigungsrouting auf dem Gateway und sammle Metriken für die Infrastruktur. Am 5. November testete ich auch den Reserve-Internetpfad: Haupt-WAN zu LTE und zurück einschließlich VPN-Wiederherstellung. Damit war der LTE-/VPN-Recovery-Pfad geprüft. Das Verhalten einzelner Dienste bei Netzänderungen prüfe ich weiter.</p>
+<p>Auch die Stromversorgung hat Grenzen: USV-Kommunikation und einen kontrollierten Netzausfall habe ich getestet, aber nicht für jedes angeschlossene Gerät bestätigt, dass es batteriegestützt versorgt wird.</p>
+<h2>Was sich am 26.–27. November änderte</h2>
+<p>Ich ersetzte das alte USB-LTE-Modem durch ein per Ethernet angeschlossenes Zyxel und prüfte den neuen Vodafone-LTE-Vodafone-Recovery-Pfad physisch. Der neue Routenbeobachter und die gezielte PF-Bereinigung stellten Windscribe in beiden Richtungen automatisch wieder her. Bei einem separaten Neustart entfernte die Start-State-Abhilfe 25 ungültige States. <a href="/de/pages/wan-failover-recovery.html">Das vollständige Failover- und Recovery-Projekt →</a></p>
+<p>Die korrigierten NUT-Rechte überstehen nun Konfigurationsregeneration und Neustart. Das umfassendere Recovery-Audit prüfte nach Offline-Imaging auch eigene Hooks, FreeRADIUS, DNS und weitere laufende Dienste. Abbild und eigenes Archiv wurden verifiziert; eine Testwiederherstellung steht noch aus.</p>
+<h2>Was offen bleibt</h2>
+<p>Die Startursache der ungültigen PF-States ist weiterhin ungeklärt. Ich möchte außerdem vollständigere Tests nach WAN-Neuverbindungen, Präfixwechseln, USV-Ereignissen und Gateway-Neustarts durchführen und die Beobachtungen in den Arbeitsnotizen ergänzen.</p>
+<p><a class="source-link" href="/de/pages/notes.html">Alle Fehlerfälle →</a>   <a class="source-link" href="/de/pages/roadmap.html">Aktuelle Testvorhaben →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/de/pages/work-index.html">← Alle Projekte</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

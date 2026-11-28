@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07101b">
+  <meta name="description" content="Wie ich mit Active Directory, FreeRADIUS, SCEP und EAP-TLS einen zertifikatsbasierten Netzwerkzugang aufgebaut habe.">
+  <title>Zertifikatsbasierter Netzwerkzugang · BiXCore</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="canonical" href="https://lab.bixcore.de/de/pages/identity-pki.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="BiXCore">
+  <meta property="og:title" content="Zertifikatsbasierter Netzwerkzugang · BiXCore">
+  <meta property="og:description" content="Wie ich mit Active Directory, FreeRADIUS, SCEP und EAP-TLS einen zertifikatsbasierten Netzwerkzugang aufgebaut habe.">
+  <meta property="og:url" content="https://lab.bixcore.de/de/pages/identity-pki.html">
+  <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/identity-pki.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/identity-pki.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/identity-pki.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/identity-pki.html">
+</head>
+<body>
+  <a class="skip-link" href="#main">Zum Inhalt springen</a>
+  <header class="site-header"><div class="wrap header-inner">
+    <a class="brand" href="/de/index.html" aria-label="BiXCore Lab, Startseite"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">TECHNIKLABOR</span></span></a>
+    <nav class="top-nav" aria-label="Hauptnavigation"><a href="/de/pages/work-index.html">Projekte</a><a href="/de/pages/notes.html">Fehleranalyse</a><a href="/de/pages/hardware.html">Hardware</a><a href="/de/pages/roadmap.html">Ausblick</a><a href="/de/pages/about.html">Über mich</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Sprachauswahl"><a href="/de/pages/identity-pki.html" hreflang="de" lang="de" aria-current="page">Deutsch</a><a href="/pages/identity-pki.html" hreflang="en" lang="en">English</a><a href="/ru/pages/identity-pki.html" hreflang="ru" lang="ru">Русский</a></nav>
+  </div></header><main id="main" class="wrap subpage">
+<p class="breadcrumb"><a href="/de/index.html">Startseite</a> / <a href="/de/pages/work-index.html">Projekte</a> / Identitäten</p>
+<p class="kicker">PKI / EAP-TLS / CLIENTREGISTRIERUNG</p>
+<h1>Zertifikatsbasierter Netzwerkzugang</h1>
+<p class="lede">LAN- und WLAN-Clients sollten individuelle Zertifikate statt eines gemeinsamen Netzwerkpassworts verwenden. Dafür musste ich Registrierung, vertrauenswürdige CAs, Widerruf und verzeichnisgestützte Autorisierung zusammenbringen.</p>
+<div class="article">
+<h2>Wie die Komponenten zusammenarbeiten</h2>
+<p>Windows Server stellt Active Directory und eine Enterprise-CA bereit. NDES übernimmt SCEP für unterstützte Android-Geräte. FreeRADIUS läuft auf OPNsense und prüft das Clientzertifikat, bevor die entsprechende Zugangsrichtlinie am Switch oder Access Point angewendet wird.</p>
+<h2>Auch den RADIUS-Transport schützen</h2>
+<p>Später setzte ich RadSecProxy vor FreeRADIUS für beide UniFi-APs und den kabelgebundenen Omada-Switch. <strong>Transport-mTLS und Client-EAP-TLS sind zwei verschiedene Zertifikatsprüfungen.</strong> Die Netzwerkgeräte erreichen das Gateway per TLS 1.3. Die EAP-TLS-Identitäten der Endgeräte, die Verzeichnisautorisierung und die CRL-Prüfungen bleiben jedoch Aufgaben von FreeRADIUS.</p>
+<p>Der Switch benötigte eine Let's-Encrypt-Vertrauenskette für den Server und eine separate lokale CA für sein eigenes Clientzertifikat. Die Serverzertifikatsprüfung blieb aktiv; ich testete neue Authentifizierungen und Accounting. <a href="/de/pages/radsec-mtls.html">Zur RadSec-Zertifikats- und Migrationsgeschichte →</a></p>
+<h2>Was ich getestet habe</h2>
+<ul>
+<li>Zertifikatsregistrierung und LAN-EAP-TLS für ausgewählte Windows-Rechner.</li>
+<li>Zertifikatsauthentifizierung über LAN und WLAN unter Kubuntu.</li>
+<li>Android-MDM-Profile, die SCEP-Identitäten ausstellen und für Enterprise-WLAN nutzen.</li>
+<li>Veröffentlichung der Sperrliste und ausgewählte Zertifikatsvalidierungen.</li>
+<li>LDAPS-Verzeichnisabfragen über den zweiten Controller bei Ausfall des ersten.</li>
+<li>Separates LAN-Zertifikats- und Autorisierungskonzept für Domänencontroller, ohne Startabhängigkeit vom eigenen Verzeichnisdienst.</li>
+</ul>
+<h2>Was ich aus RADIUS Accounting und Disconnect gelernt habe</h2>
+<p>Am 7. November aktivierte ich Accounting für beide UniFi-APs, während der bestehende OPNsense-FreeRADIUS-Dienst und die Zertifikatsprüfungen erhalten blieben. Der Server erfasste bereits Switch-Sitzungen; nach der UniFi-Änderung konnte ich auch aktuelle Start- und Interim-Update-Informationen von WLAN-Sitzungen in der lokalen Datenbank sehen.</p>
+<p>Mein erster Versuch, die Sitzung eines Telefons zu trennen, endete mit einem NAK. Das EAP-TLS-Zertifikat war nicht das Problem: Ich hatte die ID einer alten Sitzung verwendet, die beim Roaming beendet worden war. Ich prüfte den neueren Accounting-Eintrag, sendete einen gezielten Disconnect-Request für die aktuelle Sitzung und erhielt ein ACK. Das Telefon trennte sichtbar die WLAN-Verbindung und verband sich erneut per EAP-TLS.</p>
+<p>Das belegt gezielte Sitzungstrennung und Reauthentifizierung für diesen Test. Der Disconnect änderte das VLAN nicht. Eine spätere CoA-VLAN-Anfrage beantwortete der AP mit einem Unsupported-Attribute NAK. <a href="/de/pages/notes.html#radius-coa">Der Fehler bei der Session-ID →</a></p>
+<h2>Autorisierung prüfen, nicht nur das Zertifikat</h2>
+<p>Ich verschärfte die FreeRADIUS-Autorisierung und testete reale Telefone. Das Deaktivieren einer lokalen Identität führte beim nächsten vollständigen EAP-TLS-Login zu Access-Reject; die Reaktivierung erlaubte wieder den Zugang. Auch eine nicht übereinstimmende EAP-Identität und ein gültiges Zertifikat ohne passenden zugelassenen lokalen Eintrag wurden bei neuen Anmeldungen abgewiesen.</p>
+<p>Mein RADIUS-Control-Werkzeug kann eine UniFi-Sitzung gezielt reauthentifizieren oder trennen. Die PMKSA-Bereinigung entfernte die separaten 802.11r-Fast-Transition-Schlüssel nicht. Deshalb stelle ich das Deaktivieren eines Kontos nicht als sofortige Garantie für das Entfernen sämtlicher zwischengespeicherter WLAN-Schlüssel dar.</p>
+<p>Ich versuchte auch eine direkte VLAN-Neuzuweisung über CoA. Der AP antwortete mit einem Unsupported-Attribute NAK, nicht mit einem funktionierenden VLAN-Wechsel. <a href="/de/pages/radius-control.html">Wie ich RADIUS Control entwickelt habe →</a></p>
+<h2>LAN-Sitzungen verwalten, ohne den Verzeichnisdienst zu verändern</h2>
+<p>Ich erweiterte RADIUS Control um einzelne kabelgebundene Omada-802.1X-Sitzungen. Das Gateway prüft den aktuellen Client und Port; ein alter Accounting-Eintrag wird erst nach verifiziertem ACK und passender neuer Sitzung geschlossen. Getestet habe ich getrennte Ports eines Arbeitsplatzrechners und eines Domänencontrollers.</p>
+<p>Damit wird RADIUS Control nicht zu einem AD-Verwaltungswerkzeug: Es deaktiviert keine Domänenkonten, ändert keine Verzeichnisrechte und bearbeitet keine EAP-TLS-Zertifikate. <a href="/de/pages/radius-control.html">Das fertige RADIUS-Control-Projekt →</a></p>
+<h2>Probleme und nächste Schritte</h2>
+<p>Besonders anspruchsvoll waren <a href="/de/pages/notes.html#dc-eap">der Zugang eines Domänencontrollers über seinen eigenen geschützten Switch-Port</a>, <a href="/de/pages/notes.html#identity">der Nachweis des LDAPS-Fallbacks</a> und <a href="/de/pages/notes.html#android-scep">die Untersuchung zusätzlicher SCEP-Registrierungsanfragen von Android</a>.</p>
+<p>Nun möchte ich den Zertifikatslebenszyklus berechenbarer gestalten: Erneuerungen, Widerruf alter Geräteidentitäten und Wiederherstellung der CA selbst. Der zweite Domänencontroller hilft bei Verzeichnisabfragen, ersetzt diese Arbeit aber nicht.</p>
+<p><a class="source-link" href="/de/pages/windows-ad-pki.html">Details zu Windows Server und CA →</a>   <a class="source-link" href="/de/pages/linux-mobile-identity.html">Linux- und Android-Clients →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/de/pages/work-index.html">← Alle Projekte</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Privates Netzwerk- und IT-Sicherheitslabor</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

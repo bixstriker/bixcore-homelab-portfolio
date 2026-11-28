@@ -6,23 +6,27 @@
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="My physical WAN failover tests, targeted PF cleanup, automatic VPN recovery and checked offline backups.">
   <title>Building and Testing My OPNsense WAN Failover and Recovery System · BiXCore</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="/styles.css">
   <link rel="canonical" href="https://lab.bixcore.de/pages/wan-failover-recovery.html">
-  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BiXCore">
   <meta property="og:title" content="Building and Testing My OPNsense WAN Failover and Recovery System · BiXCore">
   <meta property="og:description" content="My physical WAN failover tests, targeted PF cleanup, automatic VPN recovery and checked offline backups.">
   <meta property="og:url" content="https://lab.bixcore.de/pages/wan-failover-recovery.html">
   <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/wan-failover-recovery.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/wan-failover-recovery.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/wan-failover-recovery.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/wan-failover-recovery.html">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
-    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+    <a class="brand" href="/index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="/pages/work-index.html">Projects</a><a href="/pages/notes.html">Troubleshooting</a><a href="/pages/hardware.html">Hardware</a><a href="/pages/roadmap.html">Plans</a><a href="/pages/about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Language selection"><a href="/de/pages/wan-failover-recovery.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/wan-failover-recovery.html" hreflang="en" lang="en" aria-current="page">English</a><a href="/ru/pages/wan-failover-recovery.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / WAN recovery</p>
+<p class="breadcrumb"><a href="/index.html">Home</a> / <a href="/pages/work-index.html">Projects</a> / WAN recovery</p>
 <p class="kicker">OPNSENSE / PF / LTE / RECOVERY</p>
 <h1>Building and Testing My OPNsense WAN Failover and Recovery System</h1>
 <p class="lede">A backup connection is only useful if the network actually recovers when the primary one fails.</p>
@@ -49,5 +53,5 @@
 <p>The LTE passthrough address changes, so relying on that address for administration was inconvenient. I configured access to the modem's own management address through the backup WAN and tested HTTPS and SSH after a modem reboot. The route followed the changed gateway automatically. I did not need another restart hook for this.</p>
 <h2>What I know now</h2>
 <p>The physical WAN transition, automatic Windscribe recovery in both directions and targeted boot-state cleanup were tested on the live gateway. I still need to recheck these mechanisms after future OPNsense upgrades and exercise the full image-restore procedure in isolation. I also do not treat a successful VPN reconnect as proof that every remote application remained uninterrupted.</p>
-<p><a href="security-operations.html">Gateway operations →</a> · <a href="notes.html#pf-bootzero">The startup-state investigation →</a> · <a href="hardware.html">Hardware →</a></p>
-</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>
+<p><a href="/pages/security-operations.html">Gateway operations →</a> · <a href="/pages/notes.html#pf-bootzero">The startup-state investigation →</a> · <a href="/pages/hardware.html">Hardware →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/pages/work-index.html">← All projects</a></p></main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

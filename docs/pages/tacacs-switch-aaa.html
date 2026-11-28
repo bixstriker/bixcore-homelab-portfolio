@@ -6,23 +6,27 @@
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="My TACACS+ switch administration setup, Active Directory integration, authorization checks and an unresolved Omada local-fallback test.">
   <title>TACACS+ and Switch Administration · BiXCore</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="/styles.css">
   <link rel="canonical" href="https://lab.bixcore.de/pages/tacacs-switch-aaa.html">
-  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BiXCore">
   <meta property="og:title" content="TACACS+ and Switch Administration · BiXCore">
   <meta property="og:description" content="My TACACS+ switch administration setup, Active Directory integration, authorization checks and an unresolved Omada local-fallback test.">
   <meta property="og:url" content="https://lab.bixcore.de/pages/tacacs-switch-aaa.html">
   <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/tacacs-switch-aaa.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/tacacs-switch-aaa.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/tacacs-switch-aaa.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/tacacs-switch-aaa.html">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
-    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+    <a class="brand" href="/index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="/pages/work-index.html">Projects</a><a href="/pages/notes.html">Troubleshooting</a><a href="/pages/hardware.html">Hardware</a><a href="/pages/roadmap.html">Plans</a><a href="/pages/about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Language selection"><a href="/de/pages/tacacs-switch-aaa.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/tacacs-switch-aaa.html" hreflang="en" lang="en" aria-current="page">English</a><a href="/ru/pages/tacacs-switch-aaa.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / TACACS+</p>
+<p class="breadcrumb"><a href="/index.html">Home</a> / <a href="/pages/work-index.html">Projects</a> / TACACS+</p>
 <p class="kicker">SWITCH ADMINISTRATION / ACTIVE DIRECTORY / AAA</p>
 <h1>TACACS+ for Switch Administration</h1>
 <p class="lede">I wanted to use directory accounts for managing my switches, while keeping administrative privileges and recovery access under control. The interesting part turned out to be what happened when the TACACS+ service was unavailable.</p>
@@ -42,6 +46,6 @@
 <h2>Resource use and recovery</h2>
 <p>The Docker project separates the TACACS+ backend, UI and database. I also reduced the FastAPI service to one Uvicorn worker. A point-in-time measurement showed roughly 122 MiB for the running stack; it was not a peak-load test.</p>
 <p>A central login service makes daily administration easier, but it also creates a dependency. I still need to document and test an independent database/configuration restore, and I won't count on the Omada local fallback until its behavior is resolved.</p>
-<p><a class="source-link" href="switching-wireless.html">Managed switches and Wi-Fi →</a> &nbsp; <a class="source-link" href="nas-services-operations.html">NAS operations →</a> &nbsp; <a class="source-link" href="notes.html#tacacs-fallback">Fallback investigation →</a></p>
-</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p>
+<p><a class="source-link" href="/pages/switching-wireless.html">Managed switches and Wi-Fi →</a> &nbsp; <a class="source-link" href="/pages/nas-services-operations.html">NAS operations →</a> &nbsp; <a class="source-link" href="/pages/notes.html#tacacs-fallback">Fallback investigation →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/pages/work-index.html">← All projects</a></p>
 </main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>

@@ -6,23 +6,27 @@
   <meta name="theme-color" content="#07101b">
   <meta name="description" content="How I moved two UniFi access points and an Omada switch to RadSec with TLS 1.3, resolved certificate trust failures, and tested ACME service actions.">
   <title>Moving Authentication to RadSec · BiXCore</title>
-  <link rel="stylesheet" href="../styles.css">
+  <link rel="stylesheet" href="/styles.css">
   <link rel="canonical" href="https://lab.bixcore.de/pages/radsec-mtls.html">
-  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="BiXCore">
   <meta property="og:title" content="Moving Authentication to RadSec · BiXCore">
   <meta property="og:description" content="How I moved two UniFi access points and an Omada switch to RadSec with TLS 1.3, resolved certificate trust failures, and tested ACME service actions.">
   <meta property="og:url" content="https://lab.bixcore.de/pages/radsec-mtls.html">
   <meta name="twitter:card" content="summary">
+<link rel="alternate" hreflang="de" href="https://lab.bixcore.de/de/pages/radsec-mtls.html">
+<link rel="alternate" hreflang="en" href="https://lab.bixcore.de/pages/radsec-mtls.html">
+<link rel="alternate" hreflang="ru" href="https://lab.bixcore.de/ru/pages/radsec-mtls.html">
+<link rel="alternate" hreflang="x-default" href="https://lab.bixcore.de/pages/radsec-mtls.html">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header"><div class="wrap header-inner">
-    <a class="brand" href="../index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
-    <nav class="top-nav" aria-label="Main navigation"><a href="work-index.html">Projects</a><a href="notes.html">Troubleshooting</a><a href="hardware.html">Hardware</a><a href="roadmap.html">Plans</a><a href="about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav>
+    <a class="brand" href="/index.html" aria-label="BiXCore Lab, home"><span class="brand-mark">BiX</span><span>BiXCore <span class="brand-sub">ENGINEERING LAB</span></span></a>
+    <nav class="top-nav" aria-label="Main navigation"><a href="/pages/work-index.html">Projects</a><a href="/pages/notes.html">Troubleshooting</a><a href="/pages/hardware.html">Hardware</a><a href="/pages/roadmap.html">Plans</a><a href="/pages/about.html">About me</a><a href="https://github.com/bixstriker/bixcore-homelab-portfolio" class="nav-cta" rel="noopener noreferrer">GitHub ↗</a></nav><nav class="language-switch" aria-label="Language selection"><a href="/de/pages/radsec-mtls.html" hreflang="de" lang="de">Deutsch</a><a href="/pages/radsec-mtls.html" hreflang="en" lang="en" aria-current="page">English</a><a href="/ru/pages/radsec-mtls.html" hreflang="ru" lang="ru">Русский</a></nav>
   </div></header><main id="main" class="wrap subpage">
-<p class="breadcrumb"><a href="../index.html">Home</a> / <a href="work-index.html">Projects</a> / RadSec</p>
+<p class="breadcrumb"><a href="/index.html">Home</a> / <a href="/pages/work-index.html">Projects</a> / RadSec</p>
 <p class="kicker">RADSEC / MUTUAL TLS / WI-FI / WIRED 802.1X</p>
 <h1>Moving My Wi-Fi and Wired 802.1X Authentication to RadSec</h1>
 <p class="lede">My EAP-TLS clients already worked. I wanted to protect the RADIUS traffic between the access points, the switch and my firewall too. Getting there taught me that a certificate chain can look valid in OpenSSL and still fail on a real switch.</p>
@@ -43,8 +47,8 @@
 <p><strong>A restart is not the same as a successful certificate renewal.</strong> RadSecProxy consumes an exported PEM file; at the first real renewal, I still need to confirm that the new certificate and key are exported, the fingerprint and expiry change, and a fresh TLS connection works. I haven't forced an early renewal just for this test.</p>
 <h2>What the migration meant for my own management tool</h2>
 <p>RadSec changed the source used for Accounting Detail and exposed a separate UniFi Disconnect problem. I updated my restricted RADIUS Control helpers and tested the resulting client-specific operations in the <strong>v1.0.2 source/helper release</strong>. The NAS web, sync and control Docker images stayed on their earlier versions.</p>
-<p>Those RADIUS Control acceptance tests happened earlier on 21 November, before the last evening certificate cleanup. They prove selected controls after the RadSec migration, but I haven't repeated every control action after that final restart. <a href="radius-control.html">How I adapted RADIUS Control →</a></p>
+<p>Those RADIUS Control acceptance tests happened earlier on 21 November, before the last evening certificate cleanup. They prove selected controls after the RadSec migration, but I haven't repeated every control action after that final restart. <a href="/pages/radius-control.html">How I adapted RADIUS Control →</a></p>
 <p>The most useful lesson for me was to keep the trust directions separate, check the actual device behavior and be precise about the difference between a configured renewal action and a renewal I have really watched succeed.</p>
-<p><a class="source-link" href="notes.html#radsec-omada-certificate">Omada certificate failure →</a> &nbsp; <a class="source-link" href="notes.html#radsec-unifi-das">UniFi Disconnect regression →</a> &nbsp; <a class="source-link" href="identity-pki.html">Client EAP-TLS and PKI →</a></p>
-</div><hr class="rule"><p><a class="button secondary" href="work-index.html">← All projects</a></p>
+<p><a class="source-link" href="/pages/notes.html#radsec-omada-certificate">Omada certificate failure →</a> &nbsp; <a class="source-link" href="/pages/notes.html#radsec-unifi-das">UniFi Disconnect regression →</a> &nbsp; <a class="source-link" href="/pages/identity-pki.html">Client EAP-TLS and PKI →</a></p>
+</div><hr class="rule"><p><a class="button secondary" href="/pages/work-index.html">← All projects</a></p>
 </main><footer class="footer"><div class="wrap footer-inner"><span>BiXCore · Personal network &amp; security lab</span><span>OPNsense · Windows Server · Proxmox · PKI</span></div></footer></body></html>
